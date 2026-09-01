@@ -1,0 +1,11 @@
+{
+  "title": "cultura_pessoas_portal",
+  "description": "Interactive portal for TIS Culture and People Directorate featuring an animated photo mural and intuitive navigation to enhance user engagement.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
+* {
+  scrollbar-width: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+
+@theme inline {
+  --font-outfit: 'Outfit', sans-serif;
+}
+
+@keyframes ring-ping {
+  0%       { transform: scale(1);    opacity: 0.65; }
+  70%, 100% { transform: scale(1.22); opacity: 0; }
+}
+
+@keyframes arrow-jump {
+  0%, 100% { transform: translateX(0)   scale(1); }
+  35%       { transform: translateX(14px) scale(1.45); }
+  60%       { transform: translateX(8px)  scale(1.15); }
+}
+
+@keyframes cta-glow {
+  0%, 100% { box-shadow: 0 4px 22px rgba(255,255,255,0.18), 0 8px 40px rgba(0,20,80,0.12); }
+  50%       { box-shadow: 0 4px 38px rgba(255,255,255,0.55), 0 8px 64px rgba(0,20,80,0.28); }
+}
+
+@keyframes cta-text-pop {
+  0%, 100% { opacity: 1;    letter-spacing: 0.01em; }
+  50%       { opacity: 0.82; letter-spacing: 0.028em; }
+}
+
+@keyframes bubble-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
