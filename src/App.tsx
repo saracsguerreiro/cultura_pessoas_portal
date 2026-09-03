@@ -517,12 +517,12 @@ export default function App() {
           <div className="absolute inset-0" style={{ background: 'linear-gradient(130deg, rgba(130,0,200,0.92) 0%, rgba(60,12,178,0.90) 45%, rgba(3,110,242,0.92) 100%)' }} />
 
           {/* ── Left panel — logo + divider + title ── */}
-          <div className="relative z-10 flex flex-col items-center justify-center px-8 md:px-16 pt-12 pb-4 md:py-0 gap-0 md:flex-1">
+          <div className="relative z-10 flex flex-col items-center justify-center px-8 md:px-16 pt-10 pb-4 md:py-0 gap-0 md:flex-1">
             <img src={juntosLogo} alt="Juntos Somos TIS" style={{ width: 'min(360px, 75vw)', filter: 'brightness(0) invert(1)', opacity: 1, padding: 0 }} />
-            <div className="hidden md:block" style={{ width: '36%', height: 1, background: 'rgba(255,255,255,0.28)', margin: '22px 0 20px' }} />
-            <div className="hidden md:block text-center" style={{ border: 'none', paddingTop: 5, paddingBottom: 5 }}>
-              <p className="text-sm font-light text-white/65 mb-2" style={{ letterSpacing: '0.18em', border: 'none', paddingTop: 5, paddingBottom: 5 }}>Portal da Direcção de</p>
-              <h1 className="font-thin text-white leading-none" style={{ fontSize: 30, letterSpacing: '0.02em', border: 'none', paddingTop: 5, paddingBottom: 5 }}>
+            <div style={{ width: '50%', height: 1, background: 'rgba(255,255,255,0.28)', margin: '16px 0 14px' }} />
+            <div className="text-center">
+              <p className="font-light text-white/65 mb-1" style={{ letterSpacing: '0.18em', fontSize: isMobile ? 11 : 14 }}>Portal da Direcção de</p>
+              <h1 className="font-thin text-white leading-none" style={{ fontSize: isMobile ? 20 : 30, letterSpacing: '0.02em' }}>
                 CULTURA <span className="font-thin text-white/70">&amp;</span> PESSOAS
               </h1>
             </div>
@@ -532,7 +532,7 @@ export default function App() {
 
           {/* ── Right panel — compact login form ── */}
           <div className="relative z-10 flex flex-col items-center justify-center px-6 md:px-10 pb-12 md:pb-0 w-full md:w-[42%]">
-            <div className="w-full max-w-[340px] rounded-3xl px-8" style={{ background: 'rgba(255,255,255,0.10)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: '0 6px 24px rgba(0,0,70,0.15)', paddingTop: '3.6rem', paddingBottom: '3.6rem' }}>
+            <div className="w-full max-w-[340px] rounded-3xl px-8" style={{ background: 'rgba(255,255,255,0.10)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: '0 6px 24px rgba(0,0,70,0.15)', paddingTop: isMobile ? '1.8rem' : '3.6rem', paddingBottom: isMobile ? '1.8rem' : '3.6rem' }}>
               <div className="mb-6">
                 <img src={tisLogoSvg} alt="TIS" style={{ height: 26, filter: 'brightness(0) invert(1)' }} />
               </div>
@@ -601,24 +601,53 @@ export default function App() {
 
           {/* ── Mobile Bottom Navigation ── */}
           <nav className="fixed bottom-0 left-0 right-0 z-30 flex md:hidden items-center justify-around py-2"
-            style={{ background: 'rgba(8,16,72,0.94)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', borderTop: '1px solid rgba(255,255,255,0.15)' }}>
-            {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
-              <button key={id}
-                onClick={() => { setActiveNav(id); if (chatOpen) closeChat() }}
-                className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${activeNav === id && !chatOpen ? 'text-white' : 'text-white/40'}`}
-              >
-                <Icon className="h-5 w-5" />
-                <span className="text-[10px] font-medium">{label}</span>
-              </button>
-            ))}
+            style={{ background: 'white', borderTop: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 -4px 20px rgba(0,0,0,0.08)' }}>
+            {/* Início */}
+            <button
+              onClick={() => { setActiveNav('sobre'); if (chatOpen) closeChat() }}
+              className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
+              style={{ color: activeNav === 'sobre' && !chatOpen ? '#036ef2' : 'rgba(3,110,242,0.35)' }}
+            >
+              <IconAbout className="h-5 w-5" />
+              <span className="text-[10px] font-medium">Início</span>
+            </button>
+            {/* Chat */}
             <button
               onClick={() => { setActiveNav('sobre'); openChat() }}
-              className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${chatOpen ? 'text-white' : 'text-white/40'}`}
+              className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
+              style={{ color: chatOpen ? '#036ef2' : 'rgba(3,110,242,0.35)' }}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
               </svg>
               <span className="text-[10px] font-medium">Chat</span>
+            </button>
+            {/* FAQ's */}
+            <button
+              onClick={() => { setActiveNav('faqs'); if (chatOpen) closeChat() }}
+              className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
+              style={{ color: activeNav === 'faqs' && !chatOpen ? '#036ef2' : 'rgba(3,110,242,0.35)' }}
+            >
+              <IconFaq className="h-5 w-5" />
+              <span className="text-[10px] font-medium">FAQ&apos;s</span>
+            </button>
+            {/* Notícias */}
+            <button
+              onClick={() => { setActiveNav('noticias'); if (chatOpen) closeChat() }}
+              className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
+              style={{ color: activeNav === 'noticias' && !chatOpen ? '#036ef2' : 'rgba(3,110,242,0.35)' }}
+            >
+              <IconNews className="h-5 w-5" />
+              <span className="text-[10px] font-medium">Notícias</span>
+            </button>
+            {/* Eventos */}
+            <button
+              onClick={() => { setActiveNav('eventos'); if (chatOpen) closeChat() }}
+              className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
+              style={{ color: activeNav === 'eventos' && !chatOpen ? '#036ef2' : 'rgba(3,110,242,0.35)' }}
+            >
+              <IconEvents className="h-5 w-5" />
+              <span className="text-[10px] font-medium">Eventos</span>
             </button>
           </nav>
 
@@ -733,7 +762,10 @@ export default function App() {
                       </div>
                     </div>
 
-                    {/* ── Mobile: topics strip ── */}
+                    {/* ── Mobile: coluna principal (topics + mensagens) / Desktop: coluna direita ── */}
+                    <div className="flex-1 flex flex-col min-h-0">
+
+                    {/* Topics strip — mobile only, acima das mensagens */}
                     {isMobile && (
                       <div className="shrink-0 overflow-x-auto flex gap-2 px-3 py-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.05)', scrollbarWidth: 'none' }}>
                         {CHAT_TOPICS.map(topic => (
@@ -749,7 +781,7 @@ export default function App() {
                       </div>
                     )}
 
-                    {/* ── Right: messages + input + history ── */}
+                    {/* ── Messages + input + history ── */}
                     <div className="flex-1 flex min-h-0">
                     {/* messages column */}
                     <div className="flex-1 flex flex-col min-h-0">
@@ -830,10 +862,11 @@ export default function App() {
                       </div>
                     </div>
 
-                    </div>{/* end right wrapper */}
-                  </div>
-                </div>
-              </div>
+                    </div>{/* end messages+history row */}
+                    </div>{/* end mobile main column */}
+                  </div>{/* end flex-1 flex min-h-0 */}
+                </div>{/* end chatGlass */}
+              </div>{/* end chat panel */}
 
             </div>
             )} {/* end início */}
