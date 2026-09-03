@@ -457,8 +457,14 @@ export default function App() {
     setActiveNav('sobre'); setActiveTopic(null)
   }
   function openChat() {
-    setChatOpen(true); setActiveTopic(null); setHistoryOpen(true)
+    setChatOpen(true); setActiveTopic(null); setHistoryOpen(false)
     setMessages([{ id: 0, role: 'agent', content: `Olá, ${user?.name?.split(' ')[0]}! 👋 Sou a tua assistente de RH da TIS. Estou aqui para ajudar com férias, avaliações, documentos e muito mais.\n\nComo posso ajudar-te hoje?` }])
+  }
+  function openChatMobile() {
+    setActiveNav('chat'); setActiveTopic(null); setHistoryOpen(false)
+    if (messages.length === 0) {
+      setMessages([{ id: 0, role: 'agent', content: `Olá, ${user?.name?.split(' ')[0]}! 👋 Sou a tua assistente de RH da TIS. Estou aqui para ajudar com férias, avaliações, documentos e muito mais.\n\nComo posso ajudar-te hoje?` }])
+    }
   }
   function closeChat() {
     if (messages.length > 1) {
@@ -601,21 +607,21 @@ export default function App() {
 
           {/* ── Mobile Bottom Navigation ── */}
           <nav className="fixed bottom-0 left-0 right-0 z-30 flex md:hidden items-center justify-around py-2"
-            style={{ background: 'rgba(10,0,40,0.55)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderTop: '1px solid rgba(255,255,255,0.12)', boxShadow: '0 -4px 24px rgba(0,0,60,0.25)' }}>
+            style={{ background: 'rgba(255,255,255,0.10)', backdropFilter: 'blur(28px)', WebkitBackdropFilter: 'blur(28px)', borderTop: '1px solid rgba(255,255,255,0.20)', boxShadow: '0 -4px 32px rgba(0,0,60,0.22)' }}>
             {/* Início */}
             <button
               onClick={() => { setActiveNav('sobre'); if (chatOpen) closeChat() }}
               className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
-              style={{ color: activeNav === 'sobre' && !chatOpen ? 'white' : 'rgba(255,255,255,0.38)' }}
+              style={{ color: activeNav === 'sobre' ? 'white' : 'rgba(255,255,255,0.38)' }}
             >
               <IconAbout className="h-5 w-5" />
               <span className="text-[10px] font-medium">Início</span>
             </button>
             {/* Chat */}
             <button
-              onClick={() => { setActiveNav('sobre'); openChat() }}
+              onClick={openChatMobile}
               className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
-              style={{ color: chatOpen ? 'white' : 'rgba(255,255,255,0.38)' }}
+              style={{ color: activeNav === 'chat' ? 'white' : 'rgba(255,255,255,0.38)' }}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -626,7 +632,7 @@ export default function App() {
             <button
               onClick={() => { setActiveNav('faqs'); if (chatOpen) closeChat() }}
               className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
-              style={{ color: activeNav === 'faqs' && !chatOpen ? 'white' : 'rgba(255,255,255,0.38)' }}
+              style={{ color: activeNav === 'faqs' ? 'white' : 'rgba(255,255,255,0.38)' }}
             >
               <IconFaq className="h-5 w-5" />
               <span className="text-[10px] font-medium">FAQ&apos;s</span>
@@ -635,7 +641,7 @@ export default function App() {
             <button
               onClick={() => { setActiveNav('noticias'); if (chatOpen) closeChat() }}
               className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
-              style={{ color: activeNav === 'noticias' && !chatOpen ? 'white' : 'rgba(255,255,255,0.38)' }}
+              style={{ color: activeNav === 'noticias' ? 'white' : 'rgba(255,255,255,0.38)' }}
             >
               <IconNews className="h-5 w-5" />
               <span className="text-[10px] font-medium">Notícias</span>
@@ -644,7 +650,7 @@ export default function App() {
             <button
               onClick={() => { setActiveNav('eventos'); if (chatOpen) closeChat() }}
               className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
-              style={{ color: activeNav === 'eventos' && !chatOpen ? 'white' : 'rgba(255,255,255,0.38)' }}
+              style={{ color: activeNav === 'eventos' ? 'white' : 'rgba(255,255,255,0.38)' }}
             >
               <IconEvents className="h-5 w-5" />
               <span className="text-[10px] font-medium">Eventos</span>
@@ -697,37 +703,22 @@ export default function App() {
                 <p className="mb-6 md:mb-10 text-base md:text-2xl font-bold" style={{ letterSpacing: '0.02em' }}>Tudo num só lugar.</p>
                 <div className="relative inline-flex self-start md:self-start">
                   <span className="pointer-events-none absolute inset-0 rounded-full bg-white" style={{ animation: 'ring-ping 1.8s cubic-bezier(0,0,0.2,1) infinite' }} />
-                  <button onClick={openChat} className="relative inline-flex items-center gap-3 md:gap-4 rounded-full bg-white px-7 md:px-10 py-3 md:py-4 font-bold text-[#036ef2] hover:bg-white/95 active:scale-[0.98]" style={{ fontSize: isMobile ? '1rem' : '1.125rem', letterSpacing: '0.01em', animation: 'cta-glow 2s ease-in-out infinite', transition: 'transform 0.15s' }}>
+                  <button onClick={isMobile ? openChatMobile : openChat} className="relative inline-flex items-center gap-3 md:gap-4 rounded-full bg-white px-7 md:px-10 py-3 md:py-4 font-bold text-[#036ef2] hover:bg-white/95 active:scale-[0.98]" style={{ fontSize: isMobile ? '1rem' : '1.125rem', letterSpacing: '0.01em', animation: 'cta-glow 2s ease-in-out infinite', transition: 'transform 0.15s' }}>
                     <span style={{ animation: 'cta-text-pop 2.2s ease-in-out infinite', display: 'inline-block' }}>Falar com Agente</span>
                     <span className="font-black" style={{ fontSize: '1.55em', lineHeight: 1, display: 'inline-block', animation: 'arrow-jump 0.9s ease-in-out infinite' }}>→</span>
                   </button>
                 </div>
               </div>
 
-              {/* ── Chat panel ── */}
-              <div
-                className={isMobile ? "fixed inset-0 z-50 flex flex-col py-3 px-3" : "absolute inset-y-0 right-0 left-0 flex flex-col py-5 px-8"}
+              {/* ── Chat panel (desktop only) ── */}
+              {!isMobile && <div
+                className="absolute inset-y-0 right-0 left-0 flex flex-col py-5 px-8"
                 style={{ opacity: chatOpen ? 1 : 0, transform: chatOpen ? 'translateX(0)' : 'translateX(40px)', transition: `opacity 0.45s ${ease}, transform 0.45s ${ease}`, pointerEvents: chatOpen ? 'auto' : 'none' }}
               >
                 <div className="flex-1 flex flex-col rounded-2xl overflow-hidden relative" style={chatGlass}>
-                  {/* Header */}
-                  <div className="flex items-center justify-between px-4 md:px-5 py-3 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.08)' }}>
-                    {isMobile ? (
-                      <div className="flex items-center gap-2.5">
-                        <div className="rounded-full overflow-hidden shrink-0" style={{ width: 34, height: 34, border: '1.5px solid rgba(255,255,255,0.4)', boxShadow: '0 2px 10px rgba(0,0,70,0.35)' }}>
-                          <img src={agentPhoto} alt="" className="h-full w-full object-cover object-top" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-white leading-tight">Assistente de RH</p>
-                          <div className="flex items-center gap-1">
-                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" style={{ boxShadow: '0 0 4px rgba(52,211,153,0.7)' }} />
-                            <span className="text-[10px] text-white/55">Online</span>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="text-sm font-semibold text-white tracking-wide">Portal RH · TIS</p>
-                    )}
+                  {/* Header (desktop) */}
+                  <div className="flex items-center justify-between px-5 py-3 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.08)' }}>
+                    <p className="text-sm font-semibold text-white tracking-wide">Portal RH · TIS</p>
                     <div className="flex items-center gap-1.5">
                       <button
                         onClick={() => setHistoryOpen(v => !v)}
@@ -742,35 +733,6 @@ export default function App() {
                       <button onClick={closeChat} className="h-7 w-7 rounded-full flex items-center justify-center text-white/55 hover:text-white hover:bg-white/15 transition-all text-lg leading-none">✕</button>
                     </div>
                   </div>
-
-                  {/* Mobile history overlay */}
-                  {isMobile && historyOpen && (
-                    <div className="absolute inset-0 z-10 flex flex-col" style={{ background: 'rgba(8,0,32,0.92)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
-                      <div className="flex items-center justify-between px-4 py-3 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
-                        <p className="text-sm font-bold text-white/70 uppercase" style={{ letterSpacing: '0.12em' }}>Conversas anteriores</p>
-                        <button onClick={() => setHistoryOpen(false)} className="h-7 w-7 rounded-full flex items-center justify-center text-white/55 hover:text-white hover:bg-white/15 transition-all text-lg leading-none">✕</button>
-                      </div>
-                      <div className="flex-1 overflow-y-auto py-2">
-                        {chatHistory.length === 0 ? (
-                          <p className="text-center text-white/35 text-sm mt-10">Sem conversas anteriores.</p>
-                        ) : chatHistory.map(session => (
-                          <button key={session.id}
-                            onClick={() => { setMessages(session.messages.map((m, i) => ({ ...m, id: i }))); setHistoryOpen(false); setActiveTopic(null) }}
-                            className="w-full text-left px-4 py-3 transition-all"
-                            style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
-                            onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.07)'}
-                            onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
-                          >
-                            <div className="flex items-start justify-between gap-2 mb-0.5">
-                              <p className="text-sm font-semibold text-white/85 leading-snug">{session.title}</p>
-                              <span className="text-[10px] text-white/35 shrink-0 mt-0.5">{session.date}</span>
-                            </div>
-                            <p className="text-xs text-white/45 leading-snug line-clamp-2">{session.preview}</p>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
 
                   <div className="flex-1 flex min-h-0">
 
@@ -804,24 +766,8 @@ export default function App() {
                       </div>
                     </div>
 
-                    {/* ── Mobile: coluna principal (topics + mensagens) / Desktop: coluna direita ── */}
+                    {/* ── Desktop: messages column + history ── */}
                     <div className="flex-1 flex flex-col min-h-0">
-
-                    {/* Topics strip — mobile only, acima das mensagens */}
-                    {isMobile && (
-                      <div className="shrink-0 overflow-x-auto flex gap-2 px-3 py-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.05)', scrollbarWidth: 'none' }}>
-                        {CHAT_TOPICS.map(topic => (
-                          <button key={topic.id}
-                            onClick={() => { setActiveTopic(topic.id); sendMessage(topic.question) }}
-                            className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium whitespace-nowrap shrink-0 transition-all"
-                            style={activeTopic === topic.id ? { background: 'rgba(255,255,255,0.22)', color: 'white' } : { background: 'rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.72)', border: '1px solid rgba(255,255,255,0.15)' }}
-                          >
-                            <topic.icon className="h-3.5 w-3.5 shrink-0" />
-                            {topic.label}
-                          </button>
-                        ))}
-                      </div>
-                    )}
 
                     {/* ── Messages + input + history ── */}
                     <div className="flex-1 flex min-h-0">
@@ -908,10 +854,134 @@ export default function App() {
                     </div>{/* end mobile main column */}
                   </div>{/* end flex-1 flex min-h-0 */}
                 </div>{/* end chatGlass */}
-              </div>{/* end chat panel */}
+              </div>}{/* end chat panel (desktop only) */}
 
             </div>
             )} {/* end início */}
+
+            {/* ══ CHAT (mobile page) ══ */}
+            {isMobile && activeNav === 'chat' && (
+              <div className="h-full flex flex-col px-3 pt-1">
+                <div className="flex-1 flex flex-col min-h-0 rounded-2xl overflow-hidden relative" style={chatGlass}>
+
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-4 py-3 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.08)' }}>
+                    <div className="flex items-center gap-2.5">
+                      <div className="rounded-full overflow-hidden shrink-0" style={{ width: 34, height: 34, border: '1.5px solid rgba(255,255,255,0.4)', boxShadow: '0 2px 10px rgba(0,0,70,0.35)' }}>
+                        <img src={agentPhoto} alt="" className="h-full w-full object-cover object-top" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-white leading-tight">Assistente de RH</p>
+                        <div className="flex items-center gap-1">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" style={{ boxShadow: '0 0 4px rgba(52,211,153,0.7)' }} />
+                          <span className="text-[10px] text-white/55">Online</span>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setHistoryOpen(v => !v)}
+                      title="Conversas anteriores"
+                      className="h-7 w-7 rounded-full flex items-center justify-center transition-all"
+                      style={historyOpen ? { background: 'rgba(255,255,255,0.22)', color: 'white' } : { color: 'rgba(255,255,255,0.55)' }}
+                    >
+                      <IconHistory className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  {/* History overlay — only when open */}
+                  {historyOpen && (
+                    <div className="absolute inset-0 z-10 flex flex-col" style={{ background: 'rgba(8,0,32,0.92)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
+                      <div className="flex items-center justify-between px-4 py-3 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
+                        <p className="text-sm font-bold text-white/70 uppercase" style={{ letterSpacing: '0.12em' }}>Conversas anteriores</p>
+                        <button onClick={() => setHistoryOpen(false)} className="h-7 w-7 rounded-full flex items-center justify-center text-white/55 hover:text-white hover:bg-white/15 transition-all text-lg leading-none">✕</button>
+                      </div>
+                      <div className="flex-1 overflow-y-auto py-2">
+                        {chatHistory.length === 0 ? (
+                          <p className="text-center text-white/35 text-sm mt-10">Sem conversas anteriores.</p>
+                        ) : chatHistory.map(session => (
+                          <button key={session.id}
+                            onClick={() => { setMessages(session.messages.map((m, i) => ({ ...m, id: i }))); setHistoryOpen(false); setActiveTopic(null) }}
+                            className="w-full text-left px-4 py-3 transition-all"
+                            style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+                            onTouchStart={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.07)'}
+                            onTouchEnd={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
+                          >
+                            <div className="flex items-start justify-between gap-2 mb-0.5">
+                              <p className="text-sm font-semibold text-white/85 leading-snug">{session.title}</p>
+                              <span className="text-[10px] text-white/35 shrink-0 mt-0.5">{session.date}</span>
+                            </div>
+                            <p className="text-xs text-white/45 leading-snug line-clamp-2">{session.preview}</p>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Topics strip — horizontal scroll */}
+                  <div className="shrink-0 overflow-x-auto flex gap-2 px-3 py-2.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.05)', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' } as React.CSSProperties}>
+                    {CHAT_TOPICS.map(topic => (
+                      <button key={topic.id}
+                        onClick={() => { setActiveTopic(topic.id); sendMessage(topic.question) }}
+                        className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium whitespace-nowrap shrink-0 transition-all"
+                        style={activeTopic === topic.id ? { background: 'rgba(255,255,255,0.22)', color: 'white' } : { background: 'rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.72)', border: '1px solid rgba(255,255,255,0.15)' }}
+                      >
+                        <topic.icon className="h-3.5 w-3.5 shrink-0" />
+                        {topic.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Messages */}
+                  <div className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0">
+                    {messages.map(msg => (
+                      <div key={msg.id} className={`flex items-end gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                        {msg.role === 'agent' && (
+                          <div className="h-9 w-9 rounded-full overflow-hidden shrink-0 mb-0.5" style={{ border: '1.5px solid rgba(255,255,255,0.35)', boxShadow: '0 2px 8px rgba(0,0,60,0.3)' }}>
+                            <img src={agentPhoto} alt="" className="h-full w-full object-cover object-top" />
+                          </div>
+                        )}
+                        <div className={`max-w-[78%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-line ${msg.role === 'user' ? 'rounded-br-sm font-medium' : 'rounded-bl-sm text-white'}`}
+                          style={msg.role === 'user' ? { background: 'rgba(255,255,255,0.92)', color: '#036ef2' } : { background: 'rgba(255,255,255,0.11)', border: '1px solid rgba(255,255,255,0.15)' }}
+                        >
+                          {msg.content}
+                        </div>
+                      </div>
+                    ))}
+                    {isTyping && (
+                      <div className="flex items-end gap-2">
+                        <div className="h-9 w-9 rounded-full overflow-hidden shrink-0" style={{ border: '1.5px solid rgba(255,255,255,0.35)' }}>
+                          <img src={agentPhoto} alt="" className="h-full w-full object-cover object-top" />
+                        </div>
+                        <div className="rounded-2xl rounded-bl-sm px-4 py-3" style={{ background: 'rgba(255,255,255,0.11)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                          <div className="flex gap-1 items-center">
+                            {[0, 150, 300].map(d => <span key={d} className="h-2 w-2 rounded-full bg-white/65 animate-bounce" style={{ animationDelay: `${d}ms` }} />)}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <div ref={messagesEnd} />
+                  </div>
+
+                  {/* Input */}
+                  <div className="p-3 shrink-0" style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}>
+                    <div className="flex items-center gap-3 rounded-full px-4 py-2.5" style={{ background: 'rgba(255,255,255,0.09)', border: '1px solid rgba(255,255,255,0.18)' }}>
+                      <input value={inputText} onChange={e => setInputText(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage() } }}
+                        placeholder="Escreve a tua pergunta…"
+                        className="flex-1 bg-transparent text-white text-sm outline-none placeholder-white/40"
+                      />
+                      <button onClick={() => sendMessage()} disabled={!inputText.trim() || isTyping}
+                        className="h-8 w-8 rounded-full bg-white flex items-center justify-center text-[#036ef2] disabled:opacity-35 hover:scale-105 active:scale-95"
+                        style={{ transition: 'opacity 0.2s, transform 0.15s' }}
+                      >
+                        <SendIcon className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            )}
 
             {/* ══ FAQs ══ */}
             {activeNav === 'faqs' && (
@@ -920,16 +990,16 @@ export default function App() {
 
                   {/* ── Header: title + agent avatar with speech bubble ── */}
                   <div className="flex items-start justify-between gap-8 mb-6 md:mb-8">
-                    <div className="flex items-center gap-3">
-                      {/* Agent photo — mobile only, next to title */}
-                      {isMobile && (
-                        <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 52, height: 52, border: '2px solid rgba(255,255,255,0.4)', boxShadow: '0 4px 16px rgba(0,0,70,0.35)' }}>
-                          <img src={agentPhoto} alt="Assistente de RH" className="h-full w-full object-cover object-top" />
-                        </div>
-                      )}
-                      <div>
-                        <p className="text-xs font-bold text-white/40 uppercase mb-2" style={{ letterSpacing: '0.16em' }}>Portal</p>
+                    <div>
+                      <p className="text-xs font-bold text-white/40 uppercase mb-2" style={{ letterSpacing: '0.16em' }}>Portal</p>
+                      <div className="flex items-center gap-3">
                         <h2 className="text-4xl font-extrabold text-white">Perguntas Frequentes</h2>
+                        {/* Agent photo — mobile only, after title */}
+                        {isMobile && (
+                          <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 62, height: 62, border: '2px solid rgba(255,255,255,0.4)', boxShadow: '0 4px 16px rgba(0,0,70,0.35)' }}>
+                            <img src={agentPhoto} alt="Assistente de RH" className="h-full w-full object-cover object-top" />
+                          </div>
+                        )}
                       </div>
                     </div>
 
