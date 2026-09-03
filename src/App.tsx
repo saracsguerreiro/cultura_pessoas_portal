@@ -532,7 +532,7 @@ export default function App() {
 
           {/* ── Right panel — compact login form ── */}
           <div className="relative z-10 flex flex-col items-center justify-center px-6 md:px-10 pb-12 md:pb-0 w-full md:w-[42%]">
-            <div className="w-full max-w-[340px] rounded-3xl px-8" style={{ background: 'rgba(255,255,255,0.10)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: '0 6px 24px rgba(0,0,70,0.15)', paddingTop: isMobile ? '1.8rem' : '3.6rem', paddingBottom: isMobile ? '1.8rem' : '3.6rem' }}>
+            <div className="rounded-3xl px-8" style={{ width: isMobile ? 'min(360px, 75vw)' : undefined, maxWidth: isMobile ? undefined : 340, background: 'rgba(255,255,255,0.10)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: '0 6px 24px rgba(0,0,70,0.15)', paddingTop: isMobile ? '1.8rem' : '3.6rem', paddingBottom: isMobile ? '1.8rem' : '3.6rem', marginTop: isMobile ? '2rem' : undefined }}>
               <div className="mb-6">
                 <img src={tisLogoSvg} alt="TIS" style={{ height: 26, filter: 'brightness(0) invert(1)' }} />
               </div>
@@ -601,12 +601,12 @@ export default function App() {
 
           {/* ── Mobile Bottom Navigation ── */}
           <nav className="fixed bottom-0 left-0 right-0 z-30 flex md:hidden items-center justify-around py-2"
-            style={{ background: 'white', borderTop: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 -4px 20px rgba(0,0,0,0.08)' }}>
+            style={{ background: 'rgba(10,0,40,0.55)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderTop: '1px solid rgba(255,255,255,0.12)', boxShadow: '0 -4px 24px rgba(0,0,60,0.25)' }}>
             {/* Início */}
             <button
               onClick={() => { setActiveNav('sobre'); if (chatOpen) closeChat() }}
               className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
-              style={{ color: activeNav === 'sobre' && !chatOpen ? '#036ef2' : 'rgba(3,110,242,0.35)' }}
+              style={{ color: activeNav === 'sobre' && !chatOpen ? 'white' : 'rgba(255,255,255,0.38)' }}
             >
               <IconAbout className="h-5 w-5" />
               <span className="text-[10px] font-medium">Início</span>
@@ -615,7 +615,7 @@ export default function App() {
             <button
               onClick={() => { setActiveNav('sobre'); openChat() }}
               className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
-              style={{ color: chatOpen ? '#036ef2' : 'rgba(3,110,242,0.35)' }}
+              style={{ color: chatOpen ? 'white' : 'rgba(255,255,255,0.38)' }}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -626,7 +626,7 @@ export default function App() {
             <button
               onClick={() => { setActiveNav('faqs'); if (chatOpen) closeChat() }}
               className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
-              style={{ color: activeNav === 'faqs' && !chatOpen ? '#036ef2' : 'rgba(3,110,242,0.35)' }}
+              style={{ color: activeNav === 'faqs' && !chatOpen ? 'white' : 'rgba(255,255,255,0.38)' }}
             >
               <IconFaq className="h-5 w-5" />
               <span className="text-[10px] font-medium">FAQ&apos;s</span>
@@ -635,7 +635,7 @@ export default function App() {
             <button
               onClick={() => { setActiveNav('noticias'); if (chatOpen) closeChat() }}
               className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
-              style={{ color: activeNav === 'noticias' && !chatOpen ? '#036ef2' : 'rgba(3,110,242,0.35)' }}
+              style={{ color: activeNav === 'noticias' && !chatOpen ? 'white' : 'rgba(255,255,255,0.38)' }}
             >
               <IconNews className="h-5 w-5" />
               <span className="text-[10px] font-medium">Notícias</span>
@@ -644,7 +644,7 @@ export default function App() {
             <button
               onClick={() => { setActiveNav('eventos'); if (chatOpen) closeChat() }}
               className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
-              style={{ color: activeNav === 'eventos' && !chatOpen ? '#036ef2' : 'rgba(3,110,242,0.35)' }}
+              style={{ color: activeNav === 'eventos' && !chatOpen ? 'white' : 'rgba(255,255,255,0.38)' }}
             >
               <IconEvents className="h-5 w-5" />
               <span className="text-[10px] font-medium">Eventos</span>
@@ -709,26 +709,68 @@ export default function App() {
                 className={isMobile ? "fixed inset-0 z-50 flex flex-col py-3 px-3" : "absolute inset-y-0 right-0 left-0 flex flex-col py-5 px-8"}
                 style={{ opacity: chatOpen ? 1 : 0, transform: chatOpen ? 'translateX(0)' : 'translateX(40px)', transition: `opacity 0.45s ${ease}, transform 0.45s ${ease}`, pointerEvents: chatOpen ? 'auto' : 'none' }}
               >
-                <div className="flex-1 flex flex-col rounded-2xl overflow-hidden" style={chatGlass}>
+                <div className="flex-1 flex flex-col rounded-2xl overflow-hidden relative" style={chatGlass}>
                   {/* Header */}
                   <div className="flex items-center justify-between px-4 md:px-5 py-3 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.08)' }}>
-                    <p className="text-sm font-semibold text-white tracking-wide">Portal RH · TIS</p>
+                    {isMobile ? (
+                      <div className="flex items-center gap-2.5">
+                        <div className="rounded-full overflow-hidden shrink-0" style={{ width: 34, height: 34, border: '1.5px solid rgba(255,255,255,0.4)', boxShadow: '0 2px 10px rgba(0,0,70,0.35)' }}>
+                          <img src={agentPhoto} alt="" className="h-full w-full object-cover object-top" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-white leading-tight">Assistente de RH</p>
+                          <div className="flex items-center gap-1">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" style={{ boxShadow: '0 0 4px rgba(52,211,153,0.7)' }} />
+                            <span className="text-[10px] text-white/55">Online</span>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-sm font-semibold text-white tracking-wide">Portal RH · TIS</p>
+                    )}
                     <div className="flex items-center gap-1.5">
-                      {!isMobile && (
-                        <button
-                          onClick={() => setHistoryOpen(v => !v)}
-                          title="Conversas anteriores"
-                          className="h-7 w-7 rounded-full flex items-center justify-center transition-all"
-                          style={historyOpen ? { background: 'rgba(255,255,255,0.22)', color: 'white' } : { color: 'rgba(255,255,255,0.55)' }}
-                          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.15)'; (e.currentTarget as HTMLElement).style.color = 'white' }}
-                          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = historyOpen ? 'rgba(255,255,255,0.22)' : 'transparent'; (e.currentTarget as HTMLElement).style.color = historyOpen ? 'white' : 'rgba(255,255,255,0.55)' }}
-                        >
-                          <IconHistory className="h-4 w-4" />
-                        </button>
-                      )}
+                      <button
+                        onClick={() => setHistoryOpen(v => !v)}
+                        title="Conversas anteriores"
+                        className="h-7 w-7 rounded-full flex items-center justify-center transition-all"
+                        style={historyOpen ? { background: 'rgba(255,255,255,0.22)', color: 'white' } : { color: 'rgba(255,255,255,0.55)' }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.15)'; (e.currentTarget as HTMLElement).style.color = 'white' }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = historyOpen ? 'rgba(255,255,255,0.22)' : 'transparent'; (e.currentTarget as HTMLElement).style.color = historyOpen ? 'white' : 'rgba(255,255,255,0.55)' }}
+                      >
+                        <IconHistory className="h-4 w-4" />
+                      </button>
                       <button onClick={closeChat} className="h-7 w-7 rounded-full flex items-center justify-center text-white/55 hover:text-white hover:bg-white/15 transition-all text-lg leading-none">✕</button>
                     </div>
                   </div>
+
+                  {/* Mobile history overlay */}
+                  {isMobile && historyOpen && (
+                    <div className="absolute inset-0 z-10 flex flex-col" style={{ background: 'rgba(8,0,32,0.92)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
+                      <div className="flex items-center justify-between px-4 py-3 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
+                        <p className="text-sm font-bold text-white/70 uppercase" style={{ letterSpacing: '0.12em' }}>Conversas anteriores</p>
+                        <button onClick={() => setHistoryOpen(false)} className="h-7 w-7 rounded-full flex items-center justify-center text-white/55 hover:text-white hover:bg-white/15 transition-all text-lg leading-none">✕</button>
+                      </div>
+                      <div className="flex-1 overflow-y-auto py-2">
+                        {chatHistory.length === 0 ? (
+                          <p className="text-center text-white/35 text-sm mt-10">Sem conversas anteriores.</p>
+                        ) : chatHistory.map(session => (
+                          <button key={session.id}
+                            onClick={() => { setMessages(session.messages.map((m, i) => ({ ...m, id: i }))); setHistoryOpen(false); setActiveTopic(null) }}
+                            className="w-full text-left px-4 py-3 transition-all"
+                            style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+                            onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.07)'}
+                            onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
+                          >
+                            <div className="flex items-start justify-between gap-2 mb-0.5">
+                              <p className="text-sm font-semibold text-white/85 leading-snug">{session.title}</p>
+                              <span className="text-[10px] text-white/35 shrink-0 mt-0.5">{session.date}</span>
+                            </div>
+                            <p className="text-xs text-white/45 leading-snug line-clamp-2">{session.preview}</p>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="flex-1 flex min-h-0">
 
@@ -789,8 +831,8 @@ export default function App() {
                         {messages.map(msg => (
                           <div key={msg.id} className={`flex items-end gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                             {msg.role === 'agent' && (
-                              <div className="h-7 w-7 rounded-full overflow-hidden shrink-0 mb-0.5" style={{ border: '1.5px solid rgba(255,255,255,0.3)' }}>
-                                <img src={agentPhoto} alt="" className="h-full w-full object-cover" />
+                              <div className="h-9 w-9 rounded-full overflow-hidden shrink-0 mb-0.5" style={{ border: '1.5px solid rgba(255,255,255,0.35)', boxShadow: '0 2px 8px rgba(0,0,60,0.3)' }}>
+                                <img src={agentPhoto} alt="" className="h-full w-full object-cover object-top" />
                               </div>
                             )}
                             <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-line ${msg.role === 'user' ? 'rounded-br-sm font-medium' : 'rounded-bl-sm text-white'}`}
@@ -802,8 +844,8 @@ export default function App() {
                         ))}
                         {isTyping && (
                           <div className="flex items-end gap-2">
-                            <div className="h-7 w-7 rounded-full overflow-hidden shrink-0" style={{ border: '1.5px solid rgba(255,255,255,0.3)' }}>
-                              <img src={agentPhoto} alt="" className="h-full w-full object-cover" />
+                            <div className="h-9 w-9 rounded-full overflow-hidden shrink-0" style={{ border: '1.5px solid rgba(255,255,255,0.35)', boxShadow: '0 2px 8px rgba(0,0,60,0.3)' }}>
+                              <img src={agentPhoto} alt="" className="h-full w-full object-cover object-top" />
                             </div>
                             <div className="rounded-2xl rounded-bl-sm px-4 py-3" style={{ background: 'rgba(255,255,255,0.11)', border: '1px solid rgba(255,255,255,0.15)' }}>
                               <div className="flex gap-1 items-center">
@@ -878,9 +920,17 @@ export default function App() {
 
                   {/* ── Header: title + agent avatar with speech bubble ── */}
                   <div className="flex items-start justify-between gap-8 mb-6 md:mb-8">
-                    <div>
-                      <p className="text-xs font-bold text-white/40 uppercase mb-2" style={{ letterSpacing: '0.16em' }}>Portal</p>
-                      <h2 className="text-4xl font-extrabold text-white">Perguntas Frequentes</h2>
+                    <div className="flex items-center gap-3">
+                      {/* Agent photo — mobile only, next to title */}
+                      {isMobile && (
+                        <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 52, height: 52, border: '2px solid rgba(255,255,255,0.4)', boxShadow: '0 4px 16px rgba(0,0,70,0.35)' }}>
+                          <img src={agentPhoto} alt="Assistente de RH" className="h-full w-full object-cover object-top" />
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-xs font-bold text-white/40 uppercase mb-2" style={{ letterSpacing: '0.16em' }}>Portal</p>
+                        <h2 className="text-4xl font-extrabold text-white">Perguntas Frequentes</h2>
+                      </div>
                     </div>
 
                     {/* Agent + bubble (desktop only) */}
