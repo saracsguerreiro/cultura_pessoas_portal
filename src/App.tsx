@@ -288,9 +288,9 @@ function IconPlus({ className }: { className?: string }) {
 function IconArchive({ className }: { className?: string }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
 }
-function MicrosoftLogo() {
+function MicrosoftLogo({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 21 21" className="h-5 w-5 shrink-0">
+    <svg viewBox="0 0 21 21" className={className ?? "h-5 w-5 shrink-0"}>
       <rect x="0"  y="0"  width="9.5" height="9.5" fill="#F25022" />
       <rect x="11" y="0"  width="9.5" height="9.5" fill="#7FBA00" />
       <rect x="0"  y="11" width="9.5" height="9.5" fill="#00A4EF" />
@@ -539,10 +539,10 @@ export default function App() {
           {/* ── Right panel — compact login form ── */}
           <div className="relative z-10 flex flex-col items-center justify-center px-6 md:px-10 pb-12 md:pb-0 w-full md:w-[42%]">
             <div className="rounded-3xl px-8" style={{ width: isMobile ? 'min(360px, 75vw)' : undefined, maxWidth: isMobile ? undefined : 340, background: 'rgba(255,255,255,0.10)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: '0 6px 24px rgba(0,0,70,0.15)', paddingTop: isMobile ? '1.8rem' : '3.6rem', paddingBottom: isMobile ? '1.8rem' : '3.6rem', marginTop: isMobile ? '2rem' : undefined }}>
-              <div className="mb-6">
+              <div className="mb-6" style={isMobile ? { display: 'flex', justifyContent: 'center' } : {}}>
                 <img src={tisLogoSvg} alt="TIS" style={{ height: 26, filter: 'brightness(0) invert(1)' }} />
               </div>
-              <p className="mb-5 text-sm leading-relaxed text-white/60">
+              <p className="mb-5 text-sm leading-relaxed text-white/60" style={isMobile ? { textAlign: 'center' } : {}}>
                 Acede com a tua conta Microsoft institucional para entrar no portal de Recursos Humanos.
               </p>
               <button
@@ -551,7 +551,7 @@ export default function App() {
                 className="w-full flex items-center justify-center gap-3 rounded-2xl bg-white px-6 py-3.5 text-sm font-semibold text-gray-700 hover:bg-white/95 active:scale-[0.98] transition-all disabled:opacity-60"
                 style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}
               >
-                {authLoading ? <div className="h-5 w-5 rounded-full border-2 border-gray-300 border-t-[#036ef2] animate-spin" /> : <MicrosoftLogo />}
+                {authLoading ? <div className="h-5 w-5 rounded-full border-2 border-gray-300 border-t-[#036ef2] animate-spin" /> : <MicrosoftLogo className={isMobile ? "h-[22px] w-[22px] shrink-0" : "h-5 w-5 shrink-0"} />}
                 <span>{authLoading ? 'A autenticar…' : 'Iniciar sessão com Microsoft'}</span>
               </button>
               <div className="mt-6 flex items-center gap-3">
@@ -890,7 +890,7 @@ export default function App() {
 
                   {/* History overlay — only when open */}
                   {historyOpen && (
-                    <div className="absolute inset-0 z-10 flex flex-col" style={{ background: 'rgba(8,0,32,0.92)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
+                    <div className="absolute inset-0 z-10 flex flex-col" style={{ background: 'rgba(100,0,180,0.95)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}>
                       <div className="flex items-center justify-between px-4 py-3 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
                         <p className="text-sm font-bold text-white/70 uppercase" style={{ letterSpacing: '0.12em' }}>Conversas anteriores</p>
                         <button onClick={() => setHistoryOpen(false)} className="h-7 w-7 rounded-full flex items-center justify-center text-white/55 hover:text-white hover:bg-white/15 transition-all text-lg leading-none">✕</button>
@@ -968,7 +968,8 @@ export default function App() {
                       <input value={inputText} onChange={e => setInputText(e.target.value)}
                         onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage() } }}
                         placeholder="Escreve a tua pergunta…"
-                        className="flex-1 bg-transparent text-white text-sm outline-none placeholder-white/40"
+                        className="flex-1 bg-transparent text-white outline-none placeholder-white/40"
+                        style={{ fontSize: '16px' }}
                       />
                       <button onClick={() => sendMessage()} disabled={!inputText.trim() || isTyping}
                         className="h-8 w-8 rounded-full bg-white flex items-center justify-center text-[#036ef2] disabled:opacity-35 hover:scale-105 active:scale-95"
@@ -996,7 +997,7 @@ export default function App() {
                         <h2 className="text-4xl font-extrabold text-white">Perguntas Frequentes</h2>
                         {/* Agent photo — mobile only, after title */}
                         {isMobile && (
-                          <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 62, height: 62, border: '2px solid rgba(255,255,255,0.4)', boxShadow: '0 4px 16px rgba(0,0,70,0.35)' }}>
+                          <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 71, height: 71, border: '2px solid rgba(255,255,255,0.4)', boxShadow: '0 4px 16px rgba(0,0,70,0.35)' }}>
                             <img src={agentPhoto} alt="Assistente de RH" className="h-full w-full object-cover object-top" />
                           </div>
                         )}
