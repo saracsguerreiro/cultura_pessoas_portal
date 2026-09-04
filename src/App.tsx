@@ -41,6 +41,11 @@ type NewsItem = {
   id: number; date: string; category: string; title: string;
   excerpt: string; color: string; icon: string; image?: string; archive?: boolean; body?: string
 }
+type TISDocument = {
+  id: number; name: string; type: 'pdf' | 'docx' | 'xlsx' | 'pptx'
+  category: string; size: string; pages: number; date: string; excerpt: string
+}
+type DocMessage = { role: 'user' | 'agent'; content: string; sources?: string[] }
 
 // ── Speech bubbles — 5 slots, all LEFT side with right-pointing tail ──
 const HR_QUESTIONS = [
@@ -128,6 +133,30 @@ const NEWS_ARCHIVE: NewsItem[] = [
   { id: 103, date: '30 Jun 2026', category: 'Políticas',  title: 'Nova política de despesas aprovada',                  excerpt: 'Simplificação do processo de submissão e reembolso de despesas profissionais com efeitos a julho.', color: '', icon: '', archive: true, image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&h=400&fit=crop&auto=format&q=70' },
   { id: 104, date: '15 Jun 2026', category: 'Benefícios', title: 'Subsídio de refeição aumenta para €8,32',             excerpt: 'O valor do subsídio de refeição é atualizado em linha com o regulamento vigente, com efeitos retroativos a junho.', color: '', icon: '', archive: true, image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&h=400&fit=crop&auto=format&q=70' },
   { id: 105, date: '1 Jun 2026',  category: 'Carreiras',  title: 'Catálogo de formação 2026 — 2.º semestre disponível', excerpt: '42 ações de formação em áreas técnicas, liderança e bem-estar. Inscrições abertas no Odoo.', color: '', icon: '', archive: true, image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&h=400&fit=crop&auto=format&q=70' },
+]
+
+// ── Documentos ──
+const DOC_CATS = ['Todos', 'Regulamentos', 'Leis', 'Políticas', 'Contratos', 'Formulários']
+const DOCS_DATA: TISDocument[] = [
+  { id: 1, name: 'Regulamento Interno de Trabalho.pdf',  type: 'pdf',  category: 'Regulamentos', size: '2,4 MB', pages: 48,  date: 'Jan 2026', excerpt: 'Art. 15.º — O período normal de trabalho é de 40 horas semanais, distribuídas por 5 dias. Regimes de horário flexível podem ser aprovados pela direção.' },
+  { id: 2, name: 'Política de Teletrabalho 2026.pdf',    type: 'pdf',  category: 'Políticas',     size: '890 KB', pages: 12,  date: 'Fev 2026', excerpt: 'Secção 3 — Elegibilidade: Colaboradores com contrato sem termo e mínimo de 6 meses de antiguidade podem aderir ao teletrabalho, até 3 dias por semana.' },
+  { id: 3, name: 'Código do Trabalho (excertos).pdf',    type: 'pdf',  category: 'Leis',          size: '5,1 MB', pages: 120, date: 'Dez 2023', excerpt: 'Art. 282.º — Férias: O trabalhador tem direito a um período anual de férias remuneradas de 22 dias úteis, acrescidos de 1 dia por cada 5 anos de antiguidade.' },
+  { id: 4, name: 'Contrato Individual de Trabalho.docx', type: 'docx', category: 'Contratos',     size: '340 KB', pages: 8,   date: 'Mar 2024', excerpt: 'Cláusula 5.ª — A retribuição base mensal é acordada entre as partes, acrescida de subsídio de refeição e demais subsídios legalmente previstos.' },
+  { id: 5, name: 'Manual do Colaborador TIS 2026.pdf',   type: 'pdf',  category: 'Regulamentos', size: '4,2 MB', pages: 64,  date: 'Jan 2026', excerpt: 'Capítulo 2 — Na TIS acreditamos que equipas diversas e inclusivas constroem produtos melhores. O nosso código de conduta aplica-se a todos os colaboradores.' },
+  { id: 6, name: 'Política de Despesas e Reembolsos.pdf',type: 'pdf',  category: 'Políticas',     size: '520 KB', pages: 6,   date: 'Abr 2026', excerpt: 'Ponto 4 — O pedido de reembolso deve ser submetido no Odoo no prazo de 30 dias após a despesa, com comprovativo para valores superiores a €25.' },
+  { id: 7, name: 'Regulamento RGPD Interno.pdf',         type: 'pdf',  category: 'Regulamentos', size: '1,8 MB', pages: 24,  date: 'Jun 2024', excerpt: 'Art. 6.º — A TIS é responsável pelo tratamento dos dados pessoais dos colaboradores e garante o cumprimento do RGPD em todos os processos de RH.' },
+  { id: 8, name: 'Formulário de Pedido de Férias.docx',  type: 'docx', category: 'Formulários',   size: '95 KB',  pages: 2,   date: 'Jan 2026', excerpt: 'Preencher com: nome, número de colaborador, período solicitado e assinatura da chefia direta. Submeter com 10 dias de antecedência.' },
+  { id: 9, name: 'Plano de Formação 2026.xlsx',          type: 'xlsx', category: 'Políticas',     size: '1,1 MB', pages: 4,   date: 'Jan 2026', excerpt: 'Catálogo de 42 ações de formação disponíveis no 2.º semestre de 2026, nas áreas técnicas, liderança, comunicação e bem-estar.' },
+  { id: 10, name: 'Seguro de Saúde — Apólice Medis.pdf', type: 'pdf',  category: 'Contratos',     size: '3,3 MB', pages: 32,  date: 'Out 2025', excerpt: 'Art. 12.º — O plano cobre consultas de medicina geral, especialidades, internamento, cirurgia e meios de diagnóstico. A partir de out 2026 inclui psicologia e nutrição.' },
+]
+const DOC_MOCK_RESPONSES: Array<{ keywords: string[]; response: string; docIds: number[] }> = [
+  { keywords: ['férias', 'dias', 'ausência', 'vac'], response: 'De acordo com o Código do Trabalho (Art. 282.º) e o Regulamento Interno TIS (Art. 15.º), tens direito a 22 dias úteis de férias por ano. Colaboradores com mais de 5 anos de antiguidade acumulam 1 dia adicional por cada 5 anos de serviço.', docIds: [3, 1] },
+  { keywords: ['teletrabalho', 'remoto', 'casa', 'híbrido'], response: 'Segundo a Política de Teletrabalho 2026 (Secção 3), podes trabalhar remotamente até 3 dias por semana, mediante acordo escrito com a tua chefia direta. O equipamento de trabalho é fornecido pela TIS. A elegibilidade exige contrato sem termo e mínimo de 6 meses de antiguidade.', docIds: [2] },
+  { keywords: ['seguro', 'saúde', 'medis', 'cobertura', 'médico', 'consulta'], response: 'A apólice Medis TIS (Art. 12.º) cobre consultas de medicina geral e especialidades, internamento hospitalar, cirurgia e meios complementares de diagnóstico. A partir de outubro 2026, a cobertura é alargada a psicologia, nutrição e fisioterapia, sem limite de sessões.', docIds: [10] },
+  { keywords: ['despesa', 'reembolso', 'viagem', 'recibo'], response: 'Nos termos da Política de Despesas e Reembolsos (Ponto 4), tens 30 dias após a realização da despesa para submeter o pedido de reembolso no Odoo. Comprovativo obrigatório para valores acima de €25. Despesas de viagem e alojamento têm limites definidos no Anexo A.', docIds: [6] },
+  { keywords: ['rgpd', 'dados', 'privacidade', 'pessoais'], response: 'Segundo o Regulamento RGPD Interno TIS (Art. 6.º), a empresa é responsável pelo tratamento dos dados pessoais dos colaboradores, assegurando o cumprimento do RGPD. Os dados são conservados pelo período mínimo exigido por lei e nunca partilhados com terceiros sem consentimento.', docIds: [7] },
+  { keywords: ['formação', 'curso', 'aprendizagem', 'inscr'], response: 'O Plano de Formação TIS 2026 prevê 42 ações de formação no 2.º semestre, cobrindo áreas técnicas, liderança, comunicação e bem-estar. As inscrições são feitas no Odoo (Formação > Catálogo). Cada colaborador tem direito a pelo menos 35 horas de formação por ano.', docIds: [9, 5] },
+  { keywords: ['contrato', 'vínculo', 'salário', 'remuner'], response: 'O Contrato Individual de Trabalho (Cláusula 5.ª) define a retribuição base mensal, acrescida de subsídio de refeição (€8,32/dia útil) e demais subsídios legais. Alterações contratuais requerem acordo por escrito entre ambas as partes.', docIds: [4] },
 ]
 
 // ── Chat history mock ──
@@ -252,6 +281,9 @@ function IconStar({ className }: { className?: string }) {
 function IconDoc({ className }: { className?: string }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
 }
+function IconLibrary({ className }: { className?: string }) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="2" y="3" width="4" height="18" rx="1"/><rect x="9" y="3" width="4" height="18" rx="1"/><path d="M16 3l4.5 16.5M16 7l3 11"/></svg>
+}
 function IconHome({ className }: { className?: string }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
 }
@@ -313,10 +345,11 @@ const CHAT_TOPICS: ChatTopic[] = [
 ]
 
 const NAV_ITEMS: NavItem[] = [
-  { id: 'sobre',    label: 'Início',   icon: IconAbout  },
-  { id: 'faqs',     label: "FAQ's",   icon: IconFaq    },
-  { id: 'noticias', label: 'Notícias', icon: IconNews   },
-  { id: 'eventos',  label: 'Eventos',  icon: IconEvents },
+  { id: 'sobre',       label: 'Início',      icon: IconAbout   },
+  { id: 'faqs',        label: "FAQ's",       icon: IconFaq     },
+  { id: 'noticias',    label: 'Notícias',    icon: IconNews    },
+  { id: 'eventos',     label: 'Eventos',     icon: IconEvents  },
+  { id: 'documentos',  label: 'Documentos',  icon: IconLibrary },
 ]
 
 const DEMO_USER: TISUser = {
@@ -357,6 +390,11 @@ export default function App() {
   const sessionIdRef = useRef(200)
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
   const [mobileEventsTab] = useState<'calendar' | 'list'>('calendar')
+  const [docCategory,  setDocCategory]  = useState('Todos')
+  const [selectedDocs, setSelectedDocs] = useState<Set<number>>(new Set())
+  const [docQuery,     setDocQuery]     = useState('')
+  const [docMessages,  setDocMessages]  = useState<DocMessage[]>([])
+  const [docThinking,  setDocThinking]  = useState(false)
 
   // ── GSAP mural: hide all cells on mount so the login screen sits over a blank canvas ──
   useEffect(() => {
@@ -1595,6 +1633,274 @@ export default function App() {
                           )}
                         </div>
 
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )
+            })()}
+
+            {/* ══ Documentos ══ */}
+            {activeNav === 'documentos' && !isMobile && (() => {
+              const filteredDocs = docCategory === 'Todos' ? DOCS_DATA : DOCS_DATA.filter(d => d.category === docCategory)
+              const hasSelection = selectedDocs.size > 0
+              const hasMsgs = docMessages.length > 0
+
+              const sendDocQuery = (override?: string) => {
+                const q = (override ?? docQuery).trim()
+                if (!q || docThinking) return
+                if (!override) setDocQuery('')
+                const selList = DOCS_DATA.filter(d => selectedDocs.has(d.id))
+                setDocMessages(prev => [...prev, { role: 'user', content: q }])
+                setDocThinking(true)
+                setTimeout(() => {
+                  let content: string
+                  let sources: string[]
+                  if (selList.length > 0) {
+                    content = `Com base nos documentos selecionados — ${selList.map(d => d.name.replace(/\.(pdf|docx|xlsx)$/i, '')).join(', ')} — posso informar: ${selList[0].excerpt} Consulta o documento original para detalhes completos.`
+                    sources = selList.map(d => d.name)
+                  } else {
+                    const ql = q.toLowerCase()
+                    const match = DOC_MOCK_RESPONSES.find(r => r.keywords.some(kw => ql.includes(kw)))
+                    if (match) {
+                      content = match.response
+                      sources = match.docIds.map(id => DOCS_DATA.find(d => d.id === id)?.name ?? '').filter(Boolean)
+                    } else {
+                      content = `Pesquisei em toda a biblioteca de documentos TIS, mas não encontrei informação específica sobre "${q}". Seleciona documentos relevantes no painel à direita para uma resposta mais precisa, ou reformula a pergunta.`
+                      sources = []
+                    }
+                  }
+                  setDocMessages(prev => [...prev, { role: 'agent', content, sources }])
+                  setDocThinking(false)
+                }, 1400 + Math.random() * 600)
+              }
+
+              const toggleDoc = (id: number) => {
+                setSelectedDocs(prev => {
+                  const next = new Set(prev)
+                  if (next.has(id)) next.delete(id); else next.add(id)
+                  return next
+                })
+              }
+
+              const FileChip = ({ type }: { type: TISDocument['type'] }) => {
+                const bg: Record<string, string> = { pdf: '#dc2626', docx: '#2563eb', xlsx: '#16a34a', pptx: '#ea580c' }
+                return (
+                  <div className="shrink-0 flex items-center justify-center rounded-md text-[9px] font-extrabold text-white uppercase tracking-wide" style={{ width: 30, height: 34, background: bg[type] ?? '#7c3aed', letterSpacing: '0.04em' }}>{type}</div>
+                )
+              }
+
+              const glassPanel = { background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.16)', boxShadow: '0 8px 40px rgba(0,0,50,0.22)' }
+
+              return (
+                <div className="h-full flex gap-5 px-14 py-8">
+
+                  {/* ── Central area ── */}
+                  <div className="flex-1 flex flex-col min-w-0">
+
+                    {!hasMsgs && !hasSelection ? (
+                      /* Hero state */
+                      <div className="flex-1 flex flex-col items-center justify-center gap-7">
+                        <div className="text-center">
+                          <div className="mx-auto mb-7 flex items-center justify-center rounded-3xl" style={{ width: 90, height: 90, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.18)', boxShadow: '0 0 72px rgba(130,0,200,0.28)', backdropFilter: 'blur(12px)' }}>
+                            <IconLibrary className="h-10 w-10 text-white/70" />
+                          </div>
+                          <h2 className="text-4xl font-extrabold text-white mb-3">Biblioteca de Documentos</h2>
+                          <p className="text-white/50 text-base max-w-md mx-auto leading-relaxed">Faz uma pergunta e o agente de RH responde com base nos documentos da biblioteca — sempre com citação da fonte.</p>
+                        </div>
+
+                        {/* Central input */}
+                        <div className="w-full max-w-lg relative">
+                          <input
+                            value={docQuery}
+                            onChange={e => setDocQuery(e.target.value)}
+                            onKeyDown={e => { if (e.key === 'Enter') sendDocQuery() }}
+                            placeholder="Fazer uma pergunta sobre os documentos…"
+                            className="w-full rounded-2xl px-5 py-4 pr-14 text-white placeholder-white/35 outline-none text-sm"
+                            style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.28)', backdropFilter: 'blur(18px)', boxShadow: '0 4px 32px rgba(0,0,80,0.18)', fontSize: 16 }}
+                          />
+                          <button onClick={() => sendDocQuery()} className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-xl transition-all hover:bg-white/25" style={{ width: 36, height: 36, background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.22)' }}>
+                            <SendIcon className="h-4 w-4 text-white" />
+                          </button>
+                        </div>
+
+                        {/* Quick questions */}
+                        <div className="flex flex-wrap gap-2 justify-center max-w-xl">
+                          {['Quantos dias de férias tenho direito?', 'Como aderir ao teletrabalho?', 'Quais as coberturas do seguro de saúde?', 'Como pedir reembolso de despesas?', 'Que formações estão disponíveis?'].map(q => (
+                            <button key={q} onClick={() => sendDocQuery(q)} className="rounded-full px-4 py-2 text-xs font-medium text-white/65 transition-all hover:text-white hover:bg-white/15" style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.14)' }}>{q}</button>
+                          ))}
+                        </div>
+
+                        {/* Hint */}
+                        <p className="text-[11px] text-white/28 text-center">Seleciona documentos específicos no painel lateral para respostas mais focadas</p>
+                      </div>
+
+                    ) : (
+                      /* Active state: selected docs strip + chat */
+                      <div className="flex-1 flex flex-col min-h-0 gap-4">
+
+                        {/* Selected docs strip */}
+                        {hasSelection && (
+                          <div className="shrink-0 rounded-2xl px-5 py-4" style={glassPanel}>
+                            <div className="flex items-center justify-between mb-3">
+                              <p className="text-[10px] font-bold text-white/40 uppercase" style={{ letterSpacing: '0.13em' }}>Documentos em contexto ({selectedDocs.size})</p>
+                              <button onClick={() => setSelectedDocs(new Set())} className="text-[11px] text-white/35 hover:text-white transition-colors">Limpar seleção</button>
+                            </div>
+                            <div className="flex gap-2.5 flex-wrap">
+                              {DOCS_DATA.filter(d => selectedDocs.has(d.id)).map(d => (
+                                <div key={d.id} className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.16)' }}>
+                                  <FileChip type={d.type} />
+                                  <div className="min-w-0">
+                                    <p className="text-[11px] font-semibold text-white truncate" style={{ maxWidth: 170 }}>{d.name}</p>
+                                    <p className="text-[9px] text-white/40">{d.pages} pág. · {d.size}</p>
+                                  </div>
+                                  <button onClick={() => toggleDoc(d.id)} className="text-white/25 hover:text-white ml-1 transition-colors text-sm leading-none shrink-0">✕</button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Chat area */}
+                        <div className="flex-1 min-h-0 rounded-2xl flex flex-col overflow-hidden" style={glassPanel}>
+                          {/* Messages */}
+                          <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
+                            {docMessages.length === 0 && hasSelection && (
+                              <div className="flex items-center justify-center h-full">
+                                <p className="text-sm text-white/35 text-center">Faz uma pergunta sobre os documentos selecionados.</p>
+                              </div>
+                            )}
+                            {docMessages.map((msg, i) => (
+                              <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                                {msg.role === 'agent' && (
+                                  <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 30, height: 30, border: '1.5px solid rgba(255,255,255,0.35)' }}>
+                                    <img src={agentPhoto} className="w-full h-full object-cover object-top" alt="" />
+                                  </div>
+                                )}
+                                <div className={`rounded-2xl px-4 py-3 ${msg.role === 'user' ? 'rounded-tr-sm' : 'rounded-tl-sm'}`} style={{ maxWidth: '72%', background: msg.role === 'user' ? 'rgba(3,110,242,0.32)' : 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                                  <p className="text-sm text-white/90 leading-relaxed">{msg.content}</p>
+                                  {msg.sources && msg.sources.length > 0 && (
+                                    <div className="mt-2.5 pt-2.5" style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}>
+                                      <p className="text-[9px] font-bold text-white/35 uppercase mb-1.5" style={{ letterSpacing: '0.10em' }}>Fontes</p>
+                                      {msg.sources.map((s, si) => (
+                                        <p key={si} className="text-[10px] text-white/50 flex items-center gap-1.5 mb-0.5">
+                                          <span className="text-white/30">📄</span>{s}
+                                        </p>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                            {docThinking && (
+                              <div className="flex gap-3">
+                                <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 30, height: 30, border: '1.5px solid rgba(255,255,255,0.35)' }}>
+                                  <img src={agentPhoto} className="w-full h-full object-cover object-top" alt="" />
+                                </div>
+                                <div className="rounded-2xl rounded-tl-sm px-4 py-3" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                                  <div className="flex gap-1 items-center h-5">
+                                    {[0, 1, 2].map(i => <div key={i} className="rounded-full" style={{ width: 6, height: 6, background: 'rgba(255,255,255,0.50)', animation: `bubble-float 1.2s ${i * 0.22}s ease-in-out infinite` }} />)}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Input bar */}
+                          <div className="shrink-0 px-4 py-3 flex items-center gap-3" style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}>
+                            <input
+                              value={docQuery}
+                              onChange={e => setDocQuery(e.target.value)}
+                              onKeyDown={e => { if (e.key === 'Enter') sendDocQuery() }}
+                              placeholder={hasSelection ? `Pergunta sobre ${selectedDocs.size} documento${selectedDocs.size !== 1 ? 's' : ''}…` : 'Fazer uma pergunta sobre os documentos…'}
+                              className="flex-1 bg-transparent text-white outline-none placeholder-white/30 text-sm"
+                              style={{ fontSize: 16 }}
+                            />
+                            <button onClick={() => sendDocQuery()} disabled={!docQuery.trim() || docThinking} className="shrink-0 flex items-center justify-center rounded-xl transition-all disabled:opacity-35 hover:bg-white/20" style={{ width: 34, height: 34, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.18)' }}>
+                              <SendIcon className="h-3.5 w-3.5 text-white" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ── Right panel: Library ── */}
+                  <div className="w-80 shrink-0 flex flex-col rounded-2xl overflow-hidden" style={glassPanel}>
+
+                    {/* Header */}
+                    <div className="flex items-center justify-between px-4 py-4 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.10)', background: 'rgba(255,255,255,0.05)' }}>
+                      <div>
+                        <p className="text-[10px] font-bold text-white/35 uppercase mb-0.5" style={{ letterSpacing: '0.14em' }}>TIS</p>
+                        <h3 className="text-sm font-extrabold text-white">Biblioteca</h3>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {selectedDocs.size > 0 && (
+                          <span className="text-[10px] font-bold text-white px-2 py-0.5 rounded-full" style={{ background: 'rgba(130,0,200,0.55)', border: '1px solid rgba(130,0,200,0.75)' }}>{selectedDocs.size}</span>
+                        )}
+                        <button className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-white transition-all hover:bg-white/20" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.20)' }}>
+                          <IconPlus className="h-3 w-3" />Carregar
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Category filters */}
+                    <div className="flex gap-1.5 px-4 py-3 flex-wrap shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+                      {DOC_CATS.map(cat => (
+                        <button key={cat}
+                          onClick={() => setDocCategory(cat)}
+                          className="rounded-full px-3 py-1 text-[11px] font-semibold transition-all"
+                          style={docCategory === cat
+                            ? { background: 'rgba(255,255,255,0.20)', color: 'white', border: '1px solid rgba(255,255,255,0.32)' }
+                            : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.45)', border: '1px solid rgba(255,255,255,0.10)' }}
+                        >{cat}</button>
+                      ))}
+                    </div>
+
+                    {/* Document list */}
+                    <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
+                      {filteredDocs.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center h-full gap-3 px-6 text-center py-10">
+                          <IconDoc className="h-8 w-8 text-white/18" />
+                          <p className="text-sm text-white/30">Sem documentos nesta categoria.</p>
+                        </div>
+                      ) : filteredDocs.map(doc => (
+                        <div key={doc.id}
+                          className="flex items-center gap-3 px-4 py-3 cursor-pointer transition-all"
+                          style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: selectedDocs.has(doc.id) ? 'rgba(130,0,200,0.14)' : 'transparent' }}
+                          onClick={() => toggleDoc(doc.id)}
+                        >
+                          {/* Checkbox */}
+                          <div className="shrink-0 flex items-center justify-center rounded w-4 h-4 transition-all" style={{ background: selectedDocs.has(doc.id) ? '#8200c8' : 'rgba(255,255,255,0.10)', border: selectedDocs.has(doc.id) ? '1.5px solid #a855f7' : '1.5px solid rgba(255,255,255,0.22)' }}>
+                            {selectedDocs.has(doc.id) && <svg viewBox="0 0 12 12" className="w-2.5 h-2.5"><polyline points="2 6 5 9 10 3" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+                          </div>
+                          {/* File badge */}
+                          <FileChip type={doc.type} />
+                          {/* Info */}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[11px] font-semibold text-white leading-snug truncate">{doc.name}</p>
+                            <p className="text-[10px] text-white/38 mt-0.5">{doc.size} · {doc.pages} pág. · {doc.date}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Batch action bar */}
+                    {selectedDocs.size > 0 && (
+                      <div className="shrink-0 px-4 py-3" style={{ borderTop: '1px solid rgba(255,255,255,0.12)', background: 'rgba(130,0,200,0.10)' }}>
+                        <button
+                          onClick={() => {
+                            if (docMessages.length === 0) {
+                              const names = DOCS_DATA.filter(d => selectedDocs.has(d.id)).map(d => d.name.replace(/\.(pdf|docx|xlsx)$/i, ''))
+                              setDocMessages([{ role: 'agent', content: `Analisei ${selectedDocs.size === 1 ? 'o documento' : 'os ' + selectedDocs.size + ' documentos'} selecionados: ${names.join(', ')}. Faz a tua pergunta e responderei com base no seu conteúdo.`, sources: DOCS_DATA.filter(d => selectedDocs.has(d.id)).map(d => d.name) }])
+                            }
+                          }}
+                          className="w-full flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold text-white transition-all hover:opacity-90"
+                          style={{ background: 'rgba(130,0,200,0.50)', border: '1px solid rgba(130,0,200,0.65)' }}
+                        >
+                          <IconDoc className="h-3.5 w-3.5" />
+                          Perguntar sobre {selectedDocs.size === 1 ? 'este documento' : `${selectedDocs.size} documentos`}
+                        </button>
                       </div>
                     )}
                   </div>
