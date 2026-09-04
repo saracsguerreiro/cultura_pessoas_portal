@@ -170,19 +170,19 @@ const MOCK_CHAT_HISTORY: ChatSession[] = [
 const EVENTS_DATA: TISEvent[] = [
   { date: '2026-09-03', title: 'Kick-off Q4',              type: 'meeting',  color: '#036ef2', time: '10h00 – 12h00', location: 'Sala Tejo · Lisboa',                  organizer: 'Direcção Geral',            description: 'Reunião de alinhamento estratégico para o quarto trimestre. Apresentação dos objetivos, KPIs e iniciativas prioritárias de cada área.' },
   { date: '2026-09-08', title: 'Formação: Liderança',      type: 'training', color: '#8200c8', time: '09h00 – 18h00', location: 'Nova SBE · Carcavelos',               organizer: 'Cultura & Pessoas',         description: 'Primeiro módulo do programa de liderança em parceria com a Nova SBE. Foco em comunicação eficaz, gestão de conflitos e tomada de decisão.' },
-  { date: '2026-09-10', title: 'Check-in Avaliações',      type: 'hr',       color: '#10b981', time: '14h00 – 17h00', location: 'Online (Teams)',                       organizer: 'Cultura & Pessoas',         description: 'Sessão de preparação para o ciclo de avaliação de desempenho. Explicação do processo, dos critérios e resposta a dúvidas.' },
-  { date: '2026-09-10', title: 'Coffee & Connect',         type: 'social',   color: '#f97316', time: '09h00 – 09h30', location: 'Cozinha TIS · Lisboa',                    organizer: 'Comissão de Eventos',       description: 'Momento informal de convívio matinal entre equipas. Café, croissants e conversa antes do arranque do dia.' },
+  { date: '2026-09-10', title: 'Check-in Avaliações',      type: 'hr',       color: '#a855f7', time: '14h00 – 17h00', location: 'Online (Teams)',                       organizer: 'Cultura & Pessoas',         description: 'Sessão de preparação para o ciclo de avaliação de desempenho. Explicação do processo, dos critérios e resposta a dúvidas.' },
+  { date: '2026-09-10', title: 'Coffee & Connect',         type: 'social',   color: '#1e3a8a', time: '09h00 – 09h30', location: 'Cozinha TIS · Lisboa',                    organizer: 'Comissão de Eventos',       description: 'Momento informal de convívio matinal entre equipas. Café, croissants e conversa antes do arranque do dia.' },
   { date: '2026-09-12', title: 'Sessão de Bem-estar',      type: 'wellness', color: '#ec4899', time: '12h30 – 13h30', location: 'Jardim TIS · Lisboa',                  organizer: 'Programa Bem-estar',        description: 'Sessão semanal de mindfulness e relaxamento ao ar livre. Aberta a todos os colaboradores, sem necessidade de inscrição.' },
-  { date: '2026-09-15', title: 'Autoavaliação — início',   type: 'hr',       color: '#f59e0b', time: 'Todo o dia',    location: 'Odoo (portal)',                        organizer: 'Cultura & Pessoas',         description: 'Início do período de autoavaliação de desempenho 2026. Acede ao Odoo e preenche o teu formulário até 30 de setembro.' },
+  { date: '2026-09-15', title: 'Autoavaliação — início',   type: 'hr',       color: '#db2777', time: 'Todo o dia',    location: 'Odoo (portal)',                        organizer: 'Cultura & Pessoas',         description: 'Início do período de autoavaliação de desempenho 2026. Acede ao Odoo e preenche o teu formulário até 30 de setembro.' },
   { date: '2026-09-18', title: 'Formação: Excel Avançado', type: 'training', color: '#8200c8', time: '09h30 – 17h30', location: 'Sala Alpha · Porto',                   organizer: 'Cultura & Pessoas',         description: 'Formação prática em Excel avançado: tabelas dinâmicas, Power Query, macros e dashboards. Traz o teu portátil.' },
-  { date: '2026-09-20', title: 'TIS Team Day',             type: 'social',   color: '#f97316', time: '09h00 – 18h00', location: 'Pavilhão do Conhecimento · Lisboa',    organizer: 'Comissão de Eventos',       description: 'Encontro anual de todos os colaboradores TIS. Programa inclui sessões plenárias, workshops, almoço coletivo e atividades de team building.' },
-  { date: '2026-09-22', title: 'Sessão de Onboarding',     type: 'hr',       color: '#10b981', time: '10h00 – 13h00', location: 'Sala Douro · Lisboa',                  organizer: 'Cultura & Pessoas',         description: 'Sessão de integração para novos colaboradores. Apresentação da empresa, cultura TIS, benefícios e ferramentas internas.' },
+  { date: '2026-09-20', title: 'TIS Team Day',             type: 'social',   color: '#1e3a8a', time: '09h00 – 18h00', location: 'Pavilhão do Conhecimento · Lisboa',    organizer: 'Comissão de Eventos',       description: 'Encontro anual de todos os colaboradores TIS. Programa inclui sessões plenárias, workshops, almoço coletivo e atividades de team building.' },
+  { date: '2026-09-22', title: 'Sessão de Onboarding',     type: 'hr',       color: '#a855f7', time: '10h00 – 13h00', location: 'Sala Douro · Lisboa',                  organizer: 'Cultura & Pessoas',         description: 'Sessão de integração para novos colaboradores. Apresentação da empresa, cultura TIS, benefícios e ferramentas internas.' },
   { date: '2026-09-25', title: 'Workshop Design Thinking', type: 'training', color: '#8200c8', time: '09h00 – 17h00', location: 'Hub Inovação · Lisboa',                organizer: 'Inovação & Transformação',  description: 'Imersão de um dia em metodologias de Design Thinking aplicadas à resolução de problemas organizacionais.' },
-  { date: '2026-09-29', title: 'Happy Hour TIS',           type: 'social',   color: '#f97316', time: '18h30 – 21h00', location: 'Rooftop TIS · Lisboa',                 organizer: 'Comissão de Eventos',       description: 'Convívio mensal informal para todos os colaboradores. Drinks, petiscos e boa disposição no rooftop da sede.' },
-  { date: '2026-10-01', title: 'Início Avaliações',        type: 'hr',       color: '#f59e0b', time: 'Todo o dia',    location: 'Odoo (portal)',                        organizer: 'Cultura & Pessoas',         description: 'Início das reuniões de avaliação de desempenho com a chefia direta. Consulta a tua agenda no Odoo.' },
+  { date: '2026-09-29', title: 'Happy Hour TIS',           type: 'social',   color: '#1e3a8a', time: '18h30 – 21h00', location: 'Rooftop TIS · Lisboa',                 organizer: 'Comissão de Eventos',       description: 'Convívio mensal informal para todos os colaboradores. Drinks, petiscos e boa disposição no rooftop da sede.' },
+  { date: '2026-10-01', title: 'Início Avaliações',        type: 'hr',       color: '#db2777', time: 'Todo o dia',    location: 'Odoo (portal)',                        organizer: 'Cultura & Pessoas',         description: 'Início das reuniões de avaliação de desempenho com a chefia direta. Consulta a tua agenda no Odoo.' },
   { date: '2026-10-05', title: 'Reunião de Líderes',       type: 'meeting',  color: '#036ef2', time: '09h00 – 13h00', location: 'Sala Tejo · Lisboa',                  organizer: 'Direcção Geral',            description: 'Reunião trimestral de líderes de equipa. Revisão de performance, desafios e prioridades para Q4.' },
-  { date: '2026-10-15', title: 'Reunião com Chefia',       type: 'hr',       color: '#f59e0b', time: '14h00 – 18h00', location: 'A definir',                            organizer: 'Cultura & Pessoas',         description: 'Período de reuniões individuais de avaliação de desempenho entre colaborador e chefia direta.' },
-  { date: '2026-08-28', title: 'Prémio Inovação',          type: 'social',   color: '#f97316', time: '18h00 – 20h00', location: 'Auditório TIS · Lisboa',               organizer: 'Inovação & Transformação',  description: 'Cerimónia de entrega do Prémio de Inovação TIS 2026. Apresentação dos projetos finalistas e anúncio dos vencedores.' },
+  { date: '2026-10-15', title: 'Reunião com Chefia',       type: 'hr',       color: '#db2777', time: '14h00 – 18h00', location: 'A definir',                            organizer: 'Cultura & Pessoas',         description: 'Período de reuniões individuais de avaliação de desempenho entre colaborador e chefia direta.' },
+  { date: '2026-08-28', title: 'Prémio Inovação',          type: 'social',   color: '#1e3a8a', time: '18h00 – 20h00', location: 'Auditório TIS · Lisboa',               organizer: 'Inovação & Transformação',  description: 'Cerimónia de entrega do Prémio de Inovação TIS 2026. Apresentação dos projetos finalistas e anúncio dos vencedores.' },
 ]
 
 const PT_MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
@@ -1285,7 +1285,7 @@ export default function App() {
                           <div className="mb-2">
                             <div className="grid grid-cols-7 mb-1">
                               {PT_DAYS.map(d => (
-                                <div key={d} className="text-center text-[10px] font-bold text-white/35 uppercase py-1" style={{ letterSpacing: '0.07em' }}>{d}</div>
+                                <div key={d} className="text-center text-xs font-bold text-white/40 uppercase py-1" style={{ letterSpacing: '0.06em' }}>{d}</div>
                               ))}
                             </div>
                             <div className="grid grid-cols-7">
@@ -1296,16 +1296,23 @@ export default function App() {
                                 const isSel = selectedDay === day
                                 return (
                                   <div key={day}
-                                    onClick={() => { if (isSel) { setSelectedDay(null); setSelectedEvent(null) } else { setSelectedDay(day); setSelectedEvent(null) } }}
-                                    className="flex flex-col items-center py-1 cursor-pointer"
+                                    onClick={() => {
+                                      if (isSel) { setSelectedDay(null); setSelectedEvent(null) }
+                                      else {
+                                        setSelectedDay(day)
+                                        if (dayEvts.length === 1) { setSelectedEvent(dayEvts[0]) }
+                                        else { setSelectedEvent(null) }
+                                      }
+                                    }}
+                                    className="flex flex-col items-center py-1.5 cursor-pointer"
                                   >
-                                    <div className="w-8 h-8 flex items-center justify-center rounded-full text-sm font-semibold transition-all"
+                                    <div className="w-9 h-9 flex items-center justify-center rounded-full text-base font-semibold transition-all"
                                       style={{ background: isSel ? 'rgba(255,255,255,0.9)' : isToday ? 'rgba(255,255,255,0.18)' : 'transparent', color: isSel ? '#8200c8' : 'white', border: (isToday && !isSel) ? '1.5px solid rgba(255,255,255,0.55)' : 'none' }}
                                     >{day}</div>
                                     {dayEvts.length > 0 && (
-                                      <div className="flex gap-0.5 mt-0.5">
+                                      <div className="flex gap-1 mt-1">
                                         {dayEvts.slice(0, 3).map((ev, ei) => (
-                                          <div key={ei} className="rounded-full" style={{ width: 4, height: 4, background: ev.color || 'rgba(255,255,255,0.75)' }} />
+                                          <div key={ei} className="rounded-full" style={{ width: 6, height: 6, background: ev.color || 'rgba(255,255,255,0.75)' }} />
                                         ))}
                                       </div>
                                     )}
@@ -1338,9 +1345,9 @@ export default function App() {
                                   {ev.time && <p className="text-xs text-white/50 mt-0.5">{ev.time}</p>}
                                   {ev.location && <p className="text-xs text-white/35 truncate">{ev.location}</p>}
                                 </div>
-                                <div className="shrink-0 text-center rounded-lg px-1.5 py-1" style={{ background: 'rgba(255,255,255,0.10)', minWidth: 32 }}>
-                                  <p className="text-sm font-bold text-white leading-none">{new Date(ev.date).getDate()}</p>
-                                  <p className="text-[9px] text-white/45 uppercase mt-0.5">{PT_MONTHS[new Date(ev.date).getMonth()].slice(0, 3)}</p>
+                                <div className="shrink-0 text-center rounded-xl px-2.5 py-1.5" style={{ background: 'rgba(255,255,255,0.12)', minWidth: 42 }}>
+                                  <p className="text-lg font-bold text-white leading-none">{new Date(ev.date).getDate()}</p>
+                                  <p className="text-xs text-white/50 uppercase mt-0.5 font-semibold">{PT_MONTHS[new Date(ev.date).getMonth()].slice(0, 3)}</p>
                                 </div>
                               </div>
                             ))}
