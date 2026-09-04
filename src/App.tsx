@@ -170,7 +170,7 @@ const MOCK_CHAT_HISTORY: ChatSession[] = [
 const EVENTS_DATA: TISEvent[] = [
   { date: '2026-09-03', title: 'Kick-off Q4',              type: 'meeting',  color: '#036ef2', time: '10h00 – 12h00', location: 'Sala Tejo · Lisboa',                  organizer: 'Direcção Geral',            description: 'Reunião de alinhamento estratégico para o quarto trimestre. Apresentação dos objetivos, KPIs e iniciativas prioritárias de cada área.' },
   { date: '2026-09-08', title: 'Formação: Liderança',      type: 'training', color: '#8200c8', time: '09h00 – 18h00', location: 'Nova SBE · Carcavelos',               organizer: 'Cultura & Pessoas',         description: 'Primeiro módulo do programa de liderança em parceria com a Nova SBE. Foco em comunicação eficaz, gestão de conflitos e tomada de decisão.' },
-  { date: '2026-09-10', title: 'Check-in Avaliações',      type: 'hr',       color: '#a855f7', time: '14h00 – 17h00', location: 'Online (Teams)',                       organizer: 'Cultura & Pessoas',         description: 'Sessão de preparação para o ciclo de avaliação de desempenho. Explicação do processo, dos critérios e resposta a dúvidas.' },
+  { date: '2026-09-10', title: 'Check-in Avaliações',      type: 'hr',       color: '#1e3a8a', time: '14h00 – 17h00', location: 'Online (Teams)',                       organizer: 'Cultura & Pessoas',         description: 'Sessão de preparação para o ciclo de avaliação de desempenho. Explicação do processo, dos critérios e resposta a dúvidas.' },
   { date: '2026-09-10', title: 'Coffee & Connect',         type: 'social',   color: '#1e3a8a', time: '09h00 – 09h30', location: 'Cozinha TIS · Lisboa',                    organizer: 'Comissão de Eventos',       description: 'Momento informal de convívio matinal entre equipas. Café, croissants e conversa antes do arranque do dia.' },
   { date: '2026-09-12', title: 'Sessão de Bem-estar',      type: 'wellness', color: '#ec4899', time: '12h30 – 13h30', location: 'Jardim TIS · Lisboa',                  organizer: 'Programa Bem-estar',        description: 'Sessão semanal de mindfulness e relaxamento ao ar livre. Aberta a todos os colaboradores, sem necessidade de inscrição.' },
   { date: '2026-09-15', title: 'Autoavaliação — início',   type: 'hr',       color: '#c026d3', time: 'Todo o dia',    location: 'Odoo (portal)',                        organizer: 'Cultura & Pessoas',         description: 'Início do período de autoavaliação de desempenho 2026. Acede ao Odoo e preenche o teu formulário até 30 de setembro.' },
@@ -178,7 +178,7 @@ const EVENTS_DATA: TISEvent[] = [
   { date: '2026-09-20', title: 'TIS Team Day',             type: 'social',   color: '#1e3a8a', time: '09h00 – 18h00', location: 'Pavilhão do Conhecimento · Lisboa',    organizer: 'Comissão de Eventos',       description: 'Encontro anual de todos os colaboradores TIS. Programa inclui sessões plenárias, workshops, almoço coletivo e atividades de team building.' },
   { date: '2026-09-20', title: 'Prémio de Inovação',      type: 'social',   color: '#8200c8', time: '17h00 – 18h00', location: 'Pavilhão do Conhecimento · Lisboa',    organizer: 'Inovação & Transformação',  description: 'Cerimónia integrada no Team Day. Apresentação dos projetos finalistas e anúncio dos vencedores do Prémio de Inovação TIS 2026.' },
   { date: '2026-09-20', title: 'Cocktail de Networking',  type: 'wellness', color: '#ec4899', time: '18h30 – 20h00', location: 'Foyer · Pavilhão do Conhecimento',     organizer: 'Comissão de Eventos',       description: 'Cocktail de encerramento do Team Day. Drinks, petiscos e networking entre todos os colaboradores TIS.' },
-  { date: '2026-09-22', title: 'Sessão de Onboarding',     type: 'hr',       color: '#a855f7', time: '10h00 – 13h00', location: 'Sala Douro · Lisboa',                  organizer: 'Cultura & Pessoas',         description: 'Sessão de integração para novos colaboradores. Apresentação da empresa, cultura TIS, benefícios e ferramentas internas.' },
+  { date: '2026-09-22', title: 'Sessão de Onboarding',     type: 'hr',       color: '#1e3a8a', time: '10h00 – 13h00', location: 'Sala Douro · Lisboa',                  organizer: 'Cultura & Pessoas',         description: 'Sessão de integração para novos colaboradores. Apresentação da empresa, cultura TIS, benefícios e ferramentas internas.' },
   { date: '2026-09-25', title: 'Workshop Design Thinking', type: 'training', color: '#8200c8', time: '09h00 – 17h00', location: 'Hub Inovação · Lisboa',                organizer: 'Inovação & Transformação',  description: 'Imersão de um dia em metodologias de Design Thinking aplicadas à resolução de problemas organizacionais.' },
   { date: '2026-09-29', title: 'Happy Hour TIS',           type: 'social',   color: '#1e3a8a', time: '18h30 – 21h00', location: 'Rooftop TIS · Lisboa',                 organizer: 'Comissão de Eventos',       description: 'Convívio mensal informal para todos os colaboradores. Drinks, petiscos e boa disposição no rooftop da sede.' },
   { date: '2026-10-01', title: 'Início Avaliações',        type: 'hr',       color: '#c026d3', time: 'Todo o dia',    location: 'Odoo (portal)',                        organizer: 'Cultura & Pessoas',         description: 'Início das reuniões de avaliação de desempenho com a chefia direta. Consulta a tua agenda no Odoo.' },
@@ -1081,6 +1081,114 @@ export default function App() {
             {/* ══ Notícias ══ */}
             {activeNav === 'noticias' && (() => {
               const CATS = ['Todas', 'Felicidade', 'Cultura', 'Carreiras', 'Políticas', 'Benefícios', 'Eventos']
+
+              if (isMobile) {
+                const carouselNews = NEWS_DATA.slice(0, 6)
+                const olderNews = [...NEWS_DATA.slice(6), ...NEWS_ARCHIVE]
+                const filteredOlder = newsCategory ? olderNews.filter(n => n.category === newsCategory) : olderNews
+                return (
+                  <div className="h-full relative overflow-hidden">
+                    {/* scrollable feed */}
+                    <div className="h-full overflow-y-auto" style={{ scrollbarWidth: 'none', opacity: selectedNews ? 0 : 1, pointerEvents: selectedNews ? 'none' : 'auto', transition: 'opacity 220ms' } as React.CSSProperties}>
+                      {/* header */}
+                      <div className="px-4 pt-4 pb-2">
+                        <p className="text-xs font-bold text-white/40 uppercase mb-1" style={{ letterSpacing: '0.16em' }}>Portal</p>
+                        <h2 className="text-2xl font-extrabold text-white">Notícias</h2>
+                      </div>
+
+                      {/* carousel — top 6 */}
+                      <div className="flex overflow-x-auto gap-3 pl-4 pb-4 pt-2" style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' } as React.CSSProperties}>
+                        {carouselNews.map(news => (
+                          <div key={news.id}
+                            onClick={() => setSelectedNews(news)}
+                            className="shrink-0 relative rounded-2xl overflow-hidden cursor-pointer"
+                            style={{ width: 'calc(100vw - 80px)', height: 200, scrollSnapAlign: 'start', boxShadow: '0 4px 24px rgba(0,0,50,0.35)', border: '1px solid rgba(255,255,255,0.12)' }}
+                          >
+                            <div className="absolute inset-0" style={{ backgroundImage: `url(${news.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.12) 55%, transparent 100%)' }} />
+                            <div className="absolute bottom-0 left-0 right-0 p-4">
+                              <span className="text-[10px] font-bold uppercase text-white/85 px-2.5 py-0.5 rounded-full inline-block mb-1.5" style={{ background: 'rgba(255,255,255,0.20)', border: '1px solid rgba(255,255,255,0.28)' }}>{news.category}</span>
+                              <h3 className="font-bold text-white leading-snug text-sm line-clamp-2">{news.title}</h3>
+                              <p className="text-[10px] text-white/50 mt-1">{news.date}</p>
+                            </div>
+                          </div>
+                        ))}
+                        <div className="shrink-0" style={{ width: 16 }} />
+                      </div>
+
+                      {/* category pills */}
+                      <div className="flex gap-2 overflow-x-auto pl-4 pr-4 pb-3" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
+                        {CATS.map(cat => (
+                          <button key={cat}
+                            onClick={() => { setNewsCategory(cat === 'Todas' ? '' : cat); setNewsPage(0) }}
+                            className="shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold transition-all"
+                            style={(newsCategory === cat || (cat === 'Todas' && !newsCategory))
+                              ? { background: 'rgba(255,255,255,0.22)', color: 'white', border: '1px solid rgba(255,255,255,0.35)' }
+                              : { background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.58)', border: '1px solid rgba(255,255,255,0.15)' }}
+                          >{cat}</button>
+                        ))}
+                      </div>
+
+                      {/* older news list */}
+                      <div className="px-4 pb-6">
+                        <p className="text-[11px] font-bold text-white/40 uppercase mb-3" style={{ letterSpacing: '0.14em' }}>Mais antigas</p>
+                        {filteredOlder.length === 0 ? (
+                          <p className="text-sm text-white/35 text-center py-6">Sem notícias nesta categoria.</p>
+                        ) : filteredOlder.map(news => (
+                          <div key={news.id}
+                            className="flex items-start gap-3 py-3 cursor-pointer"
+                            style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+                            onClick={() => setSelectedNews(news)}
+                          >
+                            <div className="shrink-0 rounded-xl overflow-hidden" style={{ width: 68, height: 68 }}>
+                              <div style={{ width: '100%', height: '100%', backgroundImage: `url(${news.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                            </div>
+                            <div className="flex-1 min-w-0 pt-0.5">
+                              <p className="text-[10px] font-bold uppercase text-white/50 mb-0.5" style={{ letterSpacing: '0.08em' }}>{news.category}</p>
+                              <h3 className="text-sm font-semibold text-white leading-snug line-clamp-2">{news.title}</h3>
+                              <p className="text-[10px] text-white/40 mt-1">{news.date}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* article overlay */}
+                    <div
+                      className="absolute inset-0 flex flex-col overflow-hidden"
+                      style={{ opacity: selectedNews ? 1 : 0, pointerEvents: selectedNews ? 'auto' : 'none', transition: 'opacity 260ms cubic-bezier(0.4,0,0.2,1)', backgroundImage: `url(${newsDetailBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                    >
+                      {selectedNews && (
+                        <>
+                          <div className="relative shrink-0" style={{ height: 160 }}>
+                            <div className="absolute inset-0" style={{ backgroundImage: `url(${selectedNews.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)' }} />
+                            <div className="absolute bottom-4 left-4">
+                              <span className="text-[11px] font-bold uppercase text-white px-3 py-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.16)', letterSpacing: '0.10em', border: '1px solid rgba(255,255,255,0.22)' }}>{selectedNews.category}</span>
+                            </div>
+                            <button
+                              onClick={() => setSelectedNews(null)}
+                              className="absolute top-3 right-3 flex items-center justify-center rounded-full text-white/80"
+                              style={{ width: 30, height: 30, background: 'rgba(0,0,0,0.40)', border: '1px solid rgba(255,255,255,0.25)', fontSize: 13 }}
+                            >✕</button>
+                          </div>
+                          <div className="flex-1 overflow-y-auto px-5 py-4" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
+                            <h2 className="font-extrabold text-white leading-snug mb-4" style={{ fontSize: '1.1rem' }}>{selectedNews.title}</h2>
+                            <p className="text-sm text-white/65 leading-relaxed mb-4 italic" style={{ borderLeft: '2px solid rgba(255,255,255,0.25)', paddingLeft: '1rem' }}>{selectedNews.excerpt}</p>
+                            <div style={{ height: 1, background: 'rgba(255,255,255,0.10)', marginBottom: '1rem' }} />
+                            {selectedNews.body?.split('\n\n').map((para, i) => (
+                              <p key={i} className="text-sm text-white/60 leading-relaxed mb-3">{para}</p>
+                            ))}
+                            {!selectedNews.body && <p className="text-sm text-white/40 text-center py-4">Sem conteúdo disponível.</p>}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )
+              }
+
+              // ── Desktop ──
               const allVisible = newsCategory ? NEWS_DATA.filter(n => n.category === newsCategory) : NEWS_DATA
               const totalPages = Math.ceil(allVisible.length / 5)
               const pageItems = allVisible.slice(newsPage * 5, newsPage * 5 + 5)
@@ -1094,14 +1202,14 @@ export default function App() {
                 >→</button>
               )
               return (
-                <div className="h-full flex flex-col px-4 md:px-14 py-4 md:py-6 gap-3 md:gap-4">
+                <div className="h-full flex flex-col px-14 py-6 gap-4">
                   {/* Header row */}
-                  <div className="flex items-end justify-between shrink-0 flex-wrap gap-2 md:gap-3">
+                  <div className="flex items-end justify-between shrink-0 flex-wrap gap-3">
                     <div>
                       <p className="text-xs font-bold text-white/40 uppercase mb-1" style={{ letterSpacing: '0.16em' }}>Portal</p>
-                      <h2 className="text-2xl md:text-4xl font-extrabold text-white">Notícias</h2>
+                      <h2 className="text-4xl font-extrabold text-white">Notícias</h2>
                     </div>
-                    <div className="flex items-center gap-1.5 md:gap-2 flex-wrap justify-end">
+                    <div className="flex items-center gap-2 flex-wrap justify-end">
                       {CATS.map(cat => (
                         <button key={cat}
                           onClick={() => { setNewsCategory(cat === 'Todas' ? '' : cat); setNewsPage(0); setSelectedNews(null) }}
@@ -1115,27 +1223,12 @@ export default function App() {
                   </div>
 
                   {/* Glassmorphism container */}
-                  <div className="flex-1 min-h-0 rounded-2xl md:rounded-3xl p-3 md:p-4 relative overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.18)', boxShadow: '0 8px 40px rgba(0,0,50,0.25)' }}>
+                  <div className="flex-1 min-h-0 rounded-3xl p-4 relative overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.18)', boxShadow: '0 8px 40px rgba(0,0,50,0.25)' }}>
 
-                    {/* ── News grid (desktop) / list (mobile) ── */}
+                    {/* News grid */}
                     <div className="h-full transition-opacity" style={{ opacity: selectedNews ? 0 : 1, pointerEvents: selectedNews ? 'none' : 'auto', transitionDuration: '220ms' }}>
                       {!featured ? (
                         <div className="flex items-center justify-center h-full text-white/35 text-sm">Sem notícias nesta categoria.</div>
-                      ) : isMobile ? (
-                        /* Mobile: vertical list */
-                        <div className="h-full overflow-y-auto space-y-2.5 pr-1">
-                          {pageItems.map(news => (
-                            <div key={news.id} className="relative rounded-xl overflow-hidden cursor-pointer h-24" onClick={() => setSelectedNews(news)}>
-                              <div className="absolute inset-0" style={{ backgroundImage: `url(${news.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-                              <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)' }} />
-                              <div className="absolute inset-0 flex flex-col justify-center pl-4 pr-20">
-                                <p className="text-[10px] font-bold uppercase text-white/55 mb-1" style={{ letterSpacing: '0.10em' }}>{news.category} · {news.date}</p>
-                                <h3 className="font-bold text-white leading-snug text-sm line-clamp-2">{news.title}</h3>
-                              </div>
-                              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-full text-white" style={{ background: 'rgba(255,255,255,0.18)', border: '1px solid rgba(255,255,255,0.30)', width: 28, height: 28, fontSize: 13 }}>→</div>
-                            </div>
-                          ))}
-                        </div>
                       ) : (
                         <div className="h-full" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr', gridTemplateRows: '1fr 1fr', gap: 10 }}>
 
@@ -1171,48 +1264,31 @@ export default function App() {
                       )}
                     </div>
 
-                    {/* ── Article expanded view (fills the same container) ── */}
+                    {/* Article expanded view */}
                     <div
-                      className="absolute inset-0 rounded-2xl md:rounded-3xl flex flex-col md:flex-row overflow-hidden"
+                      className="absolute inset-0 rounded-3xl flex flex-row overflow-hidden"
                       style={{ opacity: selectedNews ? 1 : 0, pointerEvents: selectedNews ? 'auto' : 'none', transition: 'opacity 260ms cubic-bezier(0.4,0,0.2,1)', backgroundImage: `url(${newsDetailBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
                     >
                       {selectedNews && (
                         <>
-                          {/* Left — image (desktop) / top banner (mobile) */}
-                          <div className="relative shrink-0" style={{ width: isMobile ? '100%' : '42%', height: isMobile ? 160 : undefined }}>
+                          <div className="relative shrink-0" style={{ width: '42%' }}>
                             <div className="absolute inset-0" style={{ backgroundImage: `url(${selectedNews.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)' }} />
-                            {/* Category badge */}
                             <div className="absolute bottom-4 left-4">
                               <span className="text-[11px] font-bold uppercase text-white px-3 py-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.16)', letterSpacing: '0.10em', border: '1px solid rgba(255,255,255,0.22)' }}>{selectedNews.category}</span>
                             </div>
-                            {/* Close button on mobile (on image) */}
-                            {isMobile && (
+                          </div>
+                          <div className="flex-1 flex flex-col overflow-hidden">
+                            <div className="flex items-center justify-between px-8 pt-6 pb-4 shrink-0">
+                              <p className="text-xs text-white/35 font-medium">{selectedNews.date}</p>
                               <button
                                 onClick={() => setSelectedNews(null)}
-                                className="absolute top-3 right-3 flex items-center justify-center rounded-full text-white/80 hover:text-white transition-all"
-                                style={{ width: 30, height: 30, background: 'rgba(0,0,0,0.40)', border: '1px solid rgba(255,255,255,0.25)', fontSize: 13 }}
+                                className="flex items-center justify-center rounded-full text-white/55 hover:text-white transition-all"
+                                style={{ width: 30, height: 30, background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)', fontSize: 13 }}
                               >✕</button>
-                            )}
-                          </div>
-
-                          {/* Right — content */}
-                          <div className="flex-1 flex flex-col overflow-hidden">
-                            {/* Top bar (desktop only) */}
-                            {!isMobile && (
-                              <div className="flex items-center justify-between px-8 pt-6 pb-4 shrink-0">
-                                <p className="text-xs text-white/35 font-medium">{selectedNews.date}</p>
-                                <button
-                                  onClick={() => setSelectedNews(null)}
-                                  className="flex items-center justify-center rounded-full text-white/55 hover:text-white transition-all"
-                                  style={{ width: 30, height: 30, background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)', fontSize: 13 }}
-                                >✕</button>
-                              </div>
-                            )}
-
-                            {/* Scrollable text */}
-                            <div className="flex-1 overflow-y-auto px-5 md:px-8 py-4 md:pb-8" style={{ scrollbarWidth: 'none' }}>
-                              <h2 className="font-extrabold text-white leading-snug mb-4" style={{ fontSize: isMobile ? '1.1rem' : 'clamp(1.15rem,1.6vw,1.55rem)' }}>{selectedNews.title}</h2>
+                            </div>
+                            <div className="flex-1 overflow-y-auto px-8 pb-8" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
+                              <h2 className="font-extrabold text-white leading-snug mb-4" style={{ fontSize: 'clamp(1.15rem,1.6vw,1.55rem)' }}>{selectedNews.title}</h2>
                               <p className="text-sm text-white/65 leading-relaxed mb-4 italic" style={{ borderLeft: '2px solid rgba(255,255,255,0.25)', paddingLeft: '1rem' }}>{selectedNews.excerpt}</p>
                               <div style={{ height: 1, background: 'rgba(255,255,255,0.10)', marginBottom: '1rem' }} />
                               {selectedNews.body?.split('\n\n').map((para, i) => (
@@ -1225,7 +1301,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* ── Pagination dots ── */}
+                  {/* Pagination dots */}
                   {totalPages > 1 && (
                     <div className="flex items-center justify-center gap-2.5 shrink-0 pb-1">
                       {Array.from({ length: totalPages }).map((_, p) => (
