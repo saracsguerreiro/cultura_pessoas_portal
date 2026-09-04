@@ -173,15 +173,17 @@ const EVENTS_DATA: TISEvent[] = [
   { date: '2026-09-10', title: 'Check-in Avaliações',      type: 'hr',       color: '#a855f7', time: '14h00 – 17h00', location: 'Online (Teams)',                       organizer: 'Cultura & Pessoas',         description: 'Sessão de preparação para o ciclo de avaliação de desempenho. Explicação do processo, dos critérios e resposta a dúvidas.' },
   { date: '2026-09-10', title: 'Coffee & Connect',         type: 'social',   color: '#1e3a8a', time: '09h00 – 09h30', location: 'Cozinha TIS · Lisboa',                    organizer: 'Comissão de Eventos',       description: 'Momento informal de convívio matinal entre equipas. Café, croissants e conversa antes do arranque do dia.' },
   { date: '2026-09-12', title: 'Sessão de Bem-estar',      type: 'wellness', color: '#ec4899', time: '12h30 – 13h30', location: 'Jardim TIS · Lisboa',                  organizer: 'Programa Bem-estar',        description: 'Sessão semanal de mindfulness e relaxamento ao ar livre. Aberta a todos os colaboradores, sem necessidade de inscrição.' },
-  { date: '2026-09-15', title: 'Autoavaliação — início',   type: 'hr',       color: '#db2777', time: 'Todo o dia',    location: 'Odoo (portal)',                        organizer: 'Cultura & Pessoas',         description: 'Início do período de autoavaliação de desempenho 2026. Acede ao Odoo e preenche o teu formulário até 30 de setembro.' },
+  { date: '2026-09-15', title: 'Autoavaliação — início',   type: 'hr',       color: '#c026d3', time: 'Todo o dia',    location: 'Odoo (portal)',                        organizer: 'Cultura & Pessoas',         description: 'Início do período de autoavaliação de desempenho 2026. Acede ao Odoo e preenche o teu formulário até 30 de setembro.' },
   { date: '2026-09-18', title: 'Formação: Excel Avançado', type: 'training', color: '#8200c8', time: '09h30 – 17h30', location: 'Sala Alpha · Porto',                   organizer: 'Cultura & Pessoas',         description: 'Formação prática em Excel avançado: tabelas dinâmicas, Power Query, macros e dashboards. Traz o teu portátil.' },
   { date: '2026-09-20', title: 'TIS Team Day',             type: 'social',   color: '#1e3a8a', time: '09h00 – 18h00', location: 'Pavilhão do Conhecimento · Lisboa',    organizer: 'Comissão de Eventos',       description: 'Encontro anual de todos os colaboradores TIS. Programa inclui sessões plenárias, workshops, almoço coletivo e atividades de team building.' },
+  { date: '2026-09-20', title: 'Prémio de Inovação',      type: 'social',   color: '#8200c8', time: '17h00 – 18h00', location: 'Pavilhão do Conhecimento · Lisboa',    organizer: 'Inovação & Transformação',  description: 'Cerimónia integrada no Team Day. Apresentação dos projetos finalistas e anúncio dos vencedores do Prémio de Inovação TIS 2026.' },
+  { date: '2026-09-20', title: 'Cocktail de Networking',  type: 'wellness', color: '#ec4899', time: '18h30 – 20h00', location: 'Foyer · Pavilhão do Conhecimento',     organizer: 'Comissão de Eventos',       description: 'Cocktail de encerramento do Team Day. Drinks, petiscos e networking entre todos os colaboradores TIS.' },
   { date: '2026-09-22', title: 'Sessão de Onboarding',     type: 'hr',       color: '#a855f7', time: '10h00 – 13h00', location: 'Sala Douro · Lisboa',                  organizer: 'Cultura & Pessoas',         description: 'Sessão de integração para novos colaboradores. Apresentação da empresa, cultura TIS, benefícios e ferramentas internas.' },
   { date: '2026-09-25', title: 'Workshop Design Thinking', type: 'training', color: '#8200c8', time: '09h00 – 17h00', location: 'Hub Inovação · Lisboa',                organizer: 'Inovação & Transformação',  description: 'Imersão de um dia em metodologias de Design Thinking aplicadas à resolução de problemas organizacionais.' },
   { date: '2026-09-29', title: 'Happy Hour TIS',           type: 'social',   color: '#1e3a8a', time: '18h30 – 21h00', location: 'Rooftop TIS · Lisboa',                 organizer: 'Comissão de Eventos',       description: 'Convívio mensal informal para todos os colaboradores. Drinks, petiscos e boa disposição no rooftop da sede.' },
-  { date: '2026-10-01', title: 'Início Avaliações',        type: 'hr',       color: '#db2777', time: 'Todo o dia',    location: 'Odoo (portal)',                        organizer: 'Cultura & Pessoas',         description: 'Início das reuniões de avaliação de desempenho com a chefia direta. Consulta a tua agenda no Odoo.' },
+  { date: '2026-10-01', title: 'Início Avaliações',        type: 'hr',       color: '#c026d3', time: 'Todo o dia',    location: 'Odoo (portal)',                        organizer: 'Cultura & Pessoas',         description: 'Início das reuniões de avaliação de desempenho com a chefia direta. Consulta a tua agenda no Odoo.' },
   { date: '2026-10-05', title: 'Reunião de Líderes',       type: 'meeting',  color: '#036ef2', time: '09h00 – 13h00', location: 'Sala Tejo · Lisboa',                  organizer: 'Direcção Geral',            description: 'Reunião trimestral de líderes de equipa. Revisão de performance, desafios e prioridades para Q4.' },
-  { date: '2026-10-15', title: 'Reunião com Chefia',       type: 'hr',       color: '#db2777', time: '14h00 – 18h00', location: 'A definir',                            organizer: 'Cultura & Pessoas',         description: 'Período de reuniões individuais de avaliação de desempenho entre colaborador e chefia direta.' },
+  { date: '2026-10-15', title: 'Reunião com Chefia',       type: 'hr',       color: '#c026d3', time: '14h00 – 18h00', location: 'A definir',                            organizer: 'Cultura & Pessoas',         description: 'Período de reuniões individuais de avaliação de desempenho entre colaborador e chefia direta.' },
   { date: '2026-08-28', title: 'Prémio Inovação',          type: 'social',   color: '#1e3a8a', time: '18h00 – 20h00', location: 'Auditório TIS · Lisboa',               organizer: 'Inovação & Transformação',  description: 'Cerimónia de entrega do Prémio de Inovação TIS 2026. Apresentação dos projetos finalistas e anúncio dos vencedores.' },
 ]
 
@@ -1297,14 +1299,18 @@ export default function App() {
                                 return (
                                   <div key={day}
                                     onClick={() => {
-                                      if (isSel) { setSelectedDay(null); setSelectedEvent(null) }
-                                      else {
-                                        setSelectedDay(day)
-                                        if (dayEvts.length === 1) { setSelectedEvent(dayEvts[0]) }
-                                        else { setSelectedEvent(null) }
+                                      if (dayEvts.length === 0) return
+                                      if (dayEvts.length === 1) {
+                                        // 1 evento: abre popup sem filtrar lista (mantém todos os eventos visíveis)
+                                        setSelectedDay(null)
+                                        setSelectedEvent(dayEvts[0])
+                                      } else {
+                                        // 2+ eventos: selecciona dia e mostra lista filtrada
+                                        if (isSel) { setSelectedDay(null); setSelectedEvent(null) }
+                                        else { setSelectedDay(day); setSelectedEvent(null) }
                                       }
                                     }}
-                                    className="flex flex-col items-center py-1.5 cursor-pointer"
+                                    className={`flex flex-col items-center py-1.5 ${dayEvts.length > 0 ? 'cursor-pointer' : 'cursor-default'}`}
                                   >
                                     <div className="w-9 h-9 flex items-center justify-center rounded-full text-base font-semibold transition-all"
                                       style={{ background: isSel ? 'rgba(255,255,255,0.9)' : isToday ? 'rgba(255,255,255,0.18)' : 'transparent', color: isSel ? '#8200c8' : 'white', border: (isToday && !isSel) ? '1.5px solid rgba(255,255,255,0.55)' : 'none' }}
@@ -1328,7 +1334,11 @@ export default function App() {
                               {selectedDay ? `Eventos · ${selectedDay} de ${PT_MONTHS[m]}` : 'Próximos Eventos'}
                             </p>
                             {selectedDay && (
-                              <button onClick={() => { setSelectedDay(null); setSelectedEvent(null) }} className="text-xs text-white/55 mb-3 font-medium flex items-center gap-1">← todos os eventos</button>
+                              <button
+                                onClick={() => { setSelectedDay(null); setSelectedEvent(null) }}
+                                className="flex items-center gap-2 rounded-full mb-3 text-sm font-semibold text-white transition-all"
+                                style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.35)', padding: '6px 16px' }}
+                              >← Todos os eventos</button>
                             )}
                             {listEvents.length === 0 ? (
                               <p className="text-sm text-white/35 text-center py-6">Sem eventos neste dia</p>
