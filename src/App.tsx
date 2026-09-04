@@ -1131,7 +1131,7 @@ export default function App() {
 
                       {/* older news list */}
                       <div className="px-4 pb-6">
-                        <p className="text-[11px] font-bold text-white/40 uppercase mb-3" style={{ letterSpacing: '0.14em' }}>Mais antigas</p>
+                        <p className="text-[11px] font-bold text-white/40 uppercase mb-3" style={{ letterSpacing: '0.14em' }}>Ver mais</p>
                         {filteredOlder.length === 0 ? (
                           <p className="text-sm text-white/35 text-center py-6">Sem notícias nesta categoria.</p>
                         ) : filteredOlder.map(news => (
@@ -1140,7 +1140,7 @@ export default function App() {
                             style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
                             onClick={() => setSelectedNews(news)}
                           >
-                            <div className="shrink-0 rounded-xl overflow-hidden" style={{ width: 68, height: 68 }}>
+                            <div className="shrink-0 rounded-xl overflow-hidden" style={{ width: 82, height: 82 }}>
                               <div style={{ width: '100%', height: '100%', backgroundImage: `url(${news.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                             </div>
                             <div className="flex-1 min-w-0 pt-0.5">
