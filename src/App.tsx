@@ -527,9 +527,9 @@ export default function App() {
             <img src={juntosLogo} alt="Juntos Somos TIS" style={{ width: 'min(360px, 75vw)', filter: 'brightness(0) invert(1)', opacity: 1, padding: 0 }} />
             <div style={{ width: '50%', height: 1, background: 'rgba(255,255,255,0.28)', margin: '16px 0 14px' }} />
             <div className="text-center">
-              <p className="font-light text-white/65 mb-1" style={{ letterSpacing: '0.18em', fontSize: isMobile ? 11 : 14 }}>Portal da Direcção de</p>
+              <p className="font-light text-white/65 mb-1" style={{ letterSpacing: '0.18em', fontSize: isMobile ? 11 : 14 }}>Portal de</p>
               <h1 className="font-thin text-white leading-none" style={{ fontSize: isMobile ? 20 : 30, letterSpacing: '0.02em' }}>
-                CULTURA <span className="font-thin text-white/70">&amp;</span> PESSOAS
+                PESSOAS <span className="font-thin text-white/70">&amp;</span> CULTURA
               </h1>
             </div>
           </div>
@@ -552,7 +552,7 @@ export default function App() {
                 style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}
               >
                 {authLoading ? <div className="h-5 w-5 rounded-full border-2 border-gray-300 border-t-[#036ef2] animate-spin" /> : <MicrosoftLogo className={isMobile ? "h-[22px] w-[22px] shrink-0" : "h-5 w-5 shrink-0"} />}
-                <span>{authLoading ? 'A autenticar…' : 'Iniciar sessão com Microsoft'}</span>
+                <span>{authLoading ? 'A autenticar…' : 'Entrar com a Microsoft'}</span>
               </button>
               <div className="mt-6 flex items-center gap-3">
                 <div className="flex-1 h-px bg-white/14" />
@@ -1282,14 +1282,14 @@ export default function App() {
                     </div>
 
                     {/* Body — 3 columns on desktop, tab view on mobile */}
-                    <div className="flex-1 flex min-h-0">
+                    <div className="flex-1 flex min-h-0 relative">
 
                       {/* ── Column 1: Calendar ── */}
                       <div className={`flex-col min-w-0 transition-all ${isMobile ? (mobileEventsTab === 'calendar' ? 'flex flex-1' : 'hidden') : 'flex'}`} style={!isMobile ? { flex: selectedEvent ? '0 0 auto' : '1 1 0', width: selectedEvent ? '52%' : undefined, marginRight: 16, transitionDuration: '320ms', transitionTimingFunction: 'cubic-bezier(0.4,0,0.2,1)' } : { marginRight: 0 }}>
                         <div className="grid grid-cols-7 gap-1.5 mb-1.5 shrink-0">
                           {PT_DAYS.map(d => <div key={d} className="text-center text-[10px] font-bold text-white/35 uppercase py-0.5" style={{ letterSpacing: '0.07em' }}>{d}</div>)}
                         </div>
-                        <div className="flex-1 grid grid-cols-7 gap-1.5" style={{ gridAutoRows: '1fr' }}>
+                        <div className="flex-1 grid grid-cols-7 gap-1.5" style={{ gridAutoRows: isMobile ? '34px' : '1fr' }}>
                           {days.map((day, idx) => {
                             if (day === null) return <div key={`p${idx}`} />
                             const dayEvts = eventsForDay(y, m, day)
@@ -1298,18 +1298,30 @@ export default function App() {
                             return (
                               <div key={day}
                                 onClick={() => { const evts = eventsForDay(y, m, day); if (isSel) { setSelectedDay(null); setSelectedEvent(null) } else { setSelectedDay(day); setSelectedEvent(evts[0] ?? null) } }}
-                                className="rounded-xl p-2 cursor-pointer transition-all overflow-hidden"
+                                className={`rounded-xl cursor-pointer transition-all overflow-hidden flex flex-col items-center justify-center ${isMobile ? 'p-1' : 'p-2'}`}
                                 style={{ background: isSel ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.07)', border: isToday ? '1.5px solid rgba(255,255,255,0.65)' : '1px solid rgba(255,255,255,0.10)' }}
                               >
-                                <p className={`text-xs font-bold mb-1 ${isToday ? 'text-white' : 'text-white/55'}`}>{day}</p>
-                                {dayEvts.slice(0, 2).map((ev, ei) => (
-                                  <div key={ei}
-                                    className="text-[11px] rounded px-1.5 py-0.5 mb-0.5 text-white font-medium cursor-pointer hover:bg-white/30 transition-colors leading-snug"
-                                    style={{ background: 'rgba(255,255,255,0.20)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
-                                    onClick={e => { e.stopPropagation(); setSelectedDay(day); setSelectedEvent(ev) }}
-                                  >{ev.title}</div>
-                                ))}
-                                {dayEvts.length > 2 && <div className="text-[9px] text-white/40">+{dayEvts.length - 2}</div>}
+                                <p className={`text-xs font-bold ${isMobile ? '' : 'mb-1'} ${isToday ? 'text-white' : 'text-white/55'}`}>{day}</p>
+                                {isMobile ? (
+                                  dayEvts.length > 0 && (
+                                    <div className="flex gap-0.5 mt-0.5">
+                                      {dayEvts.slice(0, 3).map((ev, ei) => (
+                                        <div key={ei} className="rounded-full" style={{ width: 4, height: 4, background: ev.color || 'rgba(255,255,255,0.85)' }} />
+                                      ))}
+                                    </div>
+                                  )
+                                ) : (
+                                  <>
+                                    {dayEvts.slice(0, 2).map((ev, ei) => (
+                                      <div key={ei}
+                                        className="text-[11px] rounded px-1.5 py-0.5 mb-0.5 text-white font-medium cursor-pointer hover:bg-white/30 transition-colors leading-snug w-full"
+                                        style={{ background: 'rgba(255,255,255,0.20)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+                                        onClick={e => { e.stopPropagation(); setSelectedDay(day); setSelectedEvent(ev) }}
+                                      >{ev.title}</div>
+                                    ))}
+                                    {dayEvts.length > 2 && <div className="text-[9px] text-white/40">+{dayEvts.length - 2}</div>}
+                                  </>
+                                )}
                               </div>
                             )
                           })}
@@ -1350,27 +1362,27 @@ export default function App() {
                         </div>
                       </div>
 
-                      {/* ── Column 3: Event detail (desktop slide-in / mobile overlay) ── */}
+                      {/* ── Column 3: Event detail (desktop slide-in / mobile popup) ── */}
                       {isMobile && selectedEvent && (
-                        <div className="fixed inset-0 z-50 flex flex-col" style={{ background: 'rgba(8,16,72,0.96)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
+                        <div className="absolute inset-0 z-10 flex flex-col rounded-2xl overflow-hidden" style={{ background: 'rgba(100,0,180,0.97)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
                           {/* Photo */}
-                          <div className="relative shrink-0" style={{ height: 200 }}>
+                          <div className="relative shrink-0" style={{ height: 150 }}>
                             <div className="absolute inset-0" style={{ backgroundImage: `url(${EVT_IMGS[selectedEvent.type] ?? EVT_IMGS.meeting})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 55%)' }} />
-                            <button onClick={() => { setSelectedEvent(null) }} className="absolute top-4 right-4 flex items-center justify-center rounded-full text-white font-bold" style={{ width: 36, height: 36, background: 'rgba(255,255,255,0.22)', border: '1.5px solid rgba(255,255,255,0.55)', fontSize: 15 }}>✕</button>
-                            <div className="absolute bottom-4 left-4">
+                            <button onClick={() => { setSelectedEvent(null) }} className="absolute top-3 right-3 flex items-center justify-center rounded-full text-white font-bold" style={{ width: 32, height: 32, background: 'rgba(255,255,255,0.22)', border: '1.5px solid rgba(255,255,255,0.55)', fontSize: 13 }}>✕</button>
+                            <div className="absolute bottom-3 left-4">
                               <span className="text-[10px] font-bold uppercase text-white px-2.5 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.18)', letterSpacing: '0.10em', border: '1px solid rgba(255,255,255,0.22)' }}>{typeLabel[selectedEvent.type] ?? selectedEvent.type}</span>
                             </div>
                           </div>
                           {/* Content */}
-                          <div className="flex-1 overflow-y-auto px-5 py-5" style={{ scrollbarWidth: 'none' }}>
-                            <h3 className="font-extrabold text-white leading-snug mb-5 text-xl">{selectedEvent.title}</h3>
+                          <div className="flex-1 overflow-y-auto px-5 py-4" style={{ scrollbarWidth: 'none' }}>
+                            <h3 className="font-extrabold text-white leading-snug mb-4 text-lg">{selectedEvent.title}</h3>
                             <div className="space-y-3">
-                              <div className="flex gap-3 text-sm"><span className="text-white/40 w-16 shrink-0 font-medium text-[11px] uppercase" style={{ letterSpacing: '0.08em', paddingTop: 2 }}>Data</span><span className="text-white/80 capitalize">{new Date(selectedEvent.date).toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long' })}</span></div>
-                              {selectedEvent.time && <div className="flex gap-3 text-sm"><span className="text-white/40 w-16 shrink-0 font-medium text-[11px] uppercase" style={{ letterSpacing: '0.08em', paddingTop: 2 }}>Horário</span><span className="text-white/80">{selectedEvent.time}</span></div>}
-                              {selectedEvent.location && <div className="flex gap-3 text-sm"><span className="text-white/40 w-16 shrink-0 font-medium text-[11px] uppercase" style={{ letterSpacing: '0.08em', paddingTop: 2 }}>Local</span><span className="text-white/80">{selectedEvent.location}</span></div>}
-                              {selectedEvent.organizer && <div className="flex gap-3 text-sm"><span className="text-white/40 w-16 shrink-0 font-medium text-[11px] uppercase" style={{ letterSpacing: '0.08em', paddingTop: 2 }}>Organiza</span><span className="text-white/80">{selectedEvent.organizer}</span></div>}
-                              {selectedEvent.description && <div className="pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}><p className="text-sm text-white/65 leading-relaxed">{selectedEvent.description}</p></div>}
+                              <div className="flex gap-3 text-sm"><span className="text-white/50 w-16 shrink-0 font-medium text-[11px] uppercase" style={{ letterSpacing: '0.08em', paddingTop: 2 }}>Data</span><span className="text-white/85 capitalize">{new Date(selectedEvent.date).toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long' })}</span></div>
+                              {selectedEvent.time && <div className="flex gap-3 text-sm"><span className="text-white/50 w-16 shrink-0 font-medium text-[11px] uppercase" style={{ letterSpacing: '0.08em', paddingTop: 2 }}>Horário</span><span className="text-white/85">{selectedEvent.time}</span></div>}
+                              {selectedEvent.location && <div className="flex gap-3 text-sm"><span className="text-white/50 w-16 shrink-0 font-medium text-[11px] uppercase" style={{ letterSpacing: '0.08em', paddingTop: 2 }}>Local</span><span className="text-white/85">{selectedEvent.location}</span></div>}
+                              {selectedEvent.organizer && <div className="flex gap-3 text-sm"><span className="text-white/50 w-16 shrink-0 font-medium text-[11px] uppercase" style={{ letterSpacing: '0.08em', paddingTop: 2 }}>Organiza</span><span className="text-white/85">{selectedEvent.organizer}</span></div>}
+                              {selectedEvent.description && <div className="pt-3" style={{ borderTop: '1px solid rgba(255,255,255,0.15)' }}><p className="text-sm text-white/70 leading-relaxed">{selectedEvent.description}</p></div>}
                             </div>
                           </div>
                         </div>
