@@ -695,9 +695,9 @@ export default function App() {
               <div className="absolute inset-0 flex flex-col justify-center text-white"
                 style={{ paddingLeft: isMobile ? '1.5rem' : 'clamp(2.5rem, 8vw, 7rem)', paddingRight: isMobile ? '1.5rem' : 'clamp(2rem, 10vw, 18rem)', opacity: chatOpen ? 0 : 1, transform: chatOpen ? 'translateX(-24px)' : 'translateX(0)', transition: `opacity 0.38s ${ease}, transform 0.38s ${ease}`, pointerEvents: chatOpen ? 'none' : 'auto' }}
               >
-                <p className="mb-2 text-sm md:text-xl font-light text-white/80" style={{ letterSpacing: '0.18em' }}>Portal da Direcção de</p>
+                <p className="mb-2 text-sm md:text-xl font-light text-white/80" style={{ letterSpacing: '0.18em' }}>Portal de</p>
                 <h1 className="mb-4 md:mb-6 font-extrabold leading-none text-white" style={{ fontSize: isMobile ? 'clamp(2.2rem, 10vw, 3.2rem)' : 'clamp(3rem, 5.5vw, 5.2rem)', letterSpacing: '0.02em' }}>
-                  CULTURA{' '}<span className="font-light text-white/75">&amp;</span>{' '}PESSOAS
+                  PESSOAS{' '}<span className="font-light text-white/75">&amp;</span>{' '}CULTURA
                 </h1>
                 <p className="mb-1 text-base md:text-2xl font-light text-white/70" style={{ letterSpacing: '0.04em' }}>Informação. Respostas. Recursos.</p>
                 <p className="mb-6 md:mb-10 text-base md:text-2xl font-bold" style={{ letterSpacing: '0.02em' }}>Tudo num só lugar.</p>
