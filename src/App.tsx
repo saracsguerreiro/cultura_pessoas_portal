@@ -1328,7 +1328,7 @@ export default function App() {
               const EVT_IMGS: Record<string, string> = {
                 meeting:  'https://images.unsplash.com/photo-1758691736433-4078b93abd72?w=800&q=80',
                 training: 'https://images.unsplash.com/photo-1646369505413-216676fef89c?w=800&q=80',
-                social:   'https://images.unsplash.com/photo-1758520144658-c87be518b87e?w=800&q=80',
+                social:   'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=800&q=80',
                 wellness: 'https://images.unsplash.com/photo-1600618528240-fb9fc964b853?w=800&q=80',
                 hr:       'https://images.unsplash.com/photo-1686771416282-3888ddaf249b?w=800&q=80',
               }
