@@ -1490,10 +1490,13 @@ export default function App() {
                                   <p className={`text-xs font-bold mb-1 ${isToday ? 'text-white' : 'text-white/55'}`}>{day}</p>
                                   {dayEvts.slice(0, 2).map((ev, ei) => (
                                     <div key={ei}
-                                      className="text-[11px] rounded px-1.5 py-0.5 mb-0.5 text-white font-medium cursor-pointer hover:bg-white/30 transition-colors leading-snug"
-                                      style={{ background: 'rgba(255,255,255,0.20)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+                                      className="flex items-center gap-1 text-[11px] rounded px-1.5 py-0.5 mb-0.5 text-white font-medium cursor-pointer hover:bg-white/30 transition-colors leading-snug overflow-hidden"
+                                      style={{ background: 'rgba(255,255,255,0.20)' }}
                                       onClick={e => { e.stopPropagation(); setSelectedDay(day); setSelectedEvent(ev) }}
-                                    >{ev.title}</div>
+                                    >
+                                      <span className="shrink-0 rounded-full" style={{ width: 6, height: 6, background: ev.color || 'rgba(255,255,255,0.75)' }} />
+                                      <span className="truncate">{ev.title}</span>
+                                    </div>
                                   ))}
                                   {dayEvts.length > 2 && <div className="text-[9px] text-white/40">+{dayEvts.length - 2}</div>}
                                 </div>
@@ -1517,19 +1520,20 @@ export default function App() {
                               ? <p className="px-4 py-6 text-sm text-white/40 text-center">Sem eventos</p>
                               : listEvents.map((ev, i) => (
                                 <div key={i}
-                                  className="flex items-start gap-3 px-4 py-3 cursor-pointer transition-colors"
+                                  className="flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors"
                                   style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', background: selectedEvent === ev ? 'rgba(255,255,255,0.12)' : 'transparent' }}
                                   onClick={() => setSelectedEvent(selectedEvent === ev ? null : ev)}
                                 >
-                                  <div className="shrink-0 text-center rounded-lg px-1.5 py-1" style={{ background: 'rgba(255,255,255,0.12)', minWidth: 36 }}>
-                                    <p className="text-sm font-bold text-white leading-none">{new Date(ev.date).getDate()}</p>
-                                    <p className="text-[9px] text-white/50 uppercase mt-0.5">{PT_MONTHS[new Date(ev.date).getMonth()].slice(0, 3)}</p>
-                                  </div>
+                                  <div className="shrink-0 rounded-full" style={{ width: 3, alignSelf: 'stretch', minHeight: 36, background: ev.color || 'rgba(255,255,255,0.5)' }} />
                                   <div className="flex-1 min-w-0">
                                     <p className="text-sm font-semibold text-white leading-snug truncate">{ev.title}</p>
                                     <p className="text-xs text-white/45 mt-0.5 truncate">{ev.time ?? typeLabel[ev.type]}</p>
                                   </div>
-                                  <span className="text-white/30 text-base shrink-0 mt-0.5">›</span>
+                                  <div className="shrink-0 text-center rounded-lg px-1.5 py-1" style={{ background: 'rgba(255,255,255,0.12)', minWidth: 36 }}>
+                                    <p className="text-sm font-bold text-white leading-none">{new Date(ev.date).getDate()}</p>
+                                    <p className="text-[9px] text-white/50 uppercase mt-0.5">{PT_MONTHS[new Date(ev.date).getMonth()].slice(0, 3)}</p>
+                                  </div>
+                                  <span className="text-white/30 text-base shrink-0">›</span>
                                 </div>
                               ))
                             }
