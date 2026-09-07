@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import juntosLogo from '@/imports/juntos_somos_tis.png'
 import tisLogoSvg from '@/imports/TIS_logo-01.svg'
-import agentPhoto from '@/imports/porta_RH-08.png'
+import agentPhoto from '@/imports/avatar_rh.jpg'
 import newsDetailBg from '@/imports/gradient-1.png'
 
 // ── Portrait photos ──
