@@ -1742,7 +1742,7 @@ export default function App() {
                           <div className="shrink-0 flex flex-col" style={{ height: '50%', borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
                             {/* Doc header */}
                             <div className="flex items-center gap-4 px-6 py-4 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.05)' }}>
-                              <DocTypeIcon type={previewDoc.type} className="h-10 w-10 text-white/85 shrink-0" />
+                              <DocTypeIcon type={previewDoc.type} className="h-[46px] w-[46px] text-white/85 shrink-0" />
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-bold text-white truncate">{previewDoc.name}</p>
                                 <p className="text-xs text-white/40 mt-0.5">{previewDoc.pages} pág. · {previewDoc.size} · {previewDoc.date} · {previewDoc.category}</p>
@@ -1754,11 +1754,12 @@ export default function App() {
                               <button onClick={() => { setPreviewDoc(null); setDocMessages([]) }} className="shrink-0 h-7 w-7 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/15 transition-all text-sm leading-none">✕</button>
                             </div>
                             {/* Doc content */}
-                            <div className="flex-1 overflow-y-auto px-6 py-5" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
-                              <div className="h-full rounded-xl p-5 flex flex-col" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                                <p className="text-[10px] font-bold text-white/35 uppercase mb-3 shrink-0" style={{ letterSpacing: '0.12em' }}>Excerto do documento</p>
-                                <p className="text-sm text-white/80 leading-relaxed italic">{previewDoc.excerpt}</p>
-                              </div>
+                            <div className="flex-1 min-h-0 overflow-hidden">
+                              <iframe
+                                src={`${import.meta.env.BASE_URL}docs/example.pdf`}
+                                className="w-full h-full border-0"
+                                title={previewDoc.name}
+                              />
                             </div>
                           </div>
                         )}
@@ -1856,7 +1857,7 @@ export default function App() {
                           onMouseEnter={e => { if (previewDoc?.id !== doc.id) (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)' }}
                           onMouseLeave={e => { if (previewDoc?.id !== doc.id) (e.currentTarget as HTMLElement).style.background = 'transparent' }}
                         >
-                          <DocTypeIcon type={doc.type} className="h-5 w-5 text-white/65 shrink-0" />
+                          <DocTypeIcon type={doc.type} className="h-[23px] w-[23px] text-white/65 shrink-0" />
                           <div className="flex-1 min-w-0">
                             <p className="text-[11px] font-semibold text-white leading-snug truncate">{doc.name}</p>
                             <p className="text-[10px] text-white/38 mt-0.5">{doc.size} · {doc.pages} pág. · {doc.date}</p>
