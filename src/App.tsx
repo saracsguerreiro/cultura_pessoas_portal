@@ -324,18 +324,15 @@ function IconArchive({ className }: { className?: string }) {
 }
 function DocTypeIcon({ type, className }: { type: TISDocument['type']; className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className={className}>
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
       <polyline points="14 2 14 8 20 8"/>
-      {type === 'xlsx' ? (
-        <><rect x="8" y="11" width="8" height="6" rx="0.5" /><line x1="12" y1="11" x2="12" y2="17" /><line x1="8" y1="14" x2="16" y2="14" /></>
-      ) : type === 'pptx' ? (
-        <rect x="7" y="12" width="10" height="5" rx="1" />
-      ) : (
-        <><line x1="8" y1="13" x2="16" y2="13" /><line x1="8" y1="17" x2={type === 'pdf' ? '13' : '16'} y2="17" /></>
-      )}
+      <text x="12" y="17.5" textAnchor="middle" fontSize="5" fill="currentColor" stroke="none" fontWeight="700" fontFamily="system-ui,sans-serif">{type.toUpperCase()}</text>
     </svg>
   )
+}
+function IconDownload({ className }: { className?: string }) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
 }
 function MicrosoftLogo({ className }: { className?: string }) {
   return (
@@ -406,10 +403,10 @@ export default function App() {
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
   const [mobileEventsTab] = useState<'calendar' | 'list'>('calendar')
   const [docCategory,  setDocCategory]  = useState('Todos')
-  const [selectedDocs, setSelectedDocs] = useState<Set<number>>(new Set())
   const [docQuery,     setDocQuery]     = useState('')
   const [docMessages,  setDocMessages]  = useState<DocMessage[]>([])
   const [docThinking,  setDocThinking]  = useState(false)
+  const [previewDoc,   setPreviewDoc]   = useState<TISDocument | null>(null)
 
   // ── GSAP mural: hide all cells on mount so the login screen sits over a blank canvas ──
   useEffect(() => {
@@ -1658,30 +1655,30 @@ export default function App() {
             {/* ══ Documentos ══ */}
             {activeNav === 'documentos' && !isMobile && (() => {
               const filteredDocs = docCategory === 'Todos' ? DOCS_DATA : DOCS_DATA.filter(d => d.category === docCategory)
-              const hasSelection = selectedDocs.size > 0
               const hasMsgs = docMessages.length > 0
 
               const sendDocQuery = (override?: string) => {
                 const q = (override ?? docQuery).trim()
                 if (!q || docThinking) return
                 if (!override) setDocQuery('')
-                const selList = DOCS_DATA.filter(d => selectedDocs.has(d.id))
                 setDocMessages(prev => [...prev, { role: 'user', content: q }])
                 setDocThinking(true)
                 setTimeout(() => {
                   let content: string
                   let sources: string[]
-                  if (selList.length > 0) {
-                    content = `Com base nos documentos selecionados — ${selList.map(d => d.name.replace(/\.(pdf|docx|xlsx)$/i, '')).join(', ')} — posso informar: ${selList[0].excerpt} Consulta o documento original para detalhes completos.`
-                    sources = selList.map(d => d.name)
+                  if (previewDoc) {
+                    content = `Com base no documento "${previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}" — ${previewDoc.excerpt} Consulta o documento original para detalhes completos.`
+                    sources = [previewDoc.name]
                   } else {
                     const ql = q.toLowerCase()
                     const match = DOC_MOCK_RESPONSES.find(r => r.keywords.some(kw => ql.includes(kw)))
                     if (match) {
+                      const matchedDoc = DOCS_DATA.find(d => match.docIds.includes(d.id))
+                      if (matchedDoc) setPreviewDoc(matchedDoc)
                       content = match.response
                       sources = match.docIds.map(id => DOCS_DATA.find(d => d.id === id)?.name ?? '').filter(Boolean)
                     } else {
-                      content = `Pesquisei em toda a biblioteca de documentos TIS, mas não encontrei informação específica sobre "${q}". Seleciona documentos relevantes no painel à direita para uma resposta mais precisa, ou reformula a pergunta.`
+                      content = `Pesquisei na biblioteca de documentos TIS, mas não encontrei informação específica sobre "${q}". Abre um documento no painel lateral para uma resposta mais precisa.`
                       sources = []
                     }
                   }
@@ -1690,12 +1687,11 @@ export default function App() {
                 }, 1400 + Math.random() * 600)
               }
 
-              const toggleDoc = (id: number) => {
-                setSelectedDocs(prev => {
-                  const next = new Set(prev)
-                  if (next.has(id)) next.delete(id); else next.add(id)
-                  return next
-                })
+              const openDoc = (doc: TISDocument) => {
+                setPreviewDoc(doc)
+                if (docMessages.length === 0) {
+                  setDocMessages([{ role: 'agent', content: `Abri o documento "${doc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}". Posso ajudar com alguma questão sobre o seu conteúdo?` }])
+                }
               }
 
               const glassPanel = { background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.16)', boxShadow: '0 8px 40px rgba(0,0,50,0.22)' }
@@ -1703,83 +1699,73 @@ export default function App() {
               return (
                 <div className="h-full flex gap-5 px-14 py-8">
 
-                  {/* ── Central area ── */}
-                  <div className="flex-1 flex flex-col min-w-0">
+                  {/* ── Central glassmorphism box ── */}
+                  <div className="flex-1 min-h-0 rounded-3xl flex flex-col overflow-hidden" style={glassPanel}>
 
-                    {!hasMsgs && !hasSelection ? (
+                    {!previewDoc && !hasMsgs ? (
                       /* Hero state */
-                      <div className="flex-1 flex flex-col items-center justify-center p-4">
-                        <div className="w-full max-w-2xl rounded-3xl px-10 py-10 flex flex-col items-center gap-7" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.16)', boxShadow: '0 8px 40px rgba(0,0,50,0.22)' }}>
-                          <div className="text-center">
-                            <div className="mx-auto mb-7 rounded-full overflow-hidden" style={{ width: 90, height: 90, border: '2.5px solid rgba(255,255,255,0.45)', boxShadow: '0 6px 28px rgba(0,0,70,0.35)' }}>
-                              <img src={agentPhoto} alt="Assistente de RH" className="h-full w-full object-cover" />
-                            </div>
-                            <h2 className="text-4xl font-extrabold text-white mb-3">Biblioteca de Documentos</h2>
-                            <p className="text-white/50 text-base max-w-md mx-auto leading-relaxed">Faz uma pergunta e o agente de RH responde com base nos documentos da biblioteca — sempre com citação da fonte.</p>
+                      <div className="flex-1 flex flex-col items-center justify-center gap-7 p-8">
+                        <div className="text-center">
+                          <div className="mx-auto mb-7 rounded-full overflow-hidden" style={{ width: 90, height: 90, border: '2.5px solid rgba(255,255,255,0.45)', boxShadow: '0 6px 28px rgba(0,0,70,0.35)' }}>
+                            <img src={agentPhoto} alt="Assistente de RH" className="h-full w-full object-cover" />
                           </div>
-
-                          {/* Central input */}
-                          <div className="w-full max-w-lg relative">
-                            <input
-                              value={docQuery}
-                              onChange={e => setDocQuery(e.target.value)}
-                              onKeyDown={e => { if (e.key === 'Enter') sendDocQuery() }}
-                              placeholder="Fazer uma pergunta sobre os documentos…"
-                              className="w-full rounded-2xl px-5 py-4 pr-14 text-white placeholder-white/35 outline-none text-sm"
-                              style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.28)', backdropFilter: 'blur(18px)', boxShadow: '0 4px 32px rgba(0,0,80,0.18)', fontSize: 16 }}
-                            />
-                            <button onClick={() => sendDocQuery()} className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-xl transition-all hover:bg-white/25" style={{ width: 36, height: 36, background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.22)' }}>
-                              <SendIcon className="h-4 w-4 text-white" />
-                            </button>
-                          </div>
-
-                          {/* Quick questions */}
-                          <div className="flex flex-wrap gap-2 justify-center max-w-xl">
-                            {['Quantos dias de férias tenho direito?', 'Como aderir ao teletrabalho?', 'Quais as coberturas do seguro de saúde?', 'Como pedir reembolso de despesas?', 'Que formações estão disponíveis?'].map(q => (
-                              <button key={q} onClick={() => sendDocQuery(q)} className="rounded-full px-4 py-2 text-xs font-medium text-white/65 transition-all hover:text-white hover:bg-white/15" style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.14)' }}>{q}</button>
-                            ))}
-                          </div>
-
-                          {/* Hint */}
-                          <p className="text-[11px] text-white/28 text-center">Seleciona documentos específicos no painel lateral para respostas mais focadas</p>
+                          <h2 className="text-4xl font-extrabold text-white mb-3">Biblioteca de Documentos</h2>
+                          <p className="text-white/50 text-base max-w-md mx-auto leading-relaxed">Faz uma pergunta e o agente de RH responde com base nos documentos da biblioteca — sempre com citação da fonte.</p>
                         </div>
+                        <div className="w-full max-w-lg relative">
+                          <input
+                            value={docQuery}
+                            onChange={e => setDocQuery(e.target.value)}
+                            onKeyDown={e => { if (e.key === 'Enter') sendDocQuery() }}
+                            placeholder="Fazer uma pergunta sobre os documentos…"
+                            className="w-full rounded-2xl px-5 py-4 pr-14 text-white placeholder-white/35 outline-none"
+                            style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.28)', backdropFilter: 'blur(18px)', boxShadow: '0 4px 32px rgba(0,0,80,0.18)', fontSize: 16 }}
+                          />
+                          <button onClick={() => sendDocQuery()} className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-xl transition-all hover:bg-white/25" style={{ width: 36, height: 36, background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.22)' }}>
+                            <SendIcon className="h-4 w-4 text-white" />
+                          </button>
+                        </div>
+                        <div className="flex flex-wrap gap-2 justify-center max-w-xl">
+                          {['Quantos dias de férias tenho direito?', 'Como aderir ao teletrabalho?', 'Quais as coberturas do seguro de saúde?', 'Como pedir reembolso de despesas?', 'Que formações estão disponíveis?'].map(q => (
+                            <button key={q} onClick={() => sendDocQuery(q)} className="rounded-full px-4 py-2 text-xs font-medium text-white/65 transition-all hover:text-white hover:bg-white/15" style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.14)' }}>{q}</button>
+                          ))}
+                        </div>
+                        <p className="text-[11px] text-white/28 text-center">Abre um documento no painel lateral ou faz uma pergunta diretamente</p>
                       </div>
 
                     ) : (
-                      /* Active state: selected docs strip + chat */
-                      <div className="flex-1 flex flex-col min-h-0 gap-4">
+                      /* Active state: document preview + chat */
+                      <div className="flex-1 flex flex-col min-h-0">
 
-                        {/* Selected docs strip */}
-                        {hasSelection && (
-                          <div className="shrink-0 rounded-2xl px-5 py-4" style={glassPanel}>
-                            <div className="flex items-center justify-between mb-3">
-                              <p className="text-[10px] font-bold text-white/40 uppercase" style={{ letterSpacing: '0.13em' }}>Documentos em contexto ({selectedDocs.size})</p>
-                              <button onClick={() => setSelectedDocs(new Set())} className="text-[11px] text-white/35 hover:text-white transition-colors">Limpar seleção</button>
+                        {/* Document preview panel */}
+                        {previewDoc && (
+                          <div className="shrink-0 flex flex-col" style={{ height: '50%', borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
+                            {/* Doc header */}
+                            <div className="flex items-center gap-4 px-6 py-4 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.05)' }}>
+                              <DocTypeIcon type={previewDoc.type} className="h-10 w-10 text-white/85 shrink-0" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-white truncate">{previewDoc.name}</p>
+                                <p className="text-xs text-white/40 mt-0.5">{previewDoc.pages} pág. · {previewDoc.size} · {previewDoc.date} · {previewDoc.category}</p>
+                              </div>
+                              <button className="shrink-0 flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-white transition-all hover:bg-white/20" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)' }}>
+                                <IconDownload className="h-3.5 w-3.5" />
+                                <span>Download</span>
+                              </button>
+                              <button onClick={() => { setPreviewDoc(null); setDocMessages([]) }} className="shrink-0 h-7 w-7 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/15 transition-all text-sm leading-none">✕</button>
                             </div>
-                            <div className="flex gap-2.5 flex-wrap">
-                              {DOCS_DATA.filter(d => selectedDocs.has(d.id)).map(d => (
-                                <div key={d.id} className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.16)' }}>
-                                  <DocTypeIcon type={d.type} className="h-7 w-7 text-white/75 shrink-0" />
-                                  <div className="min-w-0">
-                                    <p className="text-[11px] font-semibold text-white truncate" style={{ maxWidth: 170 }}>{d.name}</p>
-                                    <p className="text-[9px] text-white/40">{d.pages} pág. · {d.size}</p>
-                                  </div>
-                                  <button onClick={() => toggleDoc(d.id)} className="text-white/25 hover:text-white ml-1 transition-colors text-sm leading-none shrink-0">✕</button>
-                                </div>
-                              ))}
+                            {/* Doc content */}
+                            <div className="flex-1 overflow-y-auto px-6 py-5" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
+                              <div className="h-full rounded-xl p-5 flex flex-col" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                                <p className="text-[10px] font-bold text-white/35 uppercase mb-3 shrink-0" style={{ letterSpacing: '0.12em' }}>Excerto do documento</p>
+                                <p className="text-sm text-white/80 leading-relaxed italic">{previewDoc.excerpt}</p>
+                              </div>
                             </div>
                           </div>
                         )}
 
                         {/* Chat area */}
-                        <div className="flex-1 min-h-0 rounded-2xl flex flex-col overflow-hidden" style={glassPanel}>
-                          {/* Messages */}
-                          <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
-                            {docMessages.length === 0 && hasSelection && (
-                              <div className="flex items-center justify-center h-full">
-                                <p className="text-sm text-white/35 text-center">Faz uma pergunta sobre os documentos selecionados.</p>
-                              </div>
-                            )}
+                        <div className="flex-1 flex flex-col min-h-0">
+                          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
                             {docMessages.map((msg, i) => (
                               <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
                                 {msg.role === 'agent' && (
@@ -1815,15 +1801,13 @@ export default function App() {
                               </div>
                             )}
                           </div>
-
-                          {/* Input bar */}
                           <div className="shrink-0 px-4 py-3 flex items-center gap-3" style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}>
                             <input
                               value={docQuery}
                               onChange={e => setDocQuery(e.target.value)}
                               onKeyDown={e => { if (e.key === 'Enter') sendDocQuery() }}
-                              placeholder={hasSelection ? `Pergunta sobre ${selectedDocs.size} documento${selectedDocs.size !== 1 ? 's' : ''}…` : 'Fazer uma pergunta sobre os documentos…'}
-                              className="flex-1 bg-transparent text-white outline-none placeholder-white/30 text-sm"
+                              placeholder={previewDoc ? `Pergunta sobre ${previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}…` : 'Fazer uma pergunta sobre os documentos…'}
+                              className="flex-1 bg-transparent text-white outline-none placeholder-white/30"
                               style={{ fontSize: 16 }}
                             />
                             <button onClick={() => sendDocQuery()} disabled={!docQuery.trim() || docThinking} className="shrink-0 flex items-center justify-center rounded-xl transition-all disabled:opacity-35 hover:bg-white/20" style={{ width: 34, height: 34, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.18)' }}>
@@ -1831,30 +1815,22 @@ export default function App() {
                             </button>
                           </div>
                         </div>
+
                       </div>
                     )}
                   </div>
 
                   {/* ── Right panel: Library ── */}
                   <div className="w-80 shrink-0 flex flex-col rounded-2xl overflow-hidden" style={glassPanel}>
-
-                    {/* Header */}
                     <div className="flex items-center justify-between px-4 py-4 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.10)', background: 'rgba(255,255,255,0.05)' }}>
                       <div>
                         <p className="text-[10px] font-bold text-white/35 uppercase mb-0.5" style={{ letterSpacing: '0.14em' }}>TIS</p>
                         <h3 className="text-sm font-extrabold text-white">Biblioteca</h3>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {selectedDocs.size > 0 && (
-                          <span className="text-[10px] font-bold text-white px-2 py-0.5 rounded-full" style={{ background: 'rgba(130,0,200,0.55)', border: '1px solid rgba(130,0,200,0.75)' }}>{selectedDocs.size}</span>
-                        )}
-                        <button className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-white transition-all hover:bg-white/20" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.20)' }}>
-                          <IconPlus className="h-3 w-3" />Carregar
-                        </button>
-                      </div>
+                      <button className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-white transition-all hover:bg-white/20" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.20)' }}>
+                        <IconPlus className="h-3 w-3" />Carregar
+                      </button>
                     </div>
-
-                    {/* Category filters */}
                     <div className="flex gap-1.5 px-4 py-3 flex-wrap shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
                       {DOC_CATS.map(cat => (
                         <button key={cat}
@@ -1866,8 +1842,6 @@ export default function App() {
                         >{cat}</button>
                       ))}
                     </div>
-
-                    {/* Document list */}
                     <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
                       {filteredDocs.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full gap-3 px-6 text-center py-10">
@@ -1877,42 +1851,27 @@ export default function App() {
                       ) : filteredDocs.map(doc => (
                         <div key={doc.id}
                           className="flex items-center gap-3 px-4 py-3 cursor-pointer transition-all"
-                          style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: selectedDocs.has(doc.id) ? 'rgba(130,0,200,0.14)' : 'transparent' }}
-                          onClick={() => toggleDoc(doc.id)}
+                          style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', background: previewDoc?.id === doc.id ? 'rgba(130,0,200,0.18)' : 'transparent' }}
+                          onClick={() => openDoc(doc)}
+                          onMouseEnter={e => { if (previewDoc?.id !== doc.id) (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)' }}
+                          onMouseLeave={e => { if (previewDoc?.id !== doc.id) (e.currentTarget as HTMLElement).style.background = 'transparent' }}
                         >
-                          {/* Checkbox */}
-                          <div className="shrink-0 flex items-center justify-center rounded w-4 h-4 transition-all" style={{ background: selectedDocs.has(doc.id) ? '#8200c8' : 'rgba(255,255,255,0.10)', border: selectedDocs.has(doc.id) ? '1.5px solid #a855f7' : '1.5px solid rgba(255,255,255,0.22)' }}>
-                            {selectedDocs.has(doc.id) && <svg viewBox="0 0 12 12" className="w-2.5 h-2.5"><polyline points="2 6 5 9 10 3" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>}
-                          </div>
-                          {/* File badge */}
                           <DocTypeIcon type={doc.type} className="h-5 w-5 text-white/65 shrink-0" />
-                          {/* Info */}
                           <div className="flex-1 min-w-0">
                             <p className="text-[11px] font-semibold text-white leading-snug truncate">{doc.name}</p>
                             <p className="text-[10px] text-white/38 mt-0.5">{doc.size} · {doc.pages} pág. · {doc.date}</p>
                           </div>
+                          <button
+                            onClick={e => e.stopPropagation()}
+                            className="shrink-0 flex items-center justify-center rounded-lg transition-all text-white/35 hover:text-white hover:bg-white/15"
+                            style={{ width: 28, height: 28 }}
+                            title="Download"
+                          >
+                            <IconDownload className="h-3.5 w-3.5" />
+                          </button>
                         </div>
                       ))}
                     </div>
-
-                    {/* Batch action bar */}
-                    {selectedDocs.size > 0 && (
-                      <div className="shrink-0 px-4 py-3" style={{ borderTop: '1px solid rgba(255,255,255,0.12)', background: 'rgba(130,0,200,0.10)' }}>
-                        <button
-                          onClick={() => {
-                            if (docMessages.length === 0) {
-                              const names = DOCS_DATA.filter(d => selectedDocs.has(d.id)).map(d => d.name.replace(/\.(pdf|docx|xlsx)$/i, ''))
-                              setDocMessages([{ role: 'agent', content: `Analisei ${selectedDocs.size === 1 ? 'o documento' : 'os ' + selectedDocs.size + ' documentos'} selecionados: ${names.join(', ')}. Faz a tua pergunta e responderei com base no seu conteúdo.`, sources: DOCS_DATA.filter(d => selectedDocs.has(d.id)).map(d => d.name) }])
-                            }
-                          }}
-                          className="w-full flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold text-white transition-all hover:opacity-90"
-                          style={{ background: 'rgba(130,0,200,0.50)', border: '1px solid rgba(130,0,200,0.65)' }}
-                        >
-                          <IconDoc className="h-3.5 w-3.5" />
-                          Perguntar sobre {selectedDocs.size === 1 ? 'este documento' : `${selectedDocs.size} documentos`}
-                        </button>
-                      </div>
-                    )}
                   </div>
                 </div>
               )
