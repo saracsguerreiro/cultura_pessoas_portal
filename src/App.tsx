@@ -592,7 +592,7 @@ export default function App() {
 
       {/* ── Layer 2: Gradient overlay — more opaque on inner pages ── */}
       <div className="absolute inset-0 z-10" style={{
-        background: ['faqs','noticias','eventos'].includes(activeNav)
+        background: ['faqs','noticias','eventos','documentos','chat'].includes(activeNav)
           ? 'linear-gradient(130deg, rgba(130,0,200,0.98) 0%, rgba(60,12,178,0.98) 45%, rgba(3,110,242,0.98) 100%)'
           : 'linear-gradient(130deg, rgba(130,0,200,0.9) 0%, rgba(60,12,178,0.88) 45%, rgba(3,110,242,0.9) 100%)',
         transition: 'background 0.4s ease',
@@ -693,7 +693,6 @@ export default function App() {
           {/* ── Mobile Bottom Navigation ── */}
           <nav className="fixed bottom-0 left-0 right-0 z-30 flex md:hidden items-center justify-around py-2"
             style={{ background: 'rgba(255,255,255,0.10)', backdropFilter: 'blur(28px)', WebkitBackdropFilter: 'blur(28px)', borderTop: '1px solid rgba(255,255,255,0.20)', boxShadow: '0 -4px 32px rgba(0,0,60,0.22)' }}>
-            {/* Início */}
             <button
               onClick={() => { setActiveNav('sobre'); if (chatOpen) closeChat() }}
               className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
@@ -702,18 +701,6 @@ export default function App() {
               <IconAbout className="h-5 w-5" />
               <span className="text-[10px] font-medium">Início</span>
             </button>
-            {/* Chat */}
-            <button
-              onClick={openChatMobile}
-              className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
-              style={{ color: activeNav === 'chat' ? 'white' : 'rgba(255,255,255,0.38)' }}
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-              </svg>
-              <span className="text-[10px] font-medium">Chat</span>
-            </button>
-            {/* FAQ's */}
             <button
               onClick={() => { setActiveNav('faqs'); if (chatOpen) closeChat() }}
               className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
@@ -722,7 +709,6 @@ export default function App() {
               <IconFaq className="h-5 w-5" />
               <span className="text-[10px] font-medium">FAQ&apos;s</span>
             </button>
-            {/* Notícias */}
             <button
               onClick={() => { setActiveNav('noticias'); if (chatOpen) closeChat() }}
               className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
@@ -731,7 +717,6 @@ export default function App() {
               <IconNews className="h-5 w-5" />
               <span className="text-[10px] font-medium">Notícias</span>
             </button>
-            {/* Eventos */}
             <button
               onClick={() => { setActiveNav('eventos'); if (chatOpen) closeChat() }}
               className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
@@ -740,7 +725,39 @@ export default function App() {
               <IconEvents className="h-5 w-5" />
               <span className="text-[10px] font-medium">Eventos</span>
             </button>
+            <button
+              onClick={() => { setActiveNav('documentos'); if (chatOpen) closeChat() }}
+              className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
+              style={{ color: activeNav === 'documentos' ? 'white' : 'rgba(255,255,255,0.38)' }}
+            >
+              <IconLibrary className="h-5 w-5" />
+              <span className="text-[10px] font-medium">Docs</span>
+            </button>
           </nav>
+
+          {/* ── Floating chat button (global) ── */}
+          {!(isMobile && activeNav === 'documentos') && !chatOpen && (
+            <div className="fixed z-40 flex flex-col items-end gap-2 pointer-events-none" style={{ right: isMobile ? 16 : 32, bottom: isMobile ? 82 : 32 }}>
+              {/* Speech bubble */}
+              <div className="pointer-events-auto relative">
+                <div className="rounded-2xl px-3.5 py-2 text-[13px] font-semibold text-white" style={{ background: 'rgba(8,22,80,0.92)', border: '1px solid rgba(255,255,255,0.24)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', boxShadow: '0 4px 18px rgba(0,0,60,0.40)', whiteSpace: 'nowrap' }}>
+                  Posso ajudar? 💬
+                </div>
+                <div className="absolute right-5 -bottom-2" style={{ width: 0, height: 0, borderLeft: '7px solid transparent', borderRight: '7px solid transparent', borderTop: '8px solid rgba(8,22,80,0.92)' }} />
+              </div>
+              {/* Agent avatar button */}
+              <div className="pointer-events-auto relative">
+                <span className="absolute inset-0 rounded-full pointer-events-none" style={{ animation: 'ring-ping 1.8s cubic-bezier(0,0,0.2,1) infinite', background: 'rgba(255,255,255,0.32)' }} />
+                <button
+                  onClick={() => { if (isMobile) { openChatMobile() } else { setActiveNav('sobre'); openChat() } }}
+                  className="relative rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95"
+                  style={{ width: 56, height: 56, border: '2.5px solid rgba(255,255,255,0.55)', boxShadow: '0 6px 24px rgba(0,0,80,0.45)', animation: 'avatar-pulse 2.4s ease-in-out infinite' }}
+                >
+                  <img src={agentPhoto} className="w-full h-full object-cover" alt="Assistente de RH" />
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* ── Juntos Somos TIS — bottom-left (desktop only) ── */}
           <div className="absolute z-25 bottom-8 left-10 pointer-events-none hidden md:block" style={{ opacity: chatOpen || activeNav !== 'sobre' ? 0 : 0.82, transition: `opacity 0.38s ${ease}` }}>
