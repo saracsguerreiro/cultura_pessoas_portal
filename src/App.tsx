@@ -732,29 +732,6 @@ export default function App() {
             </button>
           </nav>
 
-          {/* ── Floating chat button (global) ── */}
-          {!isMobile && !chatOpen && (
-            <div className="fixed z-40 flex flex-col items-end gap-2 pointer-events-none" style={{ right: isMobile ? 16 : 32, bottom: isMobile ? 82 : 32 }}>
-              {/* Speech bubble */}
-              <div className="pointer-events-auto relative">
-                <div className="rounded-2xl px-3.5 py-2 text-[13px] font-semibold text-white" style={{ background: 'rgba(8,22,80,0.92)', border: '1px solid rgba(255,255,255,0.24)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', boxShadow: '0 4px 18px rgba(0,0,60,0.40)', whiteSpace: 'nowrap' }}>
-                  Posso ajudar? 💬
-                </div>
-                <div className="absolute right-5 -bottom-2" style={{ width: 0, height: 0, borderLeft: '7px solid transparent', borderRight: '7px solid transparent', borderTop: '8px solid rgba(8,22,80,0.92)' }} />
-              </div>
-              {/* Agent avatar button */}
-              <div className="pointer-events-auto relative">
-                <span className="absolute inset-0 rounded-full pointer-events-none" style={{ animation: 'ring-ping 1.8s cubic-bezier(0,0,0.2,1) infinite', background: 'rgba(255,255,255,0.32)' }} />
-                <button
-                  onClick={() => { if (isMobile) { openChatMobile() } else { setActiveNav('sobre'); openChat() } }}
-                  className="relative rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95"
-                  style={{ width: 56, height: 56, border: '2.5px solid rgba(255,255,255,0.55)', boxShadow: '0 6px 24px rgba(0,0,80,0.45)', animation: 'avatar-pulse 2.4s ease-in-out infinite' }}
-                >
-                  <img src={agentPhoto} className="w-full h-full object-cover" alt="Assistente de RH" />
-                </button>
-              </div>
-            </div>
-          )}
 
           {/* ── Juntos Somos TIS — bottom-left (desktop only) ── */}
           <div className="absolute z-25 bottom-8 left-10 pointer-events-none hidden md:block" style={{ opacity: chatOpen || activeNav !== 'sobre' ? 0 : 0.82, transition: `opacity 0.38s ${ease}` }}>
@@ -804,11 +781,9 @@ export default function App() {
                   <span className="pointer-events-none absolute inset-0 rounded-full bg-white" style={{ animation: 'ring-ping 1.8s cubic-bezier(0,0,0.2,1) infinite' }} />
                   <button onClick={isMobile ? openChatMobile : openChat} className="relative inline-flex items-center gap-3 md:gap-4 rounded-full bg-white px-7 md:px-10 py-3 md:py-4 font-bold text-[#036ef2] hover:bg-white/95 active:scale-[0.98]" style={{ fontSize: isMobile ? '1rem' : '1.125rem', letterSpacing: '0.01em', animation: 'cta-glow 2s ease-in-out infinite', transition: 'transform 0.15s' }}>
                     <span style={{ animation: 'cta-text-pop 2.2s ease-in-out infinite', display: 'inline-block' }}>Falar com Agente</span>
-                    {isMobile && (
-                      <div className="rounded-full overflow-hidden shrink-0" style={{ width: 26, height: 26, border: '2px solid rgba(3,110,242,0.30)' }}>
-                        <img src={agentPhoto} className="w-full h-full object-cover" alt="" />
-                      </div>
-                    )}
+                    <div className="rounded-full overflow-hidden shrink-0" style={{ width: isMobile ? 26 : 30, height: isMobile ? 26 : 30, border: '2px solid rgba(3,110,242,0.30)' }}>
+                      <img src={agentPhoto} className="w-full h-full object-cover" alt="" />
+                    </div>
                     <span className="font-black" style={{ fontSize: '1.55em', lineHeight: 1, display: 'inline-block', animation: 'arrow-jump 0.9s ease-in-out infinite' }}>→</span>
                   </button>
                 </div>
@@ -1806,9 +1781,8 @@ export default function App() {
                                 <p className="text-sm font-bold text-white truncate">{previewDoc.name}</p>
                                 <p className="text-xs text-white/40 mt-0.5">{previewDoc.pages} pág. · {previewDoc.size} · {previewDoc.date} · {previewDoc.category}</p>
                               </div>
-                              <button className="shrink-0 flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-white transition-all hover:bg-white/20" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)' }}>
+                              <button className="shrink-0 flex items-center justify-center rounded-xl px-2.5 py-1.5 text-white transition-all hover:bg-white/20" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)' }} title="Download">
                                 <IconDownload className="h-3.5 w-3.5" />
-                                <span>Download</span>
                               </button>
                               <button onClick={() => { setPreviewDoc(null); setDocMessages([]); setDocChatOpen(false) }} className="shrink-0 h-7 w-7 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/15 transition-all text-sm leading-none">✕</button>
                             </div>
@@ -1882,29 +1856,6 @@ export default function App() {
                                   </div>
                                 </div>
                               )}
-                              {/* Avatar row: pulsing button + speech bubble */}
-                              <div className="flex items-center gap-3">
-                                <div className="relative">
-                                  {!docChatOpen && (
-                                    <span className="absolute inset-0 rounded-full pointer-events-none" style={{ animation: 'ring-ping 1.8s cubic-bezier(0,0,0.2,1) infinite', background: 'rgba(139,92,246,0.60)' }} />
-                                  )}
-                                  <button
-                                    onClick={() => setDocChatOpen(v => !v)}
-                                    className="relative rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95"
-                                    style={{ width: 60, height: 60, border: '2.5px solid rgba(167,139,250,0.75)', boxShadow: docChatOpen ? '0 6px 28px rgba(109,40,217,0.60)' : '0 4px 20px rgba(109,40,217,0.50)', animation: !docChatOpen ? 'avatar-pulse 2.4s ease-in-out infinite' : 'none' }}
-                                  >
-                                    <img src={agentPhoto} className="w-full h-full object-cover" alt="Assistente de RH" />
-                                  </button>
-                                </div>
-                                {!docChatOpen && (
-                                  <div className="flex items-center">
-                                    <div style={{ width: 0, height: 0, borderTop: '6px solid transparent', borderBottom: '6px solid transparent', borderRight: '8px solid rgba(76,29,149,0.95)' }} />
-                                    <div className="rounded-xl px-3 py-2 text-xs font-semibold text-white" style={{ background: 'rgba(76,29,149,0.95)', border: '1px solid rgba(167,139,250,0.40)', boxShadow: '0 4px 16px rgba(76,29,149,0.50)', whiteSpace: 'nowrap' }}>
-                                      Posso ajudar? 💬
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
                             </div>
                           </>
                         ) : (
@@ -2174,9 +2125,8 @@ export default function App() {
                         <IconArrowLeft className="h-4 w-4" />
                       </button>
                       <p className="flex-1 text-sm font-semibold text-white truncate min-w-0">{previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}</p>
-                      <button className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-white shrink-0" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)' }}>
+                      <button className="flex items-center justify-center rounded-xl px-2.5 py-1.5 text-white shrink-0" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)' }} title="Download">
                         <IconDownload className="h-3.5 w-3.5" />
-                        Download
                       </button>
                     </div>
 
