@@ -363,6 +363,9 @@ function DocTypeIcon({ type, className }: { type: TISDocument['type']; className
 function IconDownload({ className }: { className?: string }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
 }
+function IconArrowLeft({ className }: { className?: string }) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+}
 function MicrosoftLogo({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 21 21" className={className ?? "h-5 w-5 shrink-0"}>
@@ -1993,6 +1996,301 @@ export default function App() {
                       ))}
                     </div>
                   </div>
+                </div>
+              )
+            })()}
+
+            {/* ══ Documentos (mobile) ══ */}
+            {activeNav === 'documentos' && isMobile && (() => {
+              const filteredDocs = docCategory === 'Todos' ? DOCS_DATA : DOCS_DATA.filter(d => d.category === docCategory)
+              const glassM = { background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.16)', boxShadow: '0 8px 40px rgba(0,0,50,0.22)' }
+
+              const sendDocQueryM = (override?: string) => {
+                const q = (override ?? docQuery).trim()
+                if (!q || docThinking) return
+                if (!override) setDocQuery('')
+                setDocMessages(prev => [...prev, { role: 'user', content: q }])
+                setDocThinking(true)
+                setTimeout(() => {
+                  let content: string
+                  let sources: string[]
+                  if (previewDoc) {
+                    content = `Com base no documento "${previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}" — ${previewDoc.excerpt} Consulta o documento original para detalhes completos.`
+                    sources = [previewDoc.name]
+                  } else {
+                    const ql = q.toLowerCase()
+                    const match = DOC_MOCK_RESPONSES.find(r => r.keywords.some(kw => ql.includes(kw)))
+                    if (match) {
+                      const matchedDoc = DOCS_DATA.find(d => match.docIds.includes(d.id))
+                      if (matchedDoc) setPreviewDoc(matchedDoc)
+                      content = match.response
+                      sources = match.docIds.map(id => DOCS_DATA.find(d => d.id === id)?.name ?? '').filter(Boolean)
+                    } else {
+                      content = `Pesquisei na biblioteca, mas não encontrei informação específica sobre "${q}". Tenta selecionar um documento diretamente.`
+                      sources = []
+                    }
+                  }
+                  setDocMessages(prev => [...prev, { role: 'agent', content, sources }])
+                  setDocThinking(false)
+                }, 1400 + Math.random() * 600)
+              }
+
+              /* ── Chat view (full-screen) ── */
+              if (docChatOpen) return (
+                <div className="h-full flex flex-col px-3 pt-1">
+                  <div className="flex-1 flex flex-col min-h-0 rounded-2xl overflow-hidden" style={glassM}>
+
+                    {/* Header */}
+                    <div className="flex items-center gap-3 px-4 py-3 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.05)' }}>
+                      <button
+                        onClick={() => { setDocChatOpen(false); if (!previewDoc) setDocMessages([]) }}
+                        className="h-8 w-8 rounded-full flex items-center justify-center text-white/55 hover:bg-white/15 transition-all shrink-0"
+                      >
+                        <IconArrowLeft className="h-4 w-4" />
+                      </button>
+                      {previewDoc ? (
+                        <>
+                          <DocTypeIcon type={previewDoc.type} className="h-7 w-7 text-white/80 shrink-0" />
+                          <p className="flex-1 text-sm font-semibold text-white truncate min-w-0">{previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}</p>
+                          <button onClick={() => { setPreviewDoc(null); setDocMessages([]); setDocChatOpen(false) }} className="shrink-0 h-7 w-7 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/15 transition-all text-sm leading-none">✕</button>
+                        </>
+                      ) : (
+                        <>
+                          <div className="rounded-full overflow-hidden shrink-0" style={{ width: 32, height: 32, border: '1.5px solid rgba(255,255,255,0.40)' }}>
+                            <img src={agentPhoto} className="w-full h-full object-cover" alt="" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-white leading-tight">Assistente de RH</p>
+                            <div className="flex items-center gap-1 mt-0.5">
+                              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" style={{ boxShadow: '0 0 4px rgba(52,211,153,0.7)' }} />
+                              <span className="text-[10px] text-white/50">Online</span>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Messages */}
+                    <div className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
+                      {docMessages.map((msg, i) => (
+                        <div key={i} className={`flex items-end gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                          {msg.role === 'agent' && (
+                            <div className="h-7 w-7 rounded-full overflow-hidden shrink-0 mb-0.5" style={{ border: '1.5px solid rgba(255,255,255,0.35)' }}>
+                              <img src={agentPhoto} className="h-full w-full object-cover object-top" alt="" />
+                            </div>
+                          )}
+                          <div className="max-w-[80%] px-3.5 py-2.5 text-sm leading-relaxed"
+                            style={msg.role === 'user'
+                              ? { background: 'rgba(255,255,255,0.92)', color: '#036ef2', borderRadius: '18px 18px 4px 18px', fontWeight: 500 }
+                              : { background: 'rgba(255,255,255,0.11)', border: '1px solid rgba(255,255,255,0.15)', color: 'white', borderRadius: '18px 18px 18px 4px' }
+                            }
+                          >
+                            {msg.content}
+                            {msg.sources && msg.sources.length > 0 && (
+                              <div className="mt-2 pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }}>
+                                <p className="text-[9px] font-bold text-white/35 uppercase mb-1" style={{ letterSpacing: '0.10em' }}>Fontes</p>
+                                {msg.sources.map((s, si) => (
+                                  <p key={si} className="text-[10px] text-white/50 flex items-center gap-1 mb-0.5">📄 {s}</p>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                      {docThinking && (
+                        <div className="flex items-end gap-2">
+                          <div className="h-7 w-7 rounded-full overflow-hidden shrink-0" style={{ border: '1.5px solid rgba(255,255,255,0.35)' }}>
+                            <img src={agentPhoto} className="h-full w-full object-cover object-top" alt="" />
+                          </div>
+                          <div className="px-4 py-3" style={{ background: 'rgba(255,255,255,0.11)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '18px 18px 18px 4px' }}>
+                            <div className="flex gap-1 items-center">
+                              {[0, 150, 300].map(d => <span key={d} className="h-2 w-2 rounded-full bg-white/65 animate-bounce" style={{ animationDelay: `${d}ms` }} />)}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Input */}
+                    <div className="p-3 shrink-0" style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}>
+                      <div className="flex items-center gap-2 rounded-full px-4 py-2.5" style={{ background: 'rgba(255,255,255,0.09)', border: '1px solid rgba(255,255,255,0.18)' }}>
+                        <input
+                          value={docQuery}
+                          onChange={e => setDocQuery(e.target.value)}
+                          onKeyDown={e => { if (e.key === 'Enter') sendDocQueryM() }}
+                          placeholder={previewDoc ? `Pergunta sobre ${previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}…` : 'Fazer uma pergunta…'}
+                          className="flex-1 bg-transparent text-white outline-none placeholder-white/40"
+                          style={{ fontSize: 16 }}
+                        />
+                        <button onClick={() => sendDocQueryM()} disabled={!docQuery.trim() || docThinking}
+                          className="h-8 w-8 rounded-full bg-white flex items-center justify-center text-[#036ef2] disabled:opacity-35 active:scale-95 transition-transform"
+                        >
+                          <SendIcon className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              )
+
+              /* ── Doc detail view ── */
+              if (previewDoc) return (
+                <div className="h-full flex flex-col px-3 pt-1">
+                  <div className="flex-1 flex flex-col min-h-0 rounded-2xl overflow-hidden" style={glassM}>
+
+                    {/* Header */}
+                    <div className="flex items-center gap-3 px-4 py-3 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.05)' }}>
+                      <button
+                        onClick={() => { setPreviewDoc(null); setDocMessages([]) }}
+                        className="h-8 w-8 rounded-full flex items-center justify-center text-white/55 hover:bg-white/15 transition-all shrink-0"
+                      >
+                        <IconArrowLeft className="h-4 w-4" />
+                      </button>
+                      <p className="flex-1 text-sm font-semibold text-white">Detalhe do documento</p>
+                      <button className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-white" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)' }}>
+                        <IconDownload className="h-3.5 w-3.5" />
+                        Download
+                      </button>
+                    </div>
+
+                    <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
+                      {/* Doc info */}
+                      <div className="flex flex-col items-center pt-8 pb-6 px-5 gap-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                        <DocTypeIcon type={previewDoc.type} className="h-20 w-20 text-white/80" />
+                        <div className="text-center">
+                          <p className="text-base font-bold text-white mb-2 leading-snug">{previewDoc.name}</p>
+                          <div className="flex items-center justify-center gap-2 flex-wrap">
+                            <span className="text-xs text-white/40">{previewDoc.pages} pág.</span>
+                            <span className="text-white/20">·</span>
+                            <span className="text-xs text-white/40">{previewDoc.size}</span>
+                            <span className="text-white/20">·</span>
+                            <span className="text-xs text-white/40">{previewDoc.date}</span>
+                          </div>
+                          <span className="inline-block mt-2 text-xs font-medium px-2.5 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.10)', color: 'rgba(255,255,255,0.60)', border: '1px solid rgba(255,255,255,0.14)' }}>{previewDoc.category}</span>
+                        </div>
+                        <div className="w-full rounded-xl p-3.5" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)' }}>
+                          <p className="text-xs text-white/60 leading-relaxed">{previewDoc.excerpt}</p>
+                        </div>
+                      </div>
+
+                      {/* Agent CTA */}
+                      <div className="flex flex-col gap-4 px-5 py-6">
+                        <div className="flex items-center gap-3">
+                          <div className="relative shrink-0">
+                            <div className="rounded-full overflow-hidden" style={{ width: 48, height: 48, border: '2px solid rgba(167,139,250,0.60)' }}>
+                              <img src={agentPhoto} className="w-full h-full object-cover" alt="" />
+                            </div>
+                            <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-400 border-2 border-[#0a1060]" style={{ boxShadow: '0 0 4px rgba(52,211,153,0.6)' }} />
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-white">Assistente de RH</p>
+                            <p className="text-xs text-white/45 mt-0.5">Disponível para perguntas sobre este documento</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setDocChatOpen(true)
+                            if (docMessages.length === 0) setDocMessages([{ role: 'agent', content: `Estou a consultar "${previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}". O que queres saber?` }])
+                          }}
+                          className="w-full rounded-full py-3.5 text-sm font-bold text-white active:scale-[0.98] transition-transform"
+                          style={{ background: 'rgba(76,29,149,0.85)', border: '1px solid rgba(167,139,250,0.40)', boxShadow: '0 6px 24px rgba(76,29,149,0.45)' }}
+                        >
+                          Perguntar ao Assistente
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              )
+
+              /* ── Library view (default) ── */
+              return (
+                <div className="h-full flex flex-col px-3 pt-1 gap-3">
+
+                  {/* Search pill */}
+                  <div className="shrink-0 relative">
+                    <input
+                      value={docQuery}
+                      onChange={e => setDocQuery(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter' && docQuery.trim()) { setDocChatOpen(true); sendDocQueryM() } }}
+                      placeholder="Fazer uma pergunta sobre os documentos…"
+                      className="w-full rounded-full px-5 py-3 pr-14 text-white placeholder-white/35 outline-none"
+                      style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.22)', backdropFilter: 'blur(18px)', fontSize: 15 }}
+                    />
+                    <button
+                      onClick={() => { if (docQuery.trim()) { setDocChatOpen(true); sendDocQueryM() } }}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full flex items-center justify-center"
+                      style={{ background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.22)' }}
+                    >
+                      <SendIcon className="h-3.5 w-3.5 text-white" />
+                    </button>
+                  </div>
+
+                  {/* Doc library card */}
+                  <div className="flex-1 min-h-0 rounded-2xl flex flex-col overflow-hidden" style={glassM}>
+
+                    {/* Header */}
+                    <div className="shrink-0 px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)' }}>
+                      <h3 className="text-sm font-extrabold text-white">Biblioteca de Documentos</h3>
+                    </div>
+
+                    {/* Category chips */}
+                    <div className="shrink-0 flex gap-1.5 px-3 py-2.5 overflow-x-auto" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', scrollbarWidth: 'none' } as React.CSSProperties}>
+                      {DOC_CATS.map(cat => (
+                        <button key={cat}
+                          onClick={() => setDocCategory(cat)}
+                          className="rounded-full px-3 py-1 text-[11px] font-semibold whitespace-nowrap shrink-0 transition-all"
+                          style={docCategory === cat
+                            ? { background: 'rgba(255,255,255,0.20)', color: 'white', border: '1px solid rgba(255,255,255,0.30)' }
+                            : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.45)', border: '1px solid rgba(255,255,255,0.10)' }}
+                        >{cat}</button>
+                      ))}
+                    </div>
+
+                    {/* Doc list */}
+                    <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
+                      {filteredDocs.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center h-full gap-3 px-6 text-center py-10">
+                          <IconDoc className="h-8 w-8 text-white/18" />
+                          <p className="text-sm text-white/30">Sem documentos nesta categoria.</p>
+                        </div>
+                      ) : filteredDocs.map(doc => (
+                        <div key={doc.id}
+                          className="flex items-center gap-3 px-4 py-3.5 cursor-pointer transition-all"
+                          style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
+                          onClick={() => setPreviewDoc(doc)}
+                          onTouchStart={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'}
+                          onTouchEnd={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
+                        >
+                          <DocTypeIcon type={doc.type} className="h-8 w-8 text-white/65 shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-white truncate">{doc.name}</p>
+                            <p className="text-xs text-white/40 mt-0.5">{doc.pages} pág. · {doc.size} · {doc.date}</p>
+                          </div>
+                          <span className="shrink-0 text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.50)', border: '1px solid rgba(255,255,255,0.12)' }}>{doc.category}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                  </div>
+
+                  {/* FAB — Assistente */}
+                  <button
+                    onClick={() => {
+                      setDocChatOpen(true)
+                      if (docMessages.length === 0) setDocMessages([{ role: 'agent', content: 'Olá! Podes fazer-me perguntas sobre qualquer documento da biblioteca. Como posso ajudar?' }])
+                    }}
+                    className="fixed right-4 flex items-center gap-2.5 px-4 rounded-full"
+                    style={{ bottom: '80px', height: 50, background: 'rgba(76,29,149,0.90)', border: '1px solid rgba(167,139,250,0.40)', boxShadow: '0 6px 24px rgba(76,29,149,0.50)', zIndex: 30 }}
+                  >
+                    <div className="rounded-full overflow-hidden shrink-0" style={{ width: 28, height: 28, border: '1.5px solid rgba(196,181,253,0.60)' }}>
+                      <img src={agentPhoto} className="w-full h-full object-cover" alt="" />
+                    </div>
+                    <span className="text-sm font-semibold text-white">Perguntar</span>
+                  </button>
+
                 </div>
               )
             })()}
