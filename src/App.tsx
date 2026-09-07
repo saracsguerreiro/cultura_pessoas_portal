@@ -323,10 +323,39 @@ function IconArchive({ className }: { className?: string }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
 }
 function DocTypeIcon({ type, className }: { type: TISDocument['type']; className?: string }) {
+  const docBase = <>
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14 2 14 8 20 8"/>
+  </>
+  if (type === 'pdf') return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className={className}>
+      {docBase}
+      <line x1="8" y1="11.5" x2="16" y2="11.5" strokeWidth={1.3}/>
+      <line x1="8" y1="14"   x2="13" y2="14"   strokeWidth={1.3}/>
+      <line x1="8" y1="16.5" x2="16" y2="16.5" strokeWidth={1.3}/>
+      <text x="12" y="20.5" textAnchor="middle" fontSize="3.5" fill="currentColor" stroke="none" fontWeight="800" fontFamily="system-ui,sans-serif">PDF</text>
+    </svg>
+  )
+  if (type === 'docx') return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className={className}>
+      {docBase}
+      <polyline points="8 11.5 9.5 16.5 12 13.5 14.5 16.5 16 11.5" strokeWidth={1.4}/>
+      <text x="12" y="20.5" textAnchor="middle" fontSize="3.5" fill="currentColor" stroke="none" fontWeight="800" fontFamily="system-ui,sans-serif">DOC</text>
+    </svg>
+  )
+  if (type === 'xlsx') return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className={className}>
+      {docBase}
+      <rect x="7.5" y="10.5" width="9" height="6" rx="0.4" strokeWidth={1.2}/>
+      <line x1="7.5" y1="13" x2="16.5" y2="13" strokeWidth={1.2}/>
+      <line x1="7.5" y1="15" x2="16.5" y2="15" strokeWidth={1.2}/>
+      <line x1="11" y1="10.5" x2="11" y2="16.5" strokeWidth={1.2}/>
+      <text x="12" y="20.5" textAnchor="middle" fontSize="3.5" fill="currentColor" stroke="none" fontWeight="800" fontFamily="system-ui,sans-serif">XLS</text>
+    </svg>
+  )
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-      <polyline points="14 2 14 8 20 8"/>
+      {docBase}
       <text x="12" y="17.5" textAnchor="middle" fontSize="5" fill="currentColor" stroke="none" fontWeight="700" fontFamily="system-ui,sans-serif">{type.toUpperCase()}</text>
     </svg>
   )
@@ -1712,7 +1741,7 @@ export default function App() {
                             <img src={agentPhoto} alt="Assistente de RH" className="h-full w-full object-cover" />
                           </div>
                           <h2 className="text-4xl font-extrabold text-white mb-3">Biblioteca de Documentos</h2>
-                          <p className="text-white/50 text-base max-w-md mx-auto leading-relaxed">Faz uma pergunta e o agente de RH responde com base nos documentos da biblioteca — sempre com citação da fonte.</p>
+                          <p className="text-white/50 text-base max-w-md mx-auto leading-relaxed">Faz uma pergunta e o agente de RH responde com base nos documentos da biblioteca.</p>
                         </div>
                         <div className="w-full max-w-lg relative">
                           <input
@@ -1720,10 +1749,10 @@ export default function App() {
                             onChange={e => setDocQuery(e.target.value)}
                             onKeyDown={e => { if (e.key === 'Enter') sendDocQuery() }}
                             placeholder="Fazer uma pergunta sobre os documentos…"
-                            className="w-full rounded-2xl px-5 py-4 pr-14 text-white placeholder-white/35 outline-none"
+                            className="w-full rounded-full px-6 py-4 pr-16 text-white placeholder-white/35 outline-none"
                             style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.28)', backdropFilter: 'blur(18px)', boxShadow: '0 4px 32px rgba(0,0,80,0.18)', fontSize: 16 }}
                           />
-                          <button onClick={() => sendDocQuery()} className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-xl transition-all hover:bg-white/25" style={{ width: 36, height: 36, background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.22)' }}>
+                          <button onClick={() => sendDocQuery()} className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-full transition-all hover:bg-white/25" style={{ width: 38, height: 38, background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.22)' }}>
                             <SendIcon className="h-4 w-4 text-white" />
                           </button>
                         </div>
@@ -1920,8 +1949,7 @@ export default function App() {
                   {/* ── Right panel: Library ── */}
                   <div className="w-80 shrink-0 flex flex-col rounded-2xl overflow-hidden" style={glassPanel}>
                     <div className="px-4 py-4 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.10)', background: 'rgba(255,255,255,0.05)' }}>
-                      <p className="text-[10px] font-bold text-white/35 uppercase mb-0.5" style={{ letterSpacing: '0.14em' }}>TIS</p>
-                      <h3 className="text-sm font-extrabold text-white">Biblioteca</h3>
+                      <h3 className="text-sm font-extrabold text-white">Biblioteca de Documentos</h3>
                     </div>
                     <div className="flex gap-1.5 px-4 py-3 flex-wrap shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
                       {DOC_CATS.map(cat => (
