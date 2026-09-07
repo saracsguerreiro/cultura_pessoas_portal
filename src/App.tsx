@@ -407,6 +407,7 @@ export default function App() {
   const [docMessages,  setDocMessages]  = useState<DocMessage[]>([])
   const [docThinking,  setDocThinking]  = useState(false)
   const [previewDoc,   setPreviewDoc]   = useState<TISDocument | null>(null)
+  const [docChatOpen,  setDocChatOpen]  = useState(false)
 
   // ── GSAP mural: hide all cells on mount so the login screen sits over a blank canvas ──
   useEffect(() => {
@@ -1674,7 +1675,7 @@ export default function App() {
                     const match = DOC_MOCK_RESPONSES.find(r => r.keywords.some(kw => ql.includes(kw)))
                     if (match) {
                       const matchedDoc = DOCS_DATA.find(d => match.docIds.includes(d.id))
-                      if (matchedDoc) setPreviewDoc(matchedDoc)
+                      if (matchedDoc) { setPreviewDoc(matchedDoc); setDocChatOpen(true) }
                       content = match.response
                       sources = match.docIds.map(id => DOCS_DATA.find(d => d.id === id)?.name ?? '').filter(Boolean)
                     } else {
@@ -1689,6 +1690,7 @@ export default function App() {
 
               const openDoc = (doc: TISDocument) => {
                 setPreviewDoc(doc)
+                setDocChatOpen(true)
                 if (docMessages.length === 0) {
                   setDocMessages([{ role: 'agent', content: `Abri o documento "${doc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}". Posso ajudar com alguma questão sobre o seu conteúdo?` }])
                 }
@@ -1734,15 +1736,14 @@ export default function App() {
                       </div>
 
                     ) : (
-                      /* Active state: document preview + chat */
-                      <div className="flex-1 flex flex-col min-h-0">
-
-                        {/* Document preview panel */}
-                        {previewDoc && (
-                          <div className="shrink-0 flex flex-col" style={{ height: '50%', borderBottom: '1px solid rgba(255,255,255,0.12)' }}>
+                      /* Active state */
+                      <div className="flex-1 flex flex-col min-h-0 relative">
+                        {previewDoc ? (
+                          /* Document fills full height + floating chat widget */
+                          <>
                             {/* Doc header */}
-                            <div className="flex items-center gap-4 px-6 py-4 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.05)' }}>
-                              <DocTypeIcon type={previewDoc.type} className="h-[46px] w-[46px] text-white/85 shrink-0" />
+                            <div className="flex items-center gap-4 px-6 py-4 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.10)', background: 'rgba(255,255,255,0.05)' }}>
+                              <DocTypeIcon type={previewDoc.type} className="h-[53px] w-[53px] text-white/85 shrink-0" />
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-bold text-white truncate">{previewDoc.name}</p>
                                 <p className="text-xs text-white/40 mt-0.5">{previewDoc.pages} pág. · {previewDoc.size} · {previewDoc.date} · {previewDoc.category}</p>
@@ -1751,9 +1752,9 @@ export default function App() {
                                 <IconDownload className="h-3.5 w-3.5" />
                                 <span>Download</span>
                               </button>
-                              <button onClick={() => { setPreviewDoc(null); setDocMessages([]) }} className="shrink-0 h-7 w-7 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/15 transition-all text-sm leading-none">✕</button>
+                              <button onClick={() => { setPreviewDoc(null); setDocMessages([]); setDocChatOpen(false) }} className="shrink-0 h-7 w-7 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/15 transition-all text-sm leading-none">✕</button>
                             </div>
-                            {/* Doc content */}
+                            {/* PDF fills all remaining height */}
                             <div className="flex-1 min-h-0 overflow-hidden">
                               <iframe
                                 src={`${import.meta.env.BASE_URL}docs/example.pdf`}
@@ -1761,62 +1762,131 @@ export default function App() {
                                 title={previewDoc.name}
                               />
                             </div>
-                          </div>
-                        )}
-
-                        {/* Chat area */}
-                        <div className="flex-1 flex flex-col min-h-0">
-                          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
-                            {docMessages.map((msg, i) => (
-                              <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                                {msg.role === 'agent' && (
+                            {/* ── Floating chat widget ── */}
+                            <div className="absolute bottom-5 right-5 flex flex-col items-end gap-3" style={{ zIndex: 20 }}>
+                              {docChatOpen && (
+                                <div className="w-80 flex flex-col overflow-hidden rounded-2xl" style={{ height: 390, background: 'rgba(8,22,80,0.82)', backdropFilter: 'blur(36px)', WebkitBackdropFilter: 'blur(36px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: '0 16px 56px rgba(0,0,60,0.55)' }}>
+                                  {/* Panel header */}
+                                  <div className="flex items-center gap-2.5 px-4 py-3 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)' }}>
+                                    <div className="rounded-full overflow-hidden shrink-0" style={{ width: 28, height: 28, border: '1.5px solid rgba(255,255,255,0.4)' }}>
+                                      <img src={agentPhoto} className="w-full h-full object-cover" alt="" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-xs font-semibold text-white leading-tight">Assistente de RH</p>
+                                      <div className="flex items-center gap-1 mt-0.5">
+                                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" style={{ boxShadow: '0 0 4px rgba(52,211,153,0.7)' }} />
+                                        <span className="text-[9px] text-white/50">Online</span>
+                                      </div>
+                                    </div>
+                                    <button onClick={() => setDocChatOpen(false)} className="h-6 w-6 rounded-full flex items-center justify-center text-white/45 hover:text-white hover:bg-white/15 transition-all text-sm leading-none shrink-0">✕</button>
+                                  </div>
+                                  {/* Messages */}
+                                  <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
+                                    {docMessages.map((msg, i) => (
+                                      <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : 'items-end'}`}>
+                                        {msg.role === 'agent' && (
+                                          <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 22, height: 22, border: '1px solid rgba(255,255,255,0.35)' }}>
+                                            <img src={agentPhoto} className="w-full h-full object-cover object-top" alt="" />
+                                          </div>
+                                        )}
+                                        <div className={`rounded-xl px-3 py-2 ${msg.role === 'user' ? 'rounded-tr-sm' : 'rounded-bl-sm'}`} style={{ maxWidth: '82%', background: msg.role === 'user' ? 'rgba(3,110,242,0.40)' : 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.10)', color: 'rgba(255,255,255,0.90)', fontSize: 12, lineHeight: 1.55 }}>
+                                          {msg.content}
+                                        </div>
+                                      </div>
+                                    ))}
+                                    {docThinking && (
+                                      <div className="flex gap-2 items-end">
+                                        <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 22, height: 22, border: '1px solid rgba(255,255,255,0.35)' }}>
+                                          <img src={agentPhoto} className="w-full h-full object-cover object-top" alt="" />
+                                        </div>
+                                        <div className="rounded-xl rounded-bl-sm px-3 py-2" style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.10)' }}>
+                                          <div className="flex gap-1 items-center h-4">
+                                            {[0, 1, 2].map(i => <div key={i} className="rounded-full" style={{ width: 5, height: 5, background: 'rgba(255,255,255,0.55)', animation: `bubble-float 1.2s ${i * 0.22}s ease-in-out infinite` }} />)}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                  {/* Input bar */}
+                                  <div className="shrink-0 px-3 py-2.5 flex items-center gap-2" style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}>
+                                    <input
+                                      value={docQuery}
+                                      onChange={e => setDocQuery(e.target.value)}
+                                      onKeyDown={e => { if (e.key === 'Enter') sendDocQuery() }}
+                                      placeholder={`Pergunta sobre ${previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}…`}
+                                      className="flex-1 bg-transparent text-white outline-none placeholder-white/30"
+                                      style={{ fontSize: 13 }}
+                                    />
+                                    <button onClick={() => sendDocQuery()} disabled={!docQuery.trim() || docThinking} className="shrink-0 flex items-center justify-center rounded-lg transition-all disabled:opacity-35 hover:bg-white/20" style={{ width: 28, height: 28, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.18)' }}>
+                                      <SendIcon className="h-3 w-3 text-white" />
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                              {/* Agent avatar toggle */}
+                              <button
+                                onClick={() => setDocChatOpen(v => !v)}
+                                className="rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95"
+                                style={{ width: 60, height: 60, border: '2.5px solid rgba(255,255,255,0.55)', boxShadow: docChatOpen ? '0 6px 28px rgba(0,0,80,0.55)' : '0 4px 20px rgba(0,0,80,0.40)' }}
+                              >
+                                <img src={agentPhoto} className="w-full h-full object-cover" alt="Assistente de RH" />
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          /* Chat fills center when no document is open */
+                          <div className="flex-1 flex flex-col min-h-0">
+                            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
+                              {docMessages.map((msg, i) => (
+                                <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                                  {msg.role === 'agent' && (
+                                    <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 30, height: 30, border: '1.5px solid rgba(255,255,255,0.35)' }}>
+                                      <img src={agentPhoto} className="w-full h-full object-cover object-top" alt="" />
+                                    </div>
+                                  )}
+                                  <div className={`rounded-2xl px-4 py-3 ${msg.role === 'user' ? 'rounded-tr-sm' : 'rounded-tl-sm'}`} style={{ maxWidth: '72%', background: msg.role === 'user' ? 'rgba(3,110,242,0.32)' : 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                                    <p className="text-sm text-white/90 leading-relaxed">{msg.content}</p>
+                                    {msg.sources && msg.sources.length > 0 && (
+                                      <div className="mt-2.5 pt-2.5" style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}>
+                                        <p className="text-[9px] font-bold text-white/35 uppercase mb-1.5" style={{ letterSpacing: '0.10em' }}>Fontes</p>
+                                        {msg.sources.map((s, si) => (
+                                          <p key={si} className="text-[10px] text-white/50 flex items-center gap-1.5 mb-0.5">
+                                            <span className="text-white/30">📄</span>{s}
+                                          </p>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                              {docThinking && (
+                                <div className="flex gap-3">
                                   <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 30, height: 30, border: '1.5px solid rgba(255,255,255,0.35)' }}>
                                     <img src={agentPhoto} className="w-full h-full object-cover object-top" alt="" />
                                   </div>
-                                )}
-                                <div className={`rounded-2xl px-4 py-3 ${msg.role === 'user' ? 'rounded-tr-sm' : 'rounded-tl-sm'}`} style={{ maxWidth: '72%', background: msg.role === 'user' ? 'rgba(3,110,242,0.32)' : 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                                  <p className="text-sm text-white/90 leading-relaxed">{msg.content}</p>
-                                  {msg.sources && msg.sources.length > 0 && (
-                                    <div className="mt-2.5 pt-2.5" style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}>
-                                      <p className="text-[9px] font-bold text-white/35 uppercase mb-1.5" style={{ letterSpacing: '0.10em' }}>Fontes</p>
-                                      {msg.sources.map((s, si) => (
-                                        <p key={si} className="text-[10px] text-white/50 flex items-center gap-1.5 mb-0.5">
-                                          <span className="text-white/30">📄</span>{s}
-                                        </p>
-                                      ))}
+                                  <div className="rounded-2xl rounded-tl-sm px-4 py-3" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                                    <div className="flex gap-1 items-center h-5">
+                                      {[0, 1, 2].map(i => <div key={i} className="rounded-full" style={{ width: 6, height: 6, background: 'rgba(255,255,255,0.50)', animation: `bubble-float 1.2s ${i * 0.22}s ease-in-out infinite` }} />)}
                                     </div>
-                                  )}
-                                </div>
-                              </div>
-                            ))}
-                            {docThinking && (
-                              <div className="flex gap-3">
-                                <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 30, height: 30, border: '1.5px solid rgba(255,255,255,0.35)' }}>
-                                  <img src={agentPhoto} className="w-full h-full object-cover object-top" alt="" />
-                                </div>
-                                <div className="rounded-2xl rounded-tl-sm px-4 py-3" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                                  <div className="flex gap-1 items-center h-5">
-                                    {[0, 1, 2].map(i => <div key={i} className="rounded-full" style={{ width: 6, height: 6, background: 'rgba(255,255,255,0.50)', animation: `bubble-float 1.2s ${i * 0.22}s ease-in-out infinite` }} />)}
                                   </div>
                                 </div>
-                              </div>
-                            )}
+                              )}
+                            </div>
+                            <div className="shrink-0 px-4 py-3 flex items-center gap-3" style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}>
+                              <input
+                                value={docQuery}
+                                onChange={e => setDocQuery(e.target.value)}
+                                onKeyDown={e => { if (e.key === 'Enter') sendDocQuery() }}
+                                placeholder="Fazer uma pergunta sobre os documentos…"
+                                className="flex-1 bg-transparent text-white outline-none placeholder-white/30"
+                                style={{ fontSize: 16 }}
+                              />
+                              <button onClick={() => sendDocQuery()} disabled={!docQuery.trim() || docThinking} className="shrink-0 flex items-center justify-center rounded-xl transition-all disabled:opacity-35 hover:bg-white/20" style={{ width: 34, height: 34, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.18)' }}>
+                                <SendIcon className="h-3.5 w-3.5 text-white" />
+                              </button>
+                            </div>
                           </div>
-                          <div className="shrink-0 px-4 py-3 flex items-center gap-3" style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}>
-                            <input
-                              value={docQuery}
-                              onChange={e => setDocQuery(e.target.value)}
-                              onKeyDown={e => { if (e.key === 'Enter') sendDocQuery() }}
-                              placeholder={previewDoc ? `Pergunta sobre ${previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}…` : 'Fazer uma pergunta sobre os documentos…'}
-                              className="flex-1 bg-transparent text-white outline-none placeholder-white/30"
-                              style={{ fontSize: 16 }}
-                            />
-                            <button onClick={() => sendDocQuery()} disabled={!docQuery.trim() || docThinking} className="shrink-0 flex items-center justify-center rounded-xl transition-all disabled:opacity-35 hover:bg-white/20" style={{ width: 34, height: 34, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.18)' }}>
-                              <SendIcon className="h-3.5 w-3.5 text-white" />
-                            </button>
-                          </div>
-                        </div>
-
+                        )}
                       </div>
                     )}
                   </div>
@@ -1857,7 +1927,7 @@ export default function App() {
                           onMouseEnter={e => { if (previewDoc?.id !== doc.id) (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)' }}
                           onMouseLeave={e => { if (previewDoc?.id !== doc.id) (e.currentTarget as HTMLElement).style.background = 'transparent' }}
                         >
-                          <DocTypeIcon type={doc.type} className="h-[23px] w-[23px] text-white/65 shrink-0" />
+                          <DocTypeIcon type={doc.type} className="h-[27px] w-[27px] text-white/65 shrink-0" />
                           <div className="flex-1 min-w-0">
                             <p className="text-[11px] font-semibold text-white leading-snug truncate">{doc.name}</p>
                             <p className="text-[10px] text-white/38 mt-0.5">{doc.size} · {doc.pages} pág. · {doc.date}</p>
