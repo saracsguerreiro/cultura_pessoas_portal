@@ -1762,80 +1762,106 @@ export default function App() {
                                 title={previewDoc.name}
                               />
                             </div>
-                            {/* ── Floating chat widget ── */}
-                            <div className="absolute bottom-5 right-5 flex flex-col items-end gap-3" style={{ zIndex: 20 }}>
+                            {/* ── Floating chat widget (left side) ── */}
+                            <div className="absolute bottom-5 left-5 flex flex-col items-start gap-3" style={{ zIndex: 20 }}>
+                              {/* Chat panel */}
                               {docChatOpen && (
-                                <div className="w-80 flex flex-col overflow-hidden rounded-2xl" style={{ height: 390, background: 'rgba(8,22,80,0.82)', backdropFilter: 'blur(36px)', WebkitBackdropFilter: 'blur(36px)', border: '1px solid rgba(255,255,255,0.22)', boxShadow: '0 16px 56px rgba(0,0,60,0.55)' }}>
+                                <div className="w-80 flex flex-col overflow-hidden rounded-2xl" style={{ height: 390, background: 'rgba(76,29,149,0.92)', backdropFilter: 'blur(36px)', WebkitBackdropFilter: 'blur(36px)', border: '1px solid rgba(167,139,250,0.35)', boxShadow: '0 16px 56px rgba(76,29,149,0.55)' }}>
                                   {/* Panel header */}
-                                  <div className="flex items-center gap-2.5 px-4 py-3 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)' }}>
-                                    <div className="rounded-full overflow-hidden shrink-0" style={{ width: 28, height: 28, border: '1.5px solid rgba(255,255,255,0.4)' }}>
+                                  <div className="flex items-center gap-2.5 px-4 py-3 shrink-0" style={{ borderBottom: '1px solid rgba(167,139,250,0.18)', background: 'rgba(109,40,217,0.30)' }}>
+                                    <div className="rounded-full overflow-hidden shrink-0" style={{ width: 28, height: 28, border: '1.5px solid rgba(196,181,253,0.55)' }}>
                                       <img src={agentPhoto} className="w-full h-full object-cover" alt="" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                       <p className="text-xs font-semibold text-white leading-tight">Assistente de RH</p>
                                       <div className="flex items-center gap-1 mt-0.5">
                                         <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" style={{ boxShadow: '0 0 4px rgba(52,211,153,0.7)' }} />
-                                        <span className="text-[9px] text-white/50">Online</span>
+                                        <span className="text-[9px] text-violet-200/70">Online</span>
                                       </div>
                                     </div>
-                                    <button onClick={() => setDocChatOpen(false)} className="h-6 w-6 rounded-full flex items-center justify-center text-white/45 hover:text-white hover:bg-white/15 transition-all text-sm leading-none shrink-0">✕</button>
+                                    <button onClick={() => setDocChatOpen(false)} className="h-6 w-6 rounded-full flex items-center justify-center text-violet-300/60 hover:text-white hover:bg-white/15 transition-all text-sm leading-none shrink-0">✕</button>
                                   </div>
                                   {/* Messages */}
                                   <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
                                     {docMessages.map((msg, i) => (
                                       <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : 'items-end'}`}>
                                         {msg.role === 'agent' && (
-                                          <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 22, height: 22, border: '1px solid rgba(255,255,255,0.35)' }}>
+                                          <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 22, height: 22, border: '1px solid rgba(196,181,253,0.45)' }}>
                                             <img src={agentPhoto} className="w-full h-full object-cover object-top" alt="" />
                                           </div>
                                         )}
-                                        <div className={`rounded-xl px-3 py-2 ${msg.role === 'user' ? 'rounded-tr-sm' : 'rounded-bl-sm'}`} style={{ maxWidth: '82%', background: msg.role === 'user' ? 'rgba(3,110,242,0.40)' : 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.10)', color: 'rgba(255,255,255,0.90)', fontSize: 12, lineHeight: 1.55 }}>
+                                        <div className={`rounded-xl px-3 py-2 ${msg.role === 'user' ? 'rounded-tr-sm' : 'rounded-bl-sm'}`} style={{ maxWidth: '82%', background: msg.role === 'user' ? 'rgba(109,40,217,0.55)' : 'rgba(255,255,255,0.12)', border: '1px solid rgba(167,139,250,0.20)', color: 'rgba(255,255,255,0.92)', fontSize: 12, lineHeight: 1.55 }}>
                                           {msg.content}
                                         </div>
                                       </div>
                                     ))}
                                     {docThinking && (
                                       <div className="flex gap-2 items-end">
-                                        <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 22, height: 22, border: '1px solid rgba(255,255,255,0.35)' }}>
+                                        <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 22, height: 22, border: '1px solid rgba(196,181,253,0.45)' }}>
                                           <img src={agentPhoto} className="w-full h-full object-cover object-top" alt="" />
                                         </div>
-                                        <div className="rounded-xl rounded-bl-sm px-3 py-2" style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.10)' }}>
+                                        <div className="rounded-xl rounded-bl-sm px-3 py-2" style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(167,139,250,0.20)' }}>
                                           <div className="flex gap-1 items-center h-4">
-                                            {[0, 1, 2].map(i => <div key={i} className="rounded-full" style={{ width: 5, height: 5, background: 'rgba(255,255,255,0.55)', animation: `bubble-float 1.2s ${i * 0.22}s ease-in-out infinite` }} />)}
+                                            {[0, 1, 2].map(i => <div key={i} className="rounded-full" style={{ width: 5, height: 5, background: 'rgba(196,181,253,0.70)', animation: `bubble-float 1.2s ${i * 0.22}s ease-in-out infinite` }} />)}
                                           </div>
                                         </div>
                                       </div>
                                     )}
                                   </div>
                                   {/* Input bar */}
-                                  <div className="shrink-0 px-3 py-2.5 flex items-center gap-2" style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}>
+                                  <div className="shrink-0 px-3 py-2.5 flex items-center gap-2" style={{ borderTop: '1px solid rgba(167,139,250,0.18)' }}>
                                     <input
                                       value={docQuery}
                                       onChange={e => setDocQuery(e.target.value)}
                                       onKeyDown={e => { if (e.key === 'Enter') sendDocQuery() }}
                                       placeholder={`Pergunta sobre ${previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}…`}
-                                      className="flex-1 bg-transparent text-white outline-none placeholder-white/30"
-                                      style={{ fontSize: 13 }}
+                                      className="flex-1 bg-transparent text-white outline-none"
+                                      style={{ fontSize: 13, color: 'white' }}
                                     />
-                                    <button onClick={() => sendDocQuery()} disabled={!docQuery.trim() || docThinking} className="shrink-0 flex items-center justify-center rounded-lg transition-all disabled:opacity-35 hover:bg-white/20" style={{ width: 28, height: 28, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.18)' }}>
+                                    <button onClick={() => sendDocQuery()} disabled={!docQuery.trim() || docThinking} className="shrink-0 flex items-center justify-center rounded-lg transition-all disabled:opacity-35" style={{ width: 28, height: 28, background: 'rgba(109,40,217,0.55)', border: '1px solid rgba(167,139,250,0.35)' }}>
                                       <SendIcon className="h-3 w-3 text-white" />
                                     </button>
                                   </div>
                                 </div>
                               )}
-                              {/* Agent avatar toggle */}
-                              <button
-                                onClick={() => setDocChatOpen(v => !v)}
-                                className="rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95"
-                                style={{ width: 60, height: 60, border: '2.5px solid rgba(255,255,255,0.55)', boxShadow: docChatOpen ? '0 6px 28px rgba(0,0,80,0.55)' : '0 4px 20px rgba(0,0,80,0.40)' }}
-                              >
-                                <img src={agentPhoto} className="w-full h-full object-cover" alt="Assistente de RH" />
-                              </button>
+                              {/* Avatar row: pulsing button + speech bubble */}
+                              <div className="flex items-center gap-3">
+                                <div className="relative">
+                                  {!docChatOpen && (
+                                    <span className="absolute inset-0 rounded-full pointer-events-none" style={{ animation: 'ring-ping 1.8s cubic-bezier(0,0,0.2,1) infinite', background: 'rgba(139,92,246,0.60)' }} />
+                                  )}
+                                  <button
+                                    onClick={() => setDocChatOpen(v => !v)}
+                                    className="relative rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95"
+                                    style={{ width: 60, height: 60, border: '2.5px solid rgba(167,139,250,0.75)', boxShadow: docChatOpen ? '0 6px 28px rgba(109,40,217,0.60)' : '0 4px 20px rgba(109,40,217,0.50)', animation: !docChatOpen ? 'avatar-pulse 2.4s ease-in-out infinite' : 'none' }}
+                                  >
+                                    <img src={agentPhoto} className="w-full h-full object-cover" alt="Assistente de RH" />
+                                  </button>
+                                </div>
+                                {!docChatOpen && (
+                                  <div className="flex items-center">
+                                    <div style={{ width: 0, height: 0, borderTop: '6px solid transparent', borderBottom: '6px solid transparent', borderRight: '8px solid rgba(76,29,149,0.95)' }} />
+                                    <div className="rounded-xl px-3 py-2 text-xs font-semibold text-white" style={{ background: 'rgba(76,29,149,0.95)', border: '1px solid rgba(167,139,250,0.40)', boxShadow: '0 4px 16px rgba(76,29,149,0.50)', whiteSpace: 'nowrap' }}>
+                                      Posso ajudar? 💬
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </>
                         ) : (
                           /* Chat fills center when no document is open */
                           <div className="flex-1 flex flex-col min-h-0">
+                            {/* Close bar */}
+                            <div className="shrink-0 flex items-center justify-between px-5 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                              <div className="flex items-center gap-2">
+                                <div className="rounded-full overflow-hidden" style={{ width: 24, height: 24, border: '1px solid rgba(255,255,255,0.35)' }}>
+                                  <img src={agentPhoto} className="w-full h-full object-cover" alt="" />
+                                </div>
+                                <span className="text-xs font-semibold text-white/55">Assistente de RH</span>
+                              </div>
+                              <button onClick={() => setDocMessages([])} className="h-6 w-6 rounded-full flex items-center justify-center text-white/35 hover:text-white hover:bg-white/15 transition-all text-sm leading-none">✕</button>
+                            </div>
                             <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
                               {docMessages.map((msg, i) => (
                                 <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
@@ -1893,14 +1919,9 @@ export default function App() {
 
                   {/* ── Right panel: Library ── */}
                   <div className="w-80 shrink-0 flex flex-col rounded-2xl overflow-hidden" style={glassPanel}>
-                    <div className="flex items-center justify-between px-4 py-4 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.10)', background: 'rgba(255,255,255,0.05)' }}>
-                      <div>
-                        <p className="text-[10px] font-bold text-white/35 uppercase mb-0.5" style={{ letterSpacing: '0.14em' }}>TIS</p>
-                        <h3 className="text-sm font-extrabold text-white">Biblioteca</h3>
-                      </div>
-                      <button className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-white transition-all hover:bg-white/20" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.20)' }}>
-                        <IconPlus className="h-3 w-3" />Carregar
-                      </button>
+                    <div className="px-4 py-4 shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.10)', background: 'rgba(255,255,255,0.05)' }}>
+                      <p className="text-[10px] font-bold text-white/35 uppercase mb-0.5" style={{ letterSpacing: '0.14em' }}>TIS</p>
+                      <h3 className="text-sm font-extrabold text-white">Biblioteca</h3>
                     </div>
                     <div className="flex gap-1.5 px-4 py-3 flex-wrap shrink-0" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
                       {DOC_CATS.map(cat => (
