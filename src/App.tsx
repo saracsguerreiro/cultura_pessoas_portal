@@ -2192,17 +2192,28 @@ export default function App() {
 
                   </div>
 
-                  {/* Floating "Posso ajudar?" pill */}
-                  <button
-                    onClick={() => {
-                      setDocChatOpen(true)
-                      if (docMessages.length === 0) setDocMessages([{ role: 'agent', content: `Estou a consultar "${previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}". O que queres saber?` }])
-                    }}
-                    className="absolute active:scale-95 transition-transform"
-                    style={{ bottom: 14, right: 20, background: 'rgba(76,29,149,0.92)', border: '1px solid rgba(167,139,250,0.45)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', boxShadow: '0 4px 18px rgba(76,29,149,0.50)', borderRadius: 24, padding: '10px 22px', whiteSpace: 'nowrap' }}
-                  >
-                    <span className="text-sm font-semibold text-white">Posso ajudar?</span>
-                  </button>
+                  {/* Floating agent FAB — speech bubble + photo */}
+                  <div className="absolute right-6 flex flex-col items-end gap-2 pointer-events-none" style={{ bottom: 12 }}>
+                    <div className="pointer-events-auto relative">
+                      <div className="rounded-2xl px-3.5 py-2 text-[13px] font-semibold text-white" style={{ background: 'rgba(76,29,149,0.92)', border: '1px solid rgba(167,139,250,0.35)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', boxShadow: '0 4px 18px rgba(76,29,149,0.40)', whiteSpace: 'nowrap' }}>
+                        Posso ajudar?
+                      </div>
+                      <div className="absolute right-5 -bottom-2" style={{ width: 0, height: 0, borderLeft: '7px solid transparent', borderRight: '7px solid transparent', borderTop: '8px solid rgba(76,29,149,0.92)' }} />
+                    </div>
+                    <div className="pointer-events-auto relative">
+                      <span className="absolute inset-0 rounded-full pointer-events-none" style={{ animation: 'ring-ping 1.8s cubic-bezier(0,0,0.2,1) infinite', background: 'rgba(167,139,250,0.32)' }} />
+                      <button
+                        onClick={() => {
+                          setDocChatOpen(true)
+                          if (docMessages.length === 0) setDocMessages([{ role: 'agent', content: `Estou a consultar "${previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}". O que queres saber?` }])
+                        }}
+                        className="relative rounded-full overflow-hidden transition-all active:scale-95"
+                        style={{ width: 52, height: 52, border: '2.5px solid rgba(167,139,250,0.75)', boxShadow: '0 6px 24px rgba(76,29,149,0.55)', animation: 'avatar-pulse 2.4s ease-in-out infinite' }}
+                      >
+                        <img src={agentPhoto} className="w-full h-full object-cover" alt="Assistente de RH" />
+                      </button>
+                    </div>
+                  </div>
 
                 </div>
               )
@@ -2212,26 +2223,19 @@ export default function App() {
                 <div className="h-full flex flex-col px-3 pt-1 gap-3">
 
                   {/* Search pill */}
-                  <div className="shrink-0 relative">
-                    <div className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full overflow-hidden shrink-0 pointer-events-none" style={{ width: 32, height: 32, border: '1.5px solid rgba(255,255,255,0.45)' }}>
+                  <button
+                    onClick={() => { setDocChatOpen(true); if (docMessages.length === 0) setDocMessages([{ role: 'agent', content: 'Olá! Podes fazer-me perguntas sobre qualquer documento da biblioteca. Como posso ajudar?' }]) }}
+                    className="shrink-0 w-full flex items-center gap-3 rounded-full px-2 py-2 active:scale-[0.98] transition-transform"
+                    style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.22)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)' }}
+                  >
+                    <div className="rounded-full overflow-hidden shrink-0" style={{ width: 36, height: 36, border: '1.5px solid rgba(255,255,255,0.50)' }}>
                       <img src={agentPhoto} className="w-full h-full object-cover" alt="" />
                     </div>
-                    <input
-                      value={docQuery}
-                      onChange={e => setDocQuery(e.target.value)}
-                      onKeyDown={e => { if (e.key === 'Enter' && docQuery.trim()) { setDocChatOpen(true); sendDocQueryM() } }}
-                      placeholder="Faz uma pergunta sobre um documento…"
-                      className="w-full rounded-full pl-12 py-3 pr-14 text-white placeholder-white/35 outline-none"
-                      style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.22)', backdropFilter: 'blur(18px)', fontSize: 15 }}
-                    />
-                    <button
-                      onClick={() => { if (docQuery.trim()) { setDocChatOpen(true); sendDocQueryM() } }}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full flex items-center justify-center"
-                      style={{ background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.22)' }}
-                    >
+                    <span className="flex-1 text-left text-sm text-white/45">Faz uma pergunta sobre um documento</span>
+                    <div className="h-8 w-8 rounded-full flex items-center justify-center shrink-0" style={{ background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.22)' }}>
                       <SendIcon className="h-3.5 w-3.5 text-white" />
-                    </button>
-                  </div>
+                    </div>
+                  </button>
 
                   {/* Doc library card */}
                   <div className="flex-1 min-h-0 rounded-2xl flex flex-col overflow-hidden" style={glassM}>
