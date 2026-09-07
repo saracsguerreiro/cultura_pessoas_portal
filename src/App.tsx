@@ -322,6 +322,21 @@ function IconPlus({ className }: { className?: string }) {
 function IconArchive({ className }: { className?: string }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
 }
+function DocTypeIcon({ type, className }: { type: TISDocument['type']; className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      {type === 'xlsx' ? (
+        <><rect x="8" y="11" width="8" height="6" rx="0.5" /><line x1="12" y1="11" x2="12" y2="17" /><line x1="8" y1="14" x2="16" y2="14" /></>
+      ) : type === 'pptx' ? (
+        <rect x="7" y="12" width="10" height="5" rx="1" />
+      ) : (
+        <><line x1="8" y1="13" x2="16" y2="13" /><line x1="8" y1="17" x2={type === 'pdf' ? '13' : '16'} y2="17" /></>
+      )}
+    </svg>
+  )
+}
 function MicrosoftLogo({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 21 21" className={className ?? "h-5 w-5 shrink-0"}>
@@ -1683,13 +1698,6 @@ export default function App() {
                 })
               }
 
-              const FileChip = ({ type }: { type: TISDocument['type'] }) => {
-                const bg: Record<string, string> = { pdf: '#dc2626', docx: '#2563eb', xlsx: '#16a34a', pptx: '#ea580c' }
-                return (
-                  <div className="shrink-0 flex items-center justify-center rounded-md text-[9px] font-extrabold text-white uppercase tracking-wide" style={{ width: 30, height: 34, background: bg[type] ?? '#7c3aed', letterSpacing: '0.04em' }}>{type}</div>
-                )
-              }
-
               const glassPanel = { background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.16)', boxShadow: '0 8px 40px rgba(0,0,50,0.22)' }
 
               return (
@@ -1700,39 +1708,41 @@ export default function App() {
 
                     {!hasMsgs && !hasSelection ? (
                       /* Hero state */
-                      <div className="flex-1 flex flex-col items-center justify-center gap-7">
-                        <div className="text-center">
-                          <div className="mx-auto mb-7 flex items-center justify-center rounded-3xl" style={{ width: 90, height: 90, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.18)', boxShadow: '0 0 72px rgba(130,0,200,0.28)', backdropFilter: 'blur(12px)' }}>
-                            <IconLibrary className="h-10 w-10 text-white/70" />
+                      <div className="flex-1 flex flex-col items-center justify-center p-4">
+                        <div className="w-full max-w-2xl rounded-3xl px-10 py-10 flex flex-col items-center gap-7" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,0.16)', boxShadow: '0 8px 40px rgba(0,0,50,0.22)' }}>
+                          <div className="text-center">
+                            <div className="mx-auto mb-7 rounded-full overflow-hidden" style={{ width: 90, height: 90, border: '2.5px solid rgba(255,255,255,0.45)', boxShadow: '0 6px 28px rgba(0,0,70,0.35)' }}>
+                              <img src={agentPhoto} alt="Assistente de RH" className="h-full w-full object-cover" />
+                            </div>
+                            <h2 className="text-4xl font-extrabold text-white mb-3">Biblioteca de Documentos</h2>
+                            <p className="text-white/50 text-base max-w-md mx-auto leading-relaxed">Faz uma pergunta e o agente de RH responde com base nos documentos da biblioteca — sempre com citação da fonte.</p>
                           </div>
-                          <h2 className="text-4xl font-extrabold text-white mb-3">Biblioteca de Documentos</h2>
-                          <p className="text-white/50 text-base max-w-md mx-auto leading-relaxed">Faz uma pergunta e o agente de RH responde com base nos documentos da biblioteca — sempre com citação da fonte.</p>
-                        </div>
 
-                        {/* Central input */}
-                        <div className="w-full max-w-lg relative">
-                          <input
-                            value={docQuery}
-                            onChange={e => setDocQuery(e.target.value)}
-                            onKeyDown={e => { if (e.key === 'Enter') sendDocQuery() }}
-                            placeholder="Fazer uma pergunta sobre os documentos…"
-                            className="w-full rounded-2xl px-5 py-4 pr-14 text-white placeholder-white/35 outline-none text-sm"
-                            style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.28)', backdropFilter: 'blur(18px)', boxShadow: '0 4px 32px rgba(0,0,80,0.18)', fontSize: 16 }}
-                          />
-                          <button onClick={() => sendDocQuery()} className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-xl transition-all hover:bg-white/25" style={{ width: 36, height: 36, background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.22)' }}>
-                            <SendIcon className="h-4 w-4 text-white" />
-                          </button>
-                        </div>
+                          {/* Central input */}
+                          <div className="w-full max-w-lg relative">
+                            <input
+                              value={docQuery}
+                              onChange={e => setDocQuery(e.target.value)}
+                              onKeyDown={e => { if (e.key === 'Enter') sendDocQuery() }}
+                              placeholder="Fazer uma pergunta sobre os documentos…"
+                              className="w-full rounded-2xl px-5 py-4 pr-14 text-white placeholder-white/35 outline-none text-sm"
+                              style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.28)', backdropFilter: 'blur(18px)', boxShadow: '0 4px 32px rgba(0,0,80,0.18)', fontSize: 16 }}
+                            />
+                            <button onClick={() => sendDocQuery()} className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-xl transition-all hover:bg-white/25" style={{ width: 36, height: 36, background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.22)' }}>
+                              <SendIcon className="h-4 w-4 text-white" />
+                            </button>
+                          </div>
 
-                        {/* Quick questions */}
-                        <div className="flex flex-wrap gap-2 justify-center max-w-xl">
-                          {['Quantos dias de férias tenho direito?', 'Como aderir ao teletrabalho?', 'Quais as coberturas do seguro de saúde?', 'Como pedir reembolso de despesas?', 'Que formações estão disponíveis?'].map(q => (
-                            <button key={q} onClick={() => sendDocQuery(q)} className="rounded-full px-4 py-2 text-xs font-medium text-white/65 transition-all hover:text-white hover:bg-white/15" style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.14)' }}>{q}</button>
-                          ))}
-                        </div>
+                          {/* Quick questions */}
+                          <div className="flex flex-wrap gap-2 justify-center max-w-xl">
+                            {['Quantos dias de férias tenho direito?', 'Como aderir ao teletrabalho?', 'Quais as coberturas do seguro de saúde?', 'Como pedir reembolso de despesas?', 'Que formações estão disponíveis?'].map(q => (
+                              <button key={q} onClick={() => sendDocQuery(q)} className="rounded-full px-4 py-2 text-xs font-medium text-white/65 transition-all hover:text-white hover:bg-white/15" style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.14)' }}>{q}</button>
+                            ))}
+                          </div>
 
-                        {/* Hint */}
-                        <p className="text-[11px] text-white/28 text-center">Seleciona documentos específicos no painel lateral para respostas mais focadas</p>
+                          {/* Hint */}
+                          <p className="text-[11px] text-white/28 text-center">Seleciona documentos específicos no painel lateral para respostas mais focadas</p>
+                        </div>
                       </div>
 
                     ) : (
@@ -1749,7 +1759,7 @@ export default function App() {
                             <div className="flex gap-2.5 flex-wrap">
                               {DOCS_DATA.filter(d => selectedDocs.has(d.id)).map(d => (
                                 <div key={d.id} className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.16)' }}>
-                                  <FileChip type={d.type} />
+                                  <DocTypeIcon type={d.type} className="h-7 w-7 text-white/75 shrink-0" />
                                   <div className="min-w-0">
                                     <p className="text-[11px] font-semibold text-white truncate" style={{ maxWidth: 170 }}>{d.name}</p>
                                     <p className="text-[9px] text-white/40">{d.pages} pág. · {d.size}</p>
@@ -1875,7 +1885,7 @@ export default function App() {
                             {selectedDocs.has(doc.id) && <svg viewBox="0 0 12 12" className="w-2.5 h-2.5"><polyline points="2 6 5 9 10 3" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>}
                           </div>
                           {/* File badge */}
-                          <FileChip type={doc.type} />
+                          <DocTypeIcon type={doc.type} className="h-5 w-5 text-white/65 shrink-0" />
                           {/* Info */}
                           <div className="flex-1 min-w-0">
                             <p className="text-[11px] font-semibold text-white leading-snug truncate">{doc.name}</p>
