@@ -349,6 +349,9 @@ function IconDownload({ className }: { className?: string }) {
 function IconArrowLeft({ className }: { className?: string }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
 }
+function IconChatBubble({ className }: { className?: string }) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+}
 function MicrosoftLogo({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 21 21" className={className ?? "h-5 w-5 shrink-0"}>
@@ -662,11 +665,19 @@ export default function App() {
                 </button>
               </div>
             </div>
-            {/* Mobile: only avatar + sign out */}
+            {/* Mobile: avatar + chat + sign out */}
             <div className="flex md:hidden items-center gap-2">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: 'rgba(255,255,255,0.22)', border: '1.5px solid rgba(255,255,255,0.35)' }}>
                 {user?.initials}
               </div>
+              <button
+                onClick={() => { if (activeNav !== 'chat') openChatMobile() }}
+                title="Assistente de RH"
+                className="rounded-full overflow-hidden transition-all active:scale-95 shrink-0"
+                style={{ width: 32, height: 32, border: activeNav === 'chat' ? '2px solid rgba(167,139,250,0.80)' : '1.5px solid rgba(255,255,255,0.45)' }}
+              >
+                <img src={agentPhoto} className="w-full h-full object-cover" alt="Assistente de RH" />
+              </button>
               <button onClick={handleSignOut} title="Terminar sessão" className="rounded-full p-1.5 text-white/45 transition-all hover:bg-white/12 hover:text-white">
                 <IconSignOut className="h-3.5 w-3.5" />
               </button>
@@ -719,7 +730,7 @@ export default function App() {
           </nav>
 
           {/* ── Floating chat button (global) ── */}
-          {!(isMobile && activeNav === 'documentos') && !chatOpen && (
+          {!(isMobile && (activeNav === 'documentos' || activeNav === 'chat')) && !chatOpen && (
             <div className="fixed z-40 flex flex-col items-end gap-2 pointer-events-none" style={{ right: isMobile ? 16 : 32, bottom: isMobile ? 82 : 32 }}>
               {/* Speech bubble */}
               <div className="pointer-events-auto relative">
@@ -963,14 +974,21 @@ export default function App() {
                         </div>
                       </div>
                     </div>
-                    <button
-                      onClick={() => setHistoryOpen(v => !v)}
-                      title="Conversas anteriores"
-                      className="h-7 w-7 rounded-full flex items-center justify-center transition-all"
-                      style={historyOpen ? { background: 'rgba(255,255,255,0.22)', color: 'white' } : { color: 'rgba(255,255,255,0.55)' }}
-                    >
-                      <IconHistory className="h-4 w-4" />
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => setHistoryOpen(v => !v)}
+                        title="Conversas anteriores"
+                        className="h-9 w-9 rounded-full flex items-center justify-center transition-all"
+                        style={historyOpen ? { background: 'rgba(255,255,255,0.22)', color: 'white' } : { color: 'rgba(255,255,255,0.55)' }}
+                      >
+                        <IconHistory className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => setActiveNav('sobre')}
+                        title="Fechar chat"
+                        className="h-9 w-9 rounded-full flex items-center justify-center text-white/55 hover:text-white hover:bg-white/15 transition-all text-lg leading-none"
+                      >✕</button>
+                    </div>
                   </div>
 
                   {/* History overlay — only when open */}
@@ -2136,7 +2154,7 @@ export default function App() {
 
               /* ── Doc detail view ── */
               if (previewDoc) return (
-                <div className="h-full flex flex-col px-3 pt-1">
+                <div className="h-full flex flex-col px-3 pt-1 relative">
                   <div className="flex-1 flex flex-col min-h-0 rounded-2xl overflow-hidden" style={glassM}>
 
                     {/* Header */}
@@ -2147,61 +2165,48 @@ export default function App() {
                       >
                         <IconArrowLeft className="h-4 w-4" />
                       </button>
-                      <p className="flex-1 text-sm font-semibold text-white">Detalhe do documento</p>
-                      <button className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-white" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)' }}>
+                      <p className="flex-1 text-sm font-semibold text-white truncate min-w-0">{previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}</p>
+                      <button className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-white shrink-0" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)' }}>
                         <IconDownload className="h-3.5 w-3.5" />
                         Download
                       </button>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'none' } as React.CSSProperties}>
-                      {/* Doc info */}
-                      <div className="flex flex-col items-center pt-8 pb-6 px-5 gap-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                        <DocTypeIcon type={previewDoc.type} className="h-20 w-20 text-white/80" />
-                        <div className="text-center">
-                          <p className="text-base font-bold text-white mb-2 leading-snug">{previewDoc.name}</p>
-                          <div className="flex items-center justify-center gap-2 flex-wrap">
-                            <span className="text-xs text-white/40">{previewDoc.pages} pág.</span>
-                            <span className="text-white/20">·</span>
-                            <span className="text-xs text-white/40">{previewDoc.size}</span>
-                            <span className="text-white/20">·</span>
-                            <span className="text-xs text-white/40">{previewDoc.date}</span>
-                          </div>
-                          <span className="inline-block mt-2 text-xs font-medium px-2.5 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.10)', color: 'rgba(255,255,255,0.60)', border: '1px solid rgba(255,255,255,0.14)' }}>{previewDoc.category}</span>
-                        </div>
-                        <div className="w-full rounded-xl p-3.5" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)' }}>
-                          <p className="text-xs text-white/60 leading-relaxed">{previewDoc.excerpt}</p>
-                        </div>
-                      </div>
-
-                      {/* Agent CTA */}
-                      <div className="flex flex-col gap-4 px-5 py-6">
-                        <div className="flex items-center gap-3">
-                          <div className="relative shrink-0">
-                            <div className="rounded-full overflow-hidden" style={{ width: 48, height: 48, border: '2px solid rgba(167,139,250,0.60)' }}>
-                              <img src={agentPhoto} className="w-full h-full object-cover" alt="" />
-                            </div>
-                            <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-400 border-2 border-[#0a1060]" style={{ boxShadow: '0 0 4px rgba(52,211,153,0.6)' }} />
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold text-white">Assistente de RH</p>
-                            <p className="text-xs text-white/45 mt-0.5">Disponível para perguntas sobre este documento</p>
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => {
-                            setDocChatOpen(true)
-                            if (docMessages.length === 0) setDocMessages([{ role: 'agent', content: `Estou a consultar "${previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}". O que queres saber?` }])
-                          }}
-                          className="w-full rounded-full py-3.5 text-sm font-bold text-white active:scale-[0.98] transition-transform"
-                          style={{ background: 'rgba(76,29,149,0.85)', border: '1px solid rgba(167,139,250,0.40)', boxShadow: '0 6px 24px rgba(76,29,149,0.45)' }}
-                        >
-                          Perguntar ao Assistente
-                        </button>
-                      </div>
+                    {/* Document iframe */}
+                    <div className="flex-1 min-h-0">
+                      <iframe
+                        src={`${import.meta.env.BASE_URL}docs/example.pdf`}
+                        title={previewDoc.name}
+                        className="w-full h-full"
+                        style={{ border: 'none' }}
+                      />
                     </div>
 
                   </div>
+
+                  {/* Floating agent FAB */}
+                  <div className="absolute right-7 flex flex-col items-end gap-2 pointer-events-none" style={{ bottom: 12 }}>
+                    <div className="pointer-events-auto relative">
+                      <div className="rounded-2xl px-3 py-1.5 text-[12px] font-semibold text-white" style={{ background: 'rgba(76,29,149,0.92)', border: '1px solid rgba(167,139,250,0.35)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', boxShadow: '0 4px 18px rgba(76,29,149,0.40)', whiteSpace: 'nowrap' }}>
+                        Posso ajudar? 💬
+                      </div>
+                      <div className="absolute right-5 -bottom-2" style={{ width: 0, height: 0, borderLeft: '7px solid transparent', borderRight: '7px solid transparent', borderTop: '8px solid rgba(76,29,149,0.92)' }} />
+                    </div>
+                    <div className="pointer-events-auto relative">
+                      <span className="absolute inset-0 rounded-full pointer-events-none" style={{ animation: 'ring-ping 1.8s cubic-bezier(0,0,0.2,1) infinite', background: 'rgba(167,139,250,0.32)' }} />
+                      <button
+                        onClick={() => {
+                          setDocChatOpen(true)
+                          if (docMessages.length === 0) setDocMessages([{ role: 'agent', content: `Estou a consultar "${previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}". O que queres saber?` }])
+                        }}
+                        className="relative rounded-full overflow-hidden transition-all active:scale-95"
+                        style={{ width: 52, height: 52, border: '2.5px solid rgba(167,139,250,0.75)', boxShadow: '0 6px 24px rgba(76,29,149,0.55)', animation: 'avatar-pulse 2.4s ease-in-out infinite' }}
+                      >
+                        <img src={agentPhoto} className="w-full h-full object-cover" alt="Assistente de RH" />
+                      </button>
+                    </div>
+                  </div>
+
                 </div>
               )
 
@@ -2211,12 +2216,15 @@ export default function App() {
 
                   {/* Search pill */}
                   <div className="shrink-0 relative">
+                    <div className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full overflow-hidden shrink-0 pointer-events-none" style={{ width: 32, height: 32, border: '1.5px solid rgba(255,255,255,0.45)' }}>
+                      <img src={agentPhoto} className="w-full h-full object-cover" alt="" />
+                    </div>
                     <input
                       value={docQuery}
                       onChange={e => setDocQuery(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter' && docQuery.trim()) { setDocChatOpen(true); sendDocQueryM() } }}
                       placeholder="Fazer uma pergunta sobre os documentos…"
-                      className="w-full rounded-full px-5 py-3 pr-14 text-white placeholder-white/35 outline-none"
+                      className="w-full rounded-full pl-12 py-3 pr-14 text-white placeholder-white/35 outline-none"
                       style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.22)', backdropFilter: 'blur(18px)', fontSize: 15 }}
                     />
                     <button
@@ -2269,27 +2277,17 @@ export default function App() {
                             <p className="text-sm font-semibold text-white truncate">{doc.name}</p>
                             <p className="text-xs text-white/40 mt-0.5">{doc.pages} pág. · {doc.size} · {doc.date}</p>
                           </div>
-                          <span className="shrink-0 text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.50)', border: '1px solid rgba(255,255,255,0.12)' }}>{doc.category}</span>
+                          <button
+                            onClick={e => e.stopPropagation()}
+                            className="shrink-0 h-8 w-8 rounded-full flex items-center justify-center text-white/45 hover:text-white transition-all"
+                          >
+                            <IconDownload className="h-4 w-4" />
+                          </button>
                         </div>
                       ))}
                     </div>
 
                   </div>
-
-                  {/* FAB — Assistente */}
-                  <button
-                    onClick={() => {
-                      setDocChatOpen(true)
-                      if (docMessages.length === 0) setDocMessages([{ role: 'agent', content: 'Olá! Podes fazer-me perguntas sobre qualquer documento da biblioteca. Como posso ajudar?' }])
-                    }}
-                    className="fixed right-4 flex items-center gap-2.5 px-4 rounded-full"
-                    style={{ bottom: '80px', height: 50, background: 'rgba(76,29,149,0.90)', border: '1px solid rgba(167,139,250,0.40)', boxShadow: '0 6px 24px rgba(76,29,149,0.50)', zIndex: 30 }}
-                  >
-                    <div className="rounded-full overflow-hidden shrink-0" style={{ width: 28, height: 28, border: '1.5px solid rgba(196,181,253,0.60)' }}>
-                      <img src={agentPhoto} className="w-full h-full object-cover" alt="" />
-                    </div>
-                    <span className="text-sm font-semibold text-white">Perguntar</span>
-                  </button>
 
                 </div>
               )
