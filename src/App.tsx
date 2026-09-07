@@ -665,19 +665,22 @@ export default function App() {
                 </button>
               </div>
             </div>
-            {/* Mobile: avatar + chat + sign out */}
+            {/* Mobile: chat icon + avatar + sign out */}
             <div className="flex md:hidden items-center gap-2">
+              <div className="relative shrink-0">
+                <span className="absolute inset-0 rounded-full pointer-events-none" style={{ animation: 'ring-ping 1.8s cubic-bezier(0,0,0.2,1) infinite', background: 'rgba(255,255,255,0.28)' }} />
+                <button
+                  onClick={() => { if (activeNav !== 'chat') openChatMobile() }}
+                  title="Assistente de RH"
+                  className="relative h-8 w-8 rounded-full flex items-center justify-center transition-all active:scale-95"
+                  style={{ background: activeNav === 'chat' ? 'rgba(167,139,250,0.30)' : 'rgba(255,255,255,0.18)', border: '1.5px solid rgba(255,255,255,0.50)', animation: 'avatar-pulse 2.4s ease-in-out infinite' }}
+                >
+                  <IconChatBubble className="h-4 w-4 text-white" />
+                </button>
+              </div>
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: 'rgba(255,255,255,0.22)', border: '1.5px solid rgba(255,255,255,0.35)' }}>
                 {user?.initials}
               </div>
-              <button
-                onClick={() => { if (activeNav !== 'chat') openChatMobile() }}
-                title="Assistente de RH"
-                className="rounded-full overflow-hidden transition-all active:scale-95 shrink-0"
-                style={{ width: 32, height: 32, border: activeNav === 'chat' ? '2px solid rgba(167,139,250,0.80)' : '1.5px solid rgba(255,255,255,0.45)' }}
-              >
-                <img src={agentPhoto} className="w-full h-full object-cover" alt="Assistente de RH" />
-              </button>
               <button onClick={handleSignOut} title="Terminar sessão" className="rounded-full p-1.5 text-white/45 transition-all hover:bg-white/12 hover:text-white">
                 <IconSignOut className="h-3.5 w-3.5" />
               </button>
@@ -730,7 +733,7 @@ export default function App() {
           </nav>
 
           {/* ── Floating chat button (global) ── */}
-          {!(isMobile && (activeNav === 'documentos' || activeNav === 'chat')) && !chatOpen && (
+          {!isMobile && !chatOpen && (
             <div className="fixed z-40 flex flex-col items-end gap-2 pointer-events-none" style={{ right: isMobile ? 16 : 32, bottom: isMobile ? 82 : 32 }}>
               {/* Speech bubble */}
               <div className="pointer-events-auto relative">
@@ -801,6 +804,11 @@ export default function App() {
                   <span className="pointer-events-none absolute inset-0 rounded-full bg-white" style={{ animation: 'ring-ping 1.8s cubic-bezier(0,0,0.2,1) infinite' }} />
                   <button onClick={isMobile ? openChatMobile : openChat} className="relative inline-flex items-center gap-3 md:gap-4 rounded-full bg-white px-7 md:px-10 py-3 md:py-4 font-bold text-[#036ef2] hover:bg-white/95 active:scale-[0.98]" style={{ fontSize: isMobile ? '1rem' : '1.125rem', letterSpacing: '0.01em', animation: 'cta-glow 2s ease-in-out infinite', transition: 'transform 0.15s' }}>
                     <span style={{ animation: 'cta-text-pop 2.2s ease-in-out infinite', display: 'inline-block' }}>Falar com Agente</span>
+                    {isMobile && (
+                      <div className="rounded-full overflow-hidden shrink-0" style={{ width: 26, height: 26, border: '2px solid rgba(3,110,242,0.30)' }}>
+                        <img src={agentPhoto} className="w-full h-full object-cover" alt="" />
+                      </div>
+                    )}
                     <span className="font-black" style={{ fontSize: '1.55em', lineHeight: 1, display: 'inline-block', animation: 'arrow-jump 0.9s ease-in-out infinite' }}>→</span>
                   </button>
                 </div>
@@ -2184,28 +2192,17 @@ export default function App() {
 
                   </div>
 
-                  {/* Floating agent FAB */}
-                  <div className="absolute right-7 flex flex-col items-end gap-2 pointer-events-none" style={{ bottom: 12 }}>
-                    <div className="pointer-events-auto relative">
-                      <div className="rounded-2xl px-3 py-1.5 text-[12px] font-semibold text-white" style={{ background: 'rgba(76,29,149,0.92)', border: '1px solid rgba(167,139,250,0.35)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', boxShadow: '0 4px 18px rgba(76,29,149,0.40)', whiteSpace: 'nowrap' }}>
-                        Posso ajudar? 💬
-                      </div>
-                      <div className="absolute right-5 -bottom-2" style={{ width: 0, height: 0, borderLeft: '7px solid transparent', borderRight: '7px solid transparent', borderTop: '8px solid rgba(76,29,149,0.92)' }} />
-                    </div>
-                    <div className="pointer-events-auto relative">
-                      <span className="absolute inset-0 rounded-full pointer-events-none" style={{ animation: 'ring-ping 1.8s cubic-bezier(0,0,0.2,1) infinite', background: 'rgba(167,139,250,0.32)' }} />
-                      <button
-                        onClick={() => {
-                          setDocChatOpen(true)
-                          if (docMessages.length === 0) setDocMessages([{ role: 'agent', content: `Estou a consultar "${previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}". O que queres saber?` }])
-                        }}
-                        className="relative rounded-full overflow-hidden transition-all active:scale-95"
-                        style={{ width: 52, height: 52, border: '2.5px solid rgba(167,139,250,0.75)', boxShadow: '0 6px 24px rgba(76,29,149,0.55)', animation: 'avatar-pulse 2.4s ease-in-out infinite' }}
-                      >
-                        <img src={agentPhoto} className="w-full h-full object-cover" alt="Assistente de RH" />
-                      </button>
-                    </div>
-                  </div>
+                  {/* Floating "Posso ajudar?" pill */}
+                  <button
+                    onClick={() => {
+                      setDocChatOpen(true)
+                      if (docMessages.length === 0) setDocMessages([{ role: 'agent', content: `Estou a consultar "${previewDoc.name.replace(/\.(pdf|docx|xlsx|pptx)$/i, '')}". O que queres saber?` }])
+                    }}
+                    className="absolute active:scale-95 transition-transform"
+                    style={{ bottom: 14, right: 20, background: 'rgba(76,29,149,0.92)', border: '1px solid rgba(167,139,250,0.45)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', boxShadow: '0 4px 18px rgba(76,29,149,0.50)', borderRadius: 24, padding: '10px 22px', whiteSpace: 'nowrap' }}
+                  >
+                    <span className="text-sm font-semibold text-white">Posso ajudar?</span>
+                  </button>
 
                 </div>
               )
@@ -2223,7 +2220,7 @@ export default function App() {
                       value={docQuery}
                       onChange={e => setDocQuery(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter' && docQuery.trim()) { setDocChatOpen(true); sendDocQueryM() } }}
-                      placeholder="Fazer uma pergunta sobre os documentos…"
+                      placeholder="Faz uma pergunta sobre um documento…"
                       className="w-full rounded-full pl-12 py-3 pr-14 text-white placeholder-white/35 outline-none"
                       style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.22)', backdropFilter: 'blur(18px)', fontSize: 15 }}
                     />
