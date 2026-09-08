@@ -6,24 +6,9 @@ import agentPhoto from '@/imports/avatar_rh.jpg'
 import newsDetailBg from '@/imports/gradient-1.png'
 
 // ── Portrait photos ──
-const PHOTO_IDS = [
-  '1769636929231-3cd7f853d038', '1578758760917-e36305c1b872',
-  '1732154478254-f94aebec9501', '1779760250127-72e8e8a5b1ce',
-  '1769636929354-59165ba73c7e', '1769636930016-5d9f0ca653aa',
-  '1769636929266-8057f2c5ed52', '1769636929130-56648d6e9c6d',
-  '1769636930152-238ed1f7e07f', '1784652951070-9cb1a374132f',
-  '1765005204227-bf58bcdd4449', '1765005204268-631d9e0c6fe1',
-  '1763757321139-e7e4de128cd9', '1784652951090-faffc6417c0f',
-  '1784652951073-755afb86c312', '1611432579402-7037e3e2c1e4',
-  '1563132337-f159f484226c',  '1618085219724-c59ba48e08cd',
-  '1573496799515-eebbb63814f2','1666867540898-aaa1993ffabc',
-  '1748290880596-2a2c80530bc0','1710778044102-56a3a6b69a1b',
-  '1725461254746-93101ae627f0','1783013952839-cda1c697e275',
-]
-function photoUrl(id: string) {
-  return `https://images.unsplash.com/photo-${id}?w=400&h=500&fit=crop&crop=faces&auto=format&q=75`
-}
-const GRID_IDS = [...PHOTO_IDS, ...PHOTO_IDS].sort(() => Math.random() - 0.5)
+const PHOTO_BASE = import.meta.env.BASE_URL
+const MY_PHOTOS = Array.from({ length: 48 }, (_, i) => `${PHOTO_BASE}fotos/${i + 1}_tis.jpg`)
+const GRID_IDS = [...MY_PHOTOS].sort(() => Math.random() - 0.5)
 const COLS = 8
 const ROWS = 6
 
@@ -462,7 +447,7 @@ export default function App() {
           duration: 1.5 + Math.random() * 0.7, delay: i * (0.15 + Math.random() * 0.3), ease: 'sine.in',
           onComplete: () => {
             if (!alive) return
-            cell.style.backgroundImage = `url(${photoUrl(PHOTO_IDS[Math.floor(Math.random() * PHOTO_IDS.length)])})`
+            cell.style.backgroundImage = `url(${MY_PHOTOS[Math.floor(Math.random() * MY_PHOTOS.length)]})`
             gsap.to(cell, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.8 + Math.random() * 1.0, delay: 0.2 + Math.random() * 0.5, ease: 'sine.out' })
           },
         })
@@ -571,8 +556,8 @@ export default function App() {
 
       {/* ── Layer 1: Mural grid ── */}
       <div ref={gridRef} className="absolute inset-0" style={{ display: 'grid', gridTemplateColumns: `repeat(${COLS}, 1fr)`, gridTemplateRows: `repeat(${ROWS}, 1fr)`, border: 0, paddingLeft: 0, paddingRight: 0 }}>
-        {GRID_IDS.map((id, i) => (
-          <div key={i} style={{ backgroundImage: `url(${photoUrl(id)})`, backgroundSize: 'cover', backgroundPosition: 'center top' }} />
+        {GRID_IDS.map((photo, i) => (
+          <div key={i} style={{ backgroundImage: `url(${photo})`, backgroundSize: 'cover', backgroundPosition: 'center top' }} />
         ))}
       </div>
 
