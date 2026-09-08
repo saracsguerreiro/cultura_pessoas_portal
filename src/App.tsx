@@ -337,6 +337,9 @@ function IconArrowLeft({ className }: { className?: string }) {
 function IconChatBubble({ className }: { className?: string }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
 }
+function IconMic({ className }: { className?: string }) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+}
 function MicrosoftLogo({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 21 21" className={className ?? "h-5 w-5 shrink-0"}>
@@ -360,11 +363,12 @@ const CHAT_TOPICS: ChatTopic[] = [
 ]
 
 const NAV_ITEMS: NavItem[] = [
-  { id: 'sobre',       label: 'Início',      icon: IconAbout   },
-  { id: 'faqs',        label: "FAQ's",       icon: IconFaq     },
-  { id: 'noticias',    label: 'Notícias',    icon: IconNews    },
-  { id: 'eventos',     label: 'Eventos',     icon: IconEvents  },
-  { id: 'documentos',  label: 'Documentos',  icon: IconLibrary },
+  { id: 'sobre',       label: 'Início',      icon: IconAbout      },
+  { id: 'chat-menu',   label: 'Chat',        icon: IconChatBubble },
+  { id: 'faqs',        label: "FAQ's",       icon: IconFaq        },
+  { id: 'noticias',    label: 'Notícias',    icon: IconNews       },
+  { id: 'eventos',     label: 'Eventos',     icon: IconEvents     },
+  { id: 'documentos',  label: 'Documentos',  icon: IconLibrary    },
 ]
 
 const DEMO_USER: TISUser = {
@@ -412,6 +416,7 @@ export default function App() {
   const [previewDoc,   setPreviewDoc]   = useState<TISDocument | null>(null)
   const [docChatOpen,  setDocChatOpen]  = useState(false)
   const [heroInput,    setHeroInput]    = useState('')
+  const [isListening,  setIsListening]  = useState(false)
 
   // ── GSAP mural: hide all cells on mount so the login screen sits over a blank canvas ──
   useEffect(() => {
@@ -555,6 +560,19 @@ export default function App() {
       setIsTyping(false)
     }, 850 + Math.random() * 650)
   }
+  function handleMicClick() {
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    if (!SR) return
+    const recognition = new SR()
+    recognition.lang = 'pt-PT'
+    recognition.interimResults = false
+    recognition.maxAlternatives = 1
+    setIsListening(true)
+    recognition.start()
+    recognition.onresult = (e: any) => { setHeroInput(e.results[0][0].transcript); setIsListening(false) }
+    recognition.onerror = () => setIsListening(false)
+    recognition.onend = () => setIsListening(false)
+  }
   function closeChat() {
     if (messages.length > 1) {
       const userMsg = messages.find(m => m.role === 'user')
@@ -662,8 +680,12 @@ export default function App() {
             {/* Desktop nav */}
             <div className="hidden md:flex items-center gap-1">
               {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
-                <button key={id} onClick={() => { setActiveNav(id); closeChat() }}
-                  className={`flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 ${activeNav === id ? 'bg-white text-[#036ef2]' : 'text-white/80 hover:bg-white/15 hover:text-white'}`}
+                <button key={id}
+                  onClick={() => {
+                    if (id === 'chat-menu') { setActiveNav('sobre'); chatOpen ? closeChat() : openChat() }
+                    else { setActiveNav(id); closeChat() }
+                  }}
+                  className={`flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 ${(id === 'chat-menu' ? chatOpen : activeNav === id) ? 'bg-white text-[#036ef2]' : 'text-white/80 hover:bg-white/15 hover:text-white'}`}
                   style={{ letterSpacing: '0.02em' }}
                 >
                   <Icon className="h-4 w-4" />{label}
@@ -811,9 +833,15 @@ export default function App() {
                       style={{ fontSize: isMobile ? 16 : 15 }}
                     />
                     <button
+                      onClick={handleMicClick}
+                      title="Falar"
+                      className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 transition-all active:scale-95 ${isListening ? 'text-red-400' : 'text-white/70 hover:text-white'}`}
+                    >
+                      <IconMic className="h-4 w-4" />
+                    </button>
+                    <button
                       onClick={() => isMobile ? openChatMobileWithMessage(heroInput) : openChatWithMessage(heroInput)}
-                      disabled={!heroInput.trim()}
-                      className="h-9 w-9 rounded-full flex items-center justify-center shrink-0 transition-all active:scale-95 disabled:opacity-35"
+                      className="h-9 w-9 rounded-full flex items-center justify-center shrink-0 transition-all active:scale-95"
                       style={{ background: 'rgba(255,255,255,0.22)', border: '1px solid rgba(255,255,255,0.38)' }}
                     >
                       <SendIcon className="h-4 w-4 text-white" />
