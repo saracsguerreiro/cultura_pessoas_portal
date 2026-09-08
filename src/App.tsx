@@ -417,6 +417,7 @@ export default function App() {
   const [heroInput,    setHeroInput]    = useState('')
   const [isListening,  setIsListening]  = useState(false)
   const [heroFocused,  setHeroFocused]  = useState(false)
+  const [typingText,   setTypingText]   = useState('')
 
   // ── GSAP mural: hide all cells on mount so the login screen sits over a blank canvas ──
   useEffect(() => {
@@ -513,6 +514,29 @@ export default function App() {
     setIsMobile(mq.matches)
     return () => mq.removeEventListener('change', h)
   }, [])
+
+  // ── Typing effect on hero placeholder ──
+  useEffect(() => {
+    if (!authed || heroFocused || heroInput) { setTypingText(''); return }
+    const full = isMobile ? 'Faz a tua pergunta' : 'Faz aqui a tua pergunta ao agente RH'
+    let i = 0; let deleting = false; let alive = true
+    function tick() {
+      if (!alive) return
+      if (!deleting) {
+        i = Math.min(i + 1, full.length)
+        setTypingText(full.slice(0, i))
+        if (i === full.length) { deleting = true; setTimeout(tick, 2200) }
+        else setTimeout(tick, 75)
+      } else {
+        i = Math.max(i - 1, 0)
+        setTypingText(full.slice(0, i))
+        if (i === 0) { deleting = false; setTimeout(tick, 500) }
+        else setTimeout(tick, 38)
+      }
+    }
+    const t = setTimeout(tick, 400)
+    return () => { alive = false; clearTimeout(t); setTypingText('') }
+  }, [authed, heroFocused, heroInput, isMobile])
 
   // ── Auto-scroll chat ──
   useEffect(() => { messagesEnd.current?.scrollIntoView({ behavior: 'smooth' }) }, [messages, isTyping])
@@ -823,19 +847,27 @@ export default function App() {
                   <div className="flex items-center rounded-full overflow-hidden"
                     onFocus={() => setHeroFocused(true)}
                     onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setHeroFocused(false) }}
-                    style={{ gap: isMobile ? 8 : 12, padding: isMobile ? '6px 6px 6px 8px' : '4px 4px 4px 12px', background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.28)', boxShadow: '0 6px 28px rgba(0,0,70,0.20)', animation: heroFocused ? 'none' : 'input-pulse 2s ease-in-out infinite', transition: 'box-shadow 0.3s ease' }}
+                    style={{ gap: isMobile ? 8 : 12, padding: isMobile ? '6px 6px 6px 8px' : '4px 4px 4px 12px', background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.28)', animation: heroFocused ? 'none' : 'input-pulse 2.4s ease-in-out infinite' }}
                   >
                     <div className="rounded-full overflow-hidden shrink-0" style={{ width: isMobile ? 38 : 44, height: isMobile ? 38 : 44, border: '2px solid rgba(255,255,255,0.40)', boxShadow: '0 2px 10px rgba(0,0,60,0.30)' }}>
                       <img src={agentPhoto} alt="" className="w-full h-full object-cover" />
                     </div>
-                    <input
-                      value={heroInput}
-                      onChange={e => setHeroInput(e.target.value)}
-                      onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); isMobile ? openChatMobileWithMessage(heroInput) : openChatWithMessage(heroInput) } }}
-                      placeholder={isMobile ? 'Faz a tua pergunta' : 'Faz aqui a tua pergunta ao agente RH'}
-                      className="flex-1 min-w-0 bg-transparent text-white outline-none placeholder-white/45 font-medium"
-                      style={{ fontSize: isMobile ? 16 : 15 }}
-                    />
+                    <div className="relative flex-1 min-w-0">
+                      {!heroInput && !heroFocused && (
+                        <span className="absolute inset-0 flex items-center pointer-events-none font-medium select-none" style={{ color: 'rgba(255,255,255,0.45)', fontSize: isMobile ? 16 : 15 }}>
+                          {typingText}
+                          <span className="inline-block w-px ml-px bg-white/45" style={{ height: '1em', animation: 'typing-cursor 0.75s step-end infinite' }} />
+                        </span>
+                      )}
+                      <input
+                        value={heroInput}
+                        onChange={e => setHeroInput(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); isMobile ? openChatMobileWithMessage(heroInput) : openChatWithMessage(heroInput) } }}
+                        placeholder=""
+                        className="w-full bg-transparent text-white outline-none font-medium"
+                        style={{ fontSize: isMobile ? 16 : 15 }}
+                      />
+                    </div>
                     <button
                       onClick={handleMicClick}
                       title="Falar"
