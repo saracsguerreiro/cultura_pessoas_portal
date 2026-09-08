@@ -423,6 +423,7 @@ export default function App() {
   useEffect(() => {
     if (!authed || !gridRef.current) return
     const cells = Array.from(gridRef.current.children) as HTMLElement[]
+    const currentPhotos = [...GRID_IDS] // tracks which photo is in each cell
     let cycleTimer: ReturnType<typeof setTimeout> | null = null
     let alive = true
     const shuffled = [...cells].sort(() => Math.random() - 0.5)
@@ -438,16 +439,23 @@ export default function App() {
     function schedCycle() { cycleTimer = setTimeout(runCycle, 2000 + Math.random() * 2000) }
     function runCycle() {
       if (!alive) return
-      const pool = [...cells]
-      const batch: HTMLElement[] = []
-      for (let i = 0; i < 3 + Math.round(Math.random() * 3); i++) batch.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0])
-      batch.forEach((cell, i) => {
+      const idxPool = cells.map((_, i) => i)
+      const batch: number[] = []
+      for (let i = 0; i < 3 + Math.round(Math.random() * 3); i++) batch.push(idxPool.splice(Math.floor(Math.random() * idxPool.length), 1)[0])
+      batch.forEach((cellIdx, i) => {
+        const cell = cells[cellIdx]
         gsap.to(cell, {
           opacity: 0, scale: 0.88, filter: 'blur(5px)',
           duration: 1.5 + Math.random() * 0.7, delay: i * (0.15 + Math.random() * 0.3), ease: 'sine.in',
           onComplete: () => {
             if (!alive) return
-            cell.style.backgroundImage = `url(${MY_PHOTOS[Math.floor(Math.random() * MY_PHOTOS.length)]})`
+            const usedPhotos = new Set(currentPhotos)
+            const unused = MY_PHOTOS.filter(p => !usedPhotos.has(p))
+            const newPhoto = unused.length > 0
+              ? unused[Math.floor(Math.random() * unused.length)]
+              : MY_PHOTOS[Math.floor(Math.random() * MY_PHOTOS.length)]
+            currentPhotos[cellIdx] = newPhoto
+            cell.style.backgroundImage = `url(${newPhoto})`
             gsap.to(cell, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.8 + Math.random() * 1.0, delay: 0.2 + Math.random() * 0.5, ease: 'sine.out' })
           },
         })
