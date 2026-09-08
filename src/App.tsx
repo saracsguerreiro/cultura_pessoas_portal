@@ -411,6 +411,7 @@ export default function App() {
   const [docThinking,  setDocThinking]  = useState(false)
   const [previewDoc,   setPreviewDoc]   = useState<TISDocument | null>(null)
   const [docChatOpen,  setDocChatOpen]  = useState(false)
+  const [heroInput,    setHeroInput]    = useState('')
 
   // ── GSAP mural: hide all cells on mount so the login screen sits over a blank canvas ──
   useEffect(() => {
@@ -529,6 +530,30 @@ export default function App() {
     if (messages.length === 0) {
       setMessages([{ id: 0, role: 'agent', content: `Olá, ${user?.name?.split(' ')[0]}! 👋 Sou a tua assistente de RH da TIS. Estou aqui para ajudar com férias, avaliações, documentos e muito mais.\n\nComo posso ajudar-te hoje?` }])
     }
+  }
+  function openChatWithMessage(text: string) {
+    if (!text.trim()) return
+    setChatOpen(true); setActiveTopic(null); setHistoryOpen(false); setHeroInput('')
+    const greeting = `Olá, ${user?.name?.split(' ')[0]}! 👋 Sou a tua assistente de RH da TIS. Estou aqui para ajudar com férias, avaliações, documentos e muito mais.\n\nComo posso ajudar-te hoje?`
+    msgId.current = 2
+    setMessages([{ id: 0, role: 'agent', content: greeting }, { id: 1, role: 'user', content: text }])
+    setIsTyping(true)
+    setTimeout(() => {
+      setMessages(prev => [...prev, { id: msgId.current++, role: 'agent', content: generateResponse(text) }])
+      setIsTyping(false)
+    }, 850 + Math.random() * 650)
+  }
+  function openChatMobileWithMessage(text: string) {
+    if (!text.trim()) return
+    setActiveNav('chat'); setActiveTopic(null); setHistoryOpen(false); setHeroInput('')
+    const greeting = `Olá, ${user?.name?.split(' ')[0]}! 👋 Sou a tua assistente de RH da TIS. Estou aqui para ajudar com férias, avaliações, documentos e muito mais.\n\nComo posso ajudar-te hoje?`
+    msgId.current = 2
+    setMessages([{ id: 0, role: 'agent', content: greeting }, { id: 1, role: 'user', content: text }])
+    setIsTyping(true)
+    setTimeout(() => {
+      setMessages(prev => [...prev, { id: msgId.current++, role: 'agent', content: generateResponse(text) }])
+      setIsTyping(false)
+    }, 850 + Math.random() * 650)
   }
   function closeChat() {
     if (messages.length > 1) {
@@ -770,15 +795,30 @@ export default function App() {
                 </h1>
                 <p className="mb-1 text-base md:text-2xl font-light text-white/70" style={{ letterSpacing: '0.04em' }}>Informação. Respostas. Recursos.</p>
                 <p className="mb-6 md:mb-10 text-base md:text-2xl font-bold" style={{ letterSpacing: '0.02em' }}>Tudo num só lugar.</p>
-                <div className="relative inline-flex self-start md:self-start">
-                  <span className="pointer-events-none absolute inset-0 rounded-full bg-white" style={{ animation: 'ring-ping 1.8s cubic-bezier(0,0,0.2,1) infinite' }} />
-                  <button onClick={isMobile ? openChatMobile : openChat} className="relative inline-flex items-center gap-3 md:gap-4 rounded-full bg-white px-7 md:px-10 py-3 md:py-4 font-bold text-[#036ef2] hover:bg-white/95 active:scale-[0.98]" style={{ fontSize: isMobile ? '1rem' : '1.125rem', letterSpacing: '0.01em', animation: 'cta-glow 2s ease-in-out infinite', transition: 'transform 0.15s' }}>
-                    <span style={{ animation: 'cta-text-pop 2.2s ease-in-out infinite', display: 'inline-block' }}>Falar com Agente</span>
-                    <div className="rounded-full overflow-hidden shrink-0" style={{ width: isMobile ? 26 : 30, height: isMobile ? 26 : 30, border: '2px solid rgba(3,110,242,0.30)' }}>
-                      <img src={agentPhoto} className="w-full h-full object-cover" alt="" />
+                <div style={{ width: '100%', maxWidth: isMobile ? '100%' : 520 }}>
+                  <div className="flex items-center gap-3 rounded-full px-3 py-2"
+                    style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.28)', boxShadow: '0 6px 28px rgba(0,0,70,0.20)' }}
+                  >
+                    <div className="rounded-full overflow-hidden shrink-0" style={{ width: 44, height: 44, border: '2px solid rgba(255,255,255,0.40)', boxShadow: '0 2px 10px rgba(0,0,60,0.30)' }}>
+                      <img src={agentPhoto} alt="" className="w-full h-full object-cover" />
                     </div>
-                    <span className="font-black" style={{ fontSize: '1.55em', lineHeight: 1, display: 'inline-block', animation: 'arrow-jump 0.9s ease-in-out infinite' }}>→</span>
-                  </button>
+                    <input
+                      value={heroInput}
+                      onChange={e => setHeroInput(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); isMobile ? openChatMobileWithMessage(heroInput) : openChatWithMessage(heroInput) } }}
+                      placeholder="Faz aqui a tua pergunta ao agente RH"
+                      className="flex-1 bg-transparent text-white outline-none placeholder-white/45 font-medium"
+                      style={{ fontSize: isMobile ? 16 : 15 }}
+                    />
+                    <button
+                      onClick={() => isMobile ? openChatMobileWithMessage(heroInput) : openChatWithMessage(heroInput)}
+                      disabled={!heroInput.trim()}
+                      className="h-9 w-9 rounded-full flex items-center justify-center shrink-0 transition-all active:scale-95 disabled:opacity-35"
+                      style={{ background: 'rgba(255,255,255,0.22)', border: '1px solid rgba(255,255,255,0.38)' }}
+                    >
+                      <SendIcon className="h-4 w-4 text-white" />
+                    </button>
+                  </div>
                 </div>
               </div>
 
