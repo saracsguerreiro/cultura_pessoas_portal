@@ -363,7 +363,6 @@ const CHAT_TOPICS: ChatTopic[] = [
 ]
 
 const NAV_ITEMS: NavItem[] = [
-  { id: 'sobre',       label: 'Início',      icon: IconAbout      },
   { id: 'chat-menu',   label: 'Chat',        icon: IconChatBubble },
   { id: 'faqs',        label: "FAQ's",       icon: IconFaq        },
   { id: 'noticias',    label: 'Notícias',    icon: IconNews       },
@@ -676,7 +675,9 @@ export default function App() {
         <>
           {/* ── Top Navigation ── */}
           <header className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-4 md:px-10 py-4 md:py-5">
-            <img src={tisLogoSvg} alt="TIS" style={{ height: 28, width: 'auto', filter: 'brightness(0) invert(1)' }} />
+            <button onClick={() => { setActiveNav('sobre'); closeChat() }} className="shrink-0 active:opacity-75 transition-opacity">
+              <img src={tisLogoSvg} alt="TIS" style={{ height: 34, width: 'auto', filter: 'brightness(0) invert(1)' }} />
+            </button>
             {/* Desktop nav */}
             <div className="hidden md:flex items-center gap-1">
               {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
@@ -818,31 +819,32 @@ export default function App() {
                 <p className="mb-1 text-base md:text-2xl font-light text-white/70" style={{ letterSpacing: '0.04em' }}>Informação. Respostas. Recursos.</p>
                 <p className="mb-6 md:mb-10 text-base md:text-2xl font-bold" style={{ letterSpacing: '0.02em' }}>Tudo num só lugar.</p>
                 <div style={{ width: '100%', maxWidth: isMobile ? '100%' : 520 }}>
-                  <div className="flex items-center gap-3 rounded-full px-3 py-2"
-                    style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.28)', boxShadow: '0 6px 28px rgba(0,0,70,0.20)' }}
+                  <div className="flex items-center rounded-full overflow-hidden"
+                    style={{ gap: isMobile ? 8 : 12, padding: isMobile ? '6px 6px 6px 8px' : '4px 4px 4px 12px', background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.28)', boxShadow: '0 6px 28px rgba(0,0,70,0.20)' }}
                   >
-                    <div className="rounded-full overflow-hidden shrink-0" style={{ width: 44, height: 44, border: '2px solid rgba(255,255,255,0.40)', boxShadow: '0 2px 10px rgba(0,0,60,0.30)' }}>
+                    <div className="rounded-full overflow-hidden shrink-0" style={{ width: isMobile ? 38 : 44, height: isMobile ? 38 : 44, border: '2px solid rgba(255,255,255,0.40)', boxShadow: '0 2px 10px rgba(0,0,60,0.30)' }}>
                       <img src={agentPhoto} alt="" className="w-full h-full object-cover" />
                     </div>
                     <input
                       value={heroInput}
                       onChange={e => setHeroInput(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); isMobile ? openChatMobileWithMessage(heroInput) : openChatWithMessage(heroInput) } }}
-                      placeholder="Faz aqui a tua pergunta ao agente RH"
-                      className="flex-1 bg-transparent text-white outline-none placeholder-white/45 font-medium"
+                      placeholder={isMobile ? 'Faz a tua pergunta' : 'Faz aqui a tua pergunta ao agente RH'}
+                      className="flex-1 min-w-0 bg-transparent text-white outline-none placeholder-white/45 font-medium"
                       style={{ fontSize: isMobile ? 16 : 15 }}
                     />
                     <button
                       onClick={handleMicClick}
                       title="Falar"
-                      className={`h-9 w-9 rounded-full flex items-center justify-center shrink-0 transition-all active:scale-95 ${isListening ? 'text-red-400' : 'text-white/70 hover:text-white'}`}
+                      className={`shrink-0 rounded-full flex items-center justify-center transition-all active:scale-95 ${isListening ? 'text-red-400' : 'text-white/70 hover:text-white'}`}
+                      style={{ width: isMobile ? 32 : 36, height: isMobile ? 32 : 36 }}
                     >
                       <IconMic className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => isMobile ? openChatMobileWithMessage(heroInput) : openChatWithMessage(heroInput)}
-                      className="h-9 w-9 rounded-full flex items-center justify-center shrink-0 transition-all active:scale-95"
-                      style={{ background: 'rgba(255,255,255,0.22)', border: '1px solid rgba(255,255,255,0.38)' }}
+                      className="shrink-0 rounded-full flex items-center justify-center transition-all active:scale-95"
+                      style={{ width: isMobile ? 36 : 40, height: isMobile ? 36 : 40, background: 'rgba(255,255,255,0.22)', border: '1px solid rgba(255,255,255,0.38)' }}
                     >
                       <SendIcon className="h-4 w-4 text-white" />
                     </button>
