@@ -416,6 +416,7 @@ export default function App() {
   const [docChatOpen,  setDocChatOpen]  = useState(false)
   const [heroInput,    setHeroInput]    = useState('')
   const [isListening,  setIsListening]  = useState(false)
+  const [heroFocused,  setHeroFocused]  = useState(false)
 
   // ── GSAP mural: hide all cells on mount so the login screen sits over a blank canvas ──
   useEffect(() => {
@@ -820,7 +821,9 @@ export default function App() {
                 <p className="mb-6 md:mb-10 text-base md:text-2xl font-bold" style={{ letterSpacing: '0.02em' }}>Tudo num só lugar.</p>
                 <div style={{ width: '100%', maxWidth: isMobile ? '100%' : 520 }}>
                   <div className="flex items-center rounded-full overflow-hidden"
-                    style={{ gap: isMobile ? 8 : 12, padding: isMobile ? '6px 6px 6px 8px' : '4px 4px 4px 12px', background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.28)', boxShadow: '0 6px 28px rgba(0,0,70,0.20)' }}
+                    onFocus={() => setHeroFocused(true)}
+                    onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setHeroFocused(false) }}
+                    style={{ gap: isMobile ? 8 : 12, padding: isMobile ? '6px 6px 6px 8px' : '4px 4px 4px 12px', background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: '1px solid rgba(255,255,255,0.28)', boxShadow: '0 6px 28px rgba(0,0,70,0.20)', animation: heroFocused ? 'none' : 'input-pulse 2s ease-in-out infinite', transition: 'box-shadow 0.3s ease' }}
                   >
                     <div className="rounded-full overflow-hidden shrink-0" style={{ width: isMobile ? 38 : 44, height: isMobile ? 38 : 44, border: '2px solid rgba(255,255,255,0.40)', boxShadow: '0 2px 10px rgba(0,0,60,0.30)' }}>
                       <img src={agentPhoto} alt="" className="w-full h-full object-cover" />
