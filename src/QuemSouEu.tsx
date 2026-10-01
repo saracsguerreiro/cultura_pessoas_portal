@@ -15,8 +15,8 @@ const GALLERY: Person[] = [
   { name: 'Tiago Moreira',                    role: 'Arquiteto Cloud',         team: 'Infraestrutura'    },
 ]
 
-// Gradiente da home, com opacidade a 70%
-const HOME_GRADIENT = 'linear-gradient(130deg, rgba(130,0,200,0.7) 0%, rgba(60,12,178,0.7) 45%, rgba(3,110,242,0.7) 100%)'
+// Filtro azul escuro sobre a foto no resultado, com opacidade a 70%
+const RESULT_OVERLAY = 'linear-gradient(130deg, rgba(8,18,64,0.7) 0%, rgba(10,28,92,0.7) 50%, rgba(12,40,120,0.7) 100%)'
 
 function initials(name: string) {
   const parts = name.split(' ')
@@ -261,7 +261,7 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
 
               {/* Result: home gradient over the photo (+ card on desktop) */}
               {(phase === 'result' || phase === 'feedback') && guess && (
-                <div className="absolute inset-0 overflow-y-auto flex justify-center p-3 md:p-5" style={{ background: HOME_GRADIENT, alignItems: 'safe center' }}>
+                <div className="absolute inset-0 overflow-y-auto flex justify-center p-3 md:p-5" style={{ background: RESULT_OVERLAY, alignItems: 'safe center' }}>
                   {!isMobile && resultCard}
                 </div>
               )}
