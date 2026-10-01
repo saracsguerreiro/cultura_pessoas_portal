@@ -15,8 +15,10 @@ const GALLERY: Person[] = [
   { name: 'Tiago Moreira',                    role: 'Arquiteto Cloud',         team: 'Infraestrutura'    },
 ]
 
-// Filtro azul escuro sobre a foto no resultado, com opacidade a 70%
-const RESULT_OVERLAY = 'linear-gradient(130deg, rgba(8,18,64,0.7) 0%, rgba(10,28,92,0.7) 50%, rgba(12,40,120,0.7) 100%)'
+// Filtro roxo sobre a foto no resultado, com opacidade a 80%
+const RESULT_OVERLAY = 'linear-gradient(130deg, rgba(130,0,200,0.8) 0%, rgba(96,6,190,0.8) 100%)'
+// Gradiente do fundo da página
+const PAGE_GRADIENT = 'linear-gradient(130deg, rgb(130,0,200) 0%, rgb(60,12,178) 45%, rgb(3,110,242) 100%)'
 
 function initials(name: string) {
   const parts = name.split(' ')
@@ -25,6 +27,9 @@ function initials(name: string) {
 
 function IconSparkle({ className }: { className?: string }) {
   return <svg viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M12 2c.4 4.6 2.4 7.6 7.6 8.4l2.4.4-2.4.4C14.4 12 12.4 15 12 22c-.4-7-2.4-10-7.6-10.8L2 10.8l2.4-.4C9.6 9.6 11.6 6.6 12 2z" /></svg>
+}
+function IconStudio({ className }: { className?: string }) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="5" width="15" height="15" rx="2" /><circle cx="8" cy="10" r="1.5" /><path d="M18 15l-4-4-8 9" /><path d="M20 2v4M18 4h4" /></svg>
 }
 function IconCheck({ className }: { className?: string }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
@@ -141,21 +146,15 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
       </div>
 
       {/* Actions */}
-      <div className="mt-4 pt-4 flex flex-wrap items-center justify-between gap-2" style={{ borderTop: '1px solid rgba(255,255,255,0.14)' }}>
+      <div className="mt-4 pt-4 flex justify-end" style={{ borderTop: '1px solid rgba(255,255,255,0.14)' }}>
         <button onClick={() => setNotice('O estúdio «A minha foto» estará disponível em breve.')}
-          className="rounded-full px-5 py-2.5 text-xs font-bold uppercase text-white transition-transform active:scale-95"
-          style={{ letterSpacing: '0.04em', background: 'linear-gradient(90deg, #8b5cf6 0%, #22d3ee 100%)', boxShadow: '0 4px 22px rgba(139,92,246,0.45)' }}
+          className="flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold uppercase text-white transition-transform active:scale-95"
+          style={{ letterSpacing: '0.04em', background: PAGE_GRADIENT, border: '1px solid rgba(255,255,255,0.25)', boxShadow: '0 4px 22px rgba(60,12,178,0.45)' }}
         >
-          🎨 Abrir estúdio em «A minha foto» ✨
-        </button>
-        <button onClick={() => setNotice('A pré-visualização da moldura estará disponível em breve.')}
-          className="rounded-full px-5 py-2.5 text-xs font-bold uppercase text-white/85 transition-all hover:bg-white/15"
-          style={{ letterSpacing: '0.04em', border: '1px solid rgba(255,255,255,0.30)' }}
-        >
-          Pré-visualizar moldura
+          <IconStudio className="h-4 w-4" />Abrir estúdio em «A minha foto»
         </button>
       </div>
-      {notice && <p className="mt-3 text-xs text-white/65">{notice}</p>}
+      {notice && <p className="mt-3 text-xs text-white/65 text-right">{notice}</p>}
     </div>
   )
 
@@ -210,7 +209,7 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
                     Posiciona o teu rosto dentro da guia central para máxima nitidez.
                   </p>
                   <button onClick={startCamera} disabled={phase === 'starting'}
-                    className="flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-[#1e1b4b] transition-all hover:bg-white/95 active:scale-[0.98] disabled:opacity-60"
+                    className="flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-[#036ef2] transition-all hover:bg-white/95 active:scale-[0.98] disabled:opacity-60"
                     style={{ boxShadow: '0 4px 20px rgba(0,0,60,0.25)' }}
                   >
                     <IconCamera className="h-5 w-5" />{phase === 'starting' ? 'A ligar…' : 'Ligar câmara'}
