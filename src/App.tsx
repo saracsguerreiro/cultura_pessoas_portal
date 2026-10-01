@@ -2353,7 +2353,7 @@ export default function App() {
             })()}
 
             {/* ══ Quem sou eu? ══ */}
-            {activeNav === 'quemsoueu' && <QuemSouEu userName={user?.name ?? ''} isMobile={isMobile} />}
+            {activeNav === 'quemsoueu' && <QuemSouEu isMobile={isMobile} />}
 
           </div>
         </>
