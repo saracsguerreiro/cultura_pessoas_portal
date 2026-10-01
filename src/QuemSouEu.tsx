@@ -1,11 +1,34 @@
 import { useEffect, useRef, useState } from 'react'
 
 type Phase = 'idle' | 'starting' | 'live' | 'analysing' | 'result' | 'feedback'
-type Guess = { name: string; confidence: number }
+type Person = { name: string; role: string; team: string }
 
 // Protótipo: a "câmara" mostra uma foto aleatória da galeria e o reconhecimento é simulado
 const PHOTOS = Array.from({ length: 48 }, (_, i) => `${import.meta.env.BASE_URL}fotos/${i + 1}_tis.jpg`)
-const GALLERY_NAMES = ['Ana Ribeiro', 'João Matos', 'Inês Carvalho', 'Pedro Almeida', 'Rita Fonseca', 'Tiago Moreira', 'Marta Lopes', 'Nuno Teixeira']
+const GALLERY: Person[] = [
+  { name: 'Sara Cristina Sargento Guerreiro', role: 'Consultor UX / UI',       team: 'Innovation Lab'    },
+  { name: 'Ana Ribeiro',                      role: 'Gestora de Projeto',      team: 'PMO'               },
+  { name: 'João Matos',                       role: 'Engenheiro de Software',  team: 'Digital Factory'   },
+  { name: 'Inês Carvalho',                    role: 'Técnica de RH',           team: 'Cultura & Pessoas' },
+  { name: 'Pedro Almeida',                    role: 'Analista de Dados',       team: 'Data & AI'         },
+  { name: 'Rita Fonseca',                     role: 'Consultora Financeira',   team: 'Finance'           },
+  { name: 'Tiago Moreira',                    role: 'Arquiteto Cloud',         team: 'Infraestrutura'    },
+]
+
+// Mesmo gradiente da home
+const HOME_GRADIENT = 'linear-gradient(130deg, rgba(130,0,200,0.9) 0%, rgba(60,12,178,0.88) 45%, rgba(3,110,242,0.9) 100%)'
+
+function initials(name: string) {
+  const parts = name.split(' ')
+  return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase()
+}
+
+function IconSparkle({ className }: { className?: string }) {
+  return <svg viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M12 2c.4 4.6 2.4 7.6 7.6 8.4l2.4.4-2.4.4C14.4 12 12.4 15 12 22c-.4-7-2.4-10-7.6-10.8L2 10.8l2.4-.4C9.6 9.6 11.6 6.6 12 2z" /></svg>
+}
+function IconCheck({ className }: { className?: string }) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+}
 
 function randomPhoto(except?: string) {
   let p = PHOTOS[Math.floor(Math.random() * PHOTOS.length)]
@@ -25,7 +48,8 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [phase,   setPhase]   = useState<Phase>('idle')
   const [photo,   setPhoto]   = useState('')
-  const [guess,   setGuess]   = useState<Guess | null>(null)
+  const [guess,   setGuess]   = useState<Person | null>(null)
+  const [notice,  setNotice]  = useState('')
 
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current) }, [])
 
@@ -48,7 +72,8 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
   function analyse() {
     setPhase('analysing')
     later(() => {
-      setGuess({ name: GALLERY_NAMES[Math.floor(Math.random() * GALLERY_NAMES.length)], confidence: 62 + Math.floor(Math.random() * 35) })
+      setGuess(GALLERY[Math.floor(Math.random() * GALLERY.length)])
+      setNotice('')
       setPhase('result')
     }, 2200)
   }
@@ -64,7 +89,75 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
   }
 
   const cameraOn = phase !== 'idle' && phase !== 'starting'
-  const firstName = guess?.name.split(' ')[0]
+
+  const resultCard = guess && (
+    <div className="w-full rounded-3xl text-white" style={{ maxWidth: 620, padding: isMobile ? 16 : 22, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.26)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', boxShadow: '0 10px 40px rgba(0,0,70,0.25)' }}>
+      {/* Identity */}
+      <div className="flex items-center gap-4">
+        <div className="shrink-0 flex items-center justify-center rounded-full font-bold"
+          style={{ width: isMobile ? 60 : 76, height: isMobile ? 60 : 76, fontSize: isMobile ? 18 : 22, background: 'rgba(255,255,255,0.14)', border: '3px solid #22d3ee', boxShadow: '0 0 18px rgba(34,211,238,0.35)' }}
+        >
+          {initials(guess.name)}
+        </div>
+        <div className="min-w-0">
+          <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] md:text-[11px] font-semibold text-[#67e8f9] mb-1.5"
+            style={{ background: 'rgba(34,211,238,0.12)', border: '1px solid rgba(34,211,238,0.35)' }}
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-[#22d3ee]" />Colaborador TIS Reconhecido
+          </span>
+          <p className="font-extrabold leading-tight" style={{ fontSize: isMobile ? 19 : 24, letterSpacing: '-0.01em' }}>{guess.name}</p>
+          <p className="text-xs md:text-sm text-white/70 mt-0.5">{guess.role} · {guess.team}</p>
+        </div>
+      </div>
+
+      {/* Team badge */}
+      <div className="mt-4 flex items-center gap-3 rounded-2xl px-4 py-3" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.18)' }}>
+        <IconSparkle className="h-5 w-5 shrink-0 text-[#22d3ee]" />
+        <div className="flex-1 min-w-0">
+          <p className="text-[11px] md:text-xs"><span className="font-bold uppercase text-[#67e8f9]" style={{ letterSpacing: '0.04em' }}>{guess.team}</span><span className="text-white/50"> · Membro Oficial</span></p>
+          <p className="text-[11px] md:text-xs font-medium text-white/85">Juntos Somos TIS — É um orgulho ter-te na nossa equipa!</p>
+        </div>
+        {!isMobile && <span className="shrink-0 text-xs font-bold italic text-[#67e8f9]">#SomosTIS</span>}
+      </div>
+
+      {/* Feedback */}
+      <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.14)' }}>
+        <p className="text-sm font-semibold text-white/85 mb-2.5">Acertei?</p>
+        {phase === 'result' ? (
+          <div className="flex flex-wrap gap-2">
+            <button onClick={answer} className="flex items-center gap-1.5 rounded-full bg-white px-5 py-2 text-sm font-bold text-[#036ef2] active:scale-95 transition-transform">
+              <IconCheck className="h-4 w-4" />Acertaste
+            </button>
+            <button onClick={answer} className="rounded-full px-5 py-2 text-sm font-bold text-white active:scale-95 transition-all hover:bg-white/20" style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.30)' }}>
+              Não era eu
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-sm text-white/75">Obrigada! A tua resposta ajuda-nos a afinar o limiar.</p>
+            <button onClick={retry} className="rounded-full px-4 py-1.5 text-xs font-bold text-white transition-all hover:bg-white/20" style={{ border: '1px solid rgba(255,255,255,0.30)' }}>Tentar novamente</button>
+          </div>
+        )}
+      </div>
+
+      {/* Actions */}
+      <div className="mt-4 pt-4 flex flex-wrap items-center justify-between gap-2" style={{ borderTop: '1px solid rgba(255,255,255,0.14)' }}>
+        <button onClick={() => setNotice('O estúdio «A minha foto» estará disponível em breve.')}
+          className="rounded-full px-5 py-2.5 text-xs font-bold uppercase text-white transition-transform active:scale-95"
+          style={{ letterSpacing: '0.04em', background: 'linear-gradient(90deg, #8b5cf6 0%, #22d3ee 100%)', boxShadow: '0 4px 22px rgba(139,92,246,0.45)' }}
+        >
+          🎨 Abrir estúdio em «A minha foto» ✨
+        </button>
+        <button onClick={() => setNotice('A pré-visualização da moldura estará disponível em breve.')}
+          className="rounded-full px-5 py-2.5 text-xs font-bold uppercase text-white/85 transition-all hover:bg-white/15"
+          style={{ letterSpacing: '0.04em', border: '1px solid rgba(255,255,255,0.30)' }}
+        >
+          Pré-visualizar moldura
+        </button>
+      </div>
+      {notice && <p className="mt-3 text-xs text-white/65">{notice}</p>}
+    </div>
+  )
 
   return (
     <div className="relative h-full overflow-y-auto">
@@ -86,7 +179,7 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
         {/* ── Right: camera box ── */}
         <div className={`flex-1 min-w-0 flex justify-center ${isMobile ? 'pb-4' : ''}`}>
           <div className="rounded-3xl"
-            style={{ width: isMobile ? '100%' : 'min(70%, calc(((100vh - 170px) * 4 / 3 + 40px) * 0.7))', padding: isMobile ? 12 : 20, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.24)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', boxShadow: '0 10px 40px rgba(0,0,70,0.18)' }}
+            style={{ width: isMobile ? '100%' : 'min(80.5%, calc(((100vh - 170px) * 4 / 3 + 40px) * 0.805))', padding: isMobile ? 12 : 20, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.24)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', boxShadow: '0 10px 40px rgba(0,0,70,0.18)' }}
           >
             <div className="relative w-full overflow-hidden rounded-2xl"
               style={{ aspectRatio: '4 / 3', background: 'linear-gradient(135deg, #2b1460 0%, #1d1a5c 50%, #142454 100%)', boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.06)' }}
@@ -156,45 +249,24 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
               {(phase === 'live' || phase === 'analysing') && (
                 <div className="absolute bottom-3 right-3 md:bottom-4 md:right-4">
                   <button onClick={analyse} disabled={phase !== 'live'}
-                    className="flex items-center gap-2 rounded-full bg-white px-5 py-2.5 md:py-3 text-sm font-bold text-[#1e1b4b] transition-all hover:bg-white/95 active:scale-[0.98] disabled:opacity-80"
+                    className="flex items-center gap-2 rounded-full bg-white px-5 py-2.5 md:py-3 text-sm font-bold text-[#036ef2] transition-all hover:bg-white/95 active:scale-[0.98] disabled:opacity-80"
                     style={{ boxShadow: '0 4px 20px rgba(0,0,60,0.30)' }}
                   >
                     {phase === 'analysing'
-                      ? <><div className="h-4 w-4 rounded-full border-2 border-[#1e1b4b]/25 border-t-[#1e1b4b] animate-spin" />A analisar…</>
+                      ? <><div className="h-4 w-4 rounded-full border-2 border-[#036ef2]/25 border-t-[#036ef2] animate-spin" />A analisar…</>
                       : <><IconFaceScan className="h-5 w-5" />Descobre quem sou</>}
                   </button>
                 </div>
               )}
 
-              {/* Result / feedback */}
+              {/* Result: home gradient over the photo (+ card on desktop) */}
               {(phase === 'result' || phase === 'feedback') && guess && (
-                <div className="absolute inset-0 flex items-center justify-center p-2 md:p-4" style={{ background: 'rgba(20,16,70,0.55)' }}>
-                  <div className="w-full rounded-2xl text-center text-white" style={{ maxWidth: 380, padding: isMobile ? '10px 12px' : 26, background: 'rgba(255,255,255,0.14)', border: '1px solid rgba(255,255,255,0.28)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)' }}>
-                    {phase === 'result' ? (
-                      <>
-                        <p className="text-xs font-bold uppercase text-white/60 mb-1 md:mb-2" style={{ letterSpacing: '0.16em' }}>Acho que és…</p>
-                        <p className="text-lg md:text-3xl font-extrabold mb-2 md:mb-3">{guess.name}</p>
-                        <div className="mx-auto mb-1.5 h-1.5 rounded-full overflow-hidden" style={{ maxWidth: 220, background: 'rgba(255,255,255,0.18)' }}>
-                          <div className="h-full rounded-full" style={{ width: `${guess.confidence}%`, background: 'linear-gradient(90deg, #38bdf8, #a78bfa)' }} />
-                        </div>
-                        <p className="text-xs text-white/65 mb-2.5 md:mb-5">Confiança: {guess.confidence}%</p>
-                        <p className="text-xs md:text-sm font-semibold mb-2 md:mb-3">Acertei?</p>
-                        <div className="flex gap-2 justify-center">
-                          <button onClick={answer} className="whitespace-nowrap rounded-full bg-white px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-bold text-[#3c0cb2] active:scale-95 transition-transform">Sim, sou eu</button>
-                          <button onClick={answer} className="whitespace-nowrap rounded-full px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-bold text-white active:scale-95 transition-transform" style={{ background: 'rgba(255,255,255,0.14)', border: '1px solid rgba(255,255,255,0.35)' }}>Não sou {firstName}</button>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-lg md:text-xl font-extrabold mb-1 md:mb-2">Obrigada!</p>
-                        <p className="text-xs md:text-sm text-white/75 mb-3 md:mb-5">A tua resposta ajuda-nos a afinar o limiar de reconhecimento.</p>
-                        <button onClick={retry} className="rounded-full bg-white px-5 py-2.5 text-sm font-bold text-[#3c0cb2] active:scale-95 transition-transform">Tentar novamente</button>
-                      </>
-                    )}
-                  </div>
+                <div className="absolute inset-0 overflow-y-auto flex justify-center p-3 md:p-5" style={{ background: HOME_GRADIENT, alignItems: 'safe center' }}>
+                  {!isMobile && resultCard}
                 </div>
               )}
             </div>
+            {isMobile && (phase === 'result' || phase === 'feedback') && <div className="mt-3">{resultCard}</div>}
           </div>
         </div>
 
