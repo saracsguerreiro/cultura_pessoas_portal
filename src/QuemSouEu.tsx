@@ -26,7 +26,6 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
   const [phase,   setPhase]   = useState<Phase>('idle')
   const [photo,   setPhoto]   = useState('')
   const [guess,   setGuess]   = useState<Guess | null>(null)
-  const [answers, setAnswers] = useState<{ right: number; total: number }>({ right: 0, total: 0 })
 
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current) }, [])
 
@@ -54,8 +53,7 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
     }, 2200)
   }
 
-  function answer(correct: boolean) {
-    setAnswers(a => ({ right: a.right + (correct ? 1 : 0), total: a.total + 1 }))
+  function answer() {
     setPhase('feedback')
   }
 
@@ -79,21 +77,16 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
           <p className="text-sm md:text-[15px] leading-relaxed text-white/80">
             Olha para a câmara e deixa a assistente adivinhar. Depois diz-lhe se acertou. Cada resposta ensina-nos onde o limiar deve ficar antes de o abrirmos a eventos e totens.
           </p>
-          <div className="mt-5 md:mt-7 pt-5 md:pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.18)' }}>
+          <div className="mt-8 md:mt-16">
             <p className="text-base font-extrabold text-white mb-1">Pronto para começar?</p>
             <p className="text-sm leading-relaxed text-white/70">A imagem é processada localmente e comparada com a galeria de rostos autorizados da TIS.</p>
-            {answers.total > 0 && (
-              <p className="mt-4 text-xs text-white/60">
-                {answers.total} resposta{answers.total > 1 ? 's' : ''} registada{answers.total > 1 ? 's' : ''} · {Math.round((answers.right / answers.total) * 100)}% de acertos
-              </p>
-            )}
           </div>
         </div>
 
         {/* ── Right: camera box ── */}
         <div className={`flex-1 min-w-0 flex justify-center ${isMobile ? 'pb-4' : ''}`}>
           <div className="rounded-3xl"
-            style={{ width: isMobile ? '100%' : 'min(100%, calc((100vh - 170px) * 4 / 3 + 40px))', padding: isMobile ? 12 : 20, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.24)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', boxShadow: '0 10px 40px rgba(0,0,70,0.18)' }}
+            style={{ width: isMobile ? '100%' : 'min(70%, calc(((100vh - 170px) * 4 / 3 + 40px) * 0.7))', padding: isMobile ? 12 : 20, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.24)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', boxShadow: '0 10px 40px rgba(0,0,70,0.18)' }}
           >
             <div className="relative w-full overflow-hidden rounded-2xl"
               style={{ aspectRatio: '4 / 3', background: 'linear-gradient(135deg, #2b1460 0%, #1d1a5c 50%, #142454 100%)', boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.06)' }}
@@ -187,8 +180,8 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
                         <p className="text-xs text-white/65 mb-2.5 md:mb-5">Confiança: {guess.confidence}%</p>
                         <p className="text-xs md:text-sm font-semibold mb-2 md:mb-3">Acertei?</p>
                         <div className="flex gap-2 justify-center">
-                          <button onClick={() => answer(true)} className="whitespace-nowrap rounded-full bg-white px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-bold text-[#3c0cb2] active:scale-95 transition-transform">Sim, sou eu</button>
-                          <button onClick={() => answer(false)} className="whitespace-nowrap rounded-full px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-bold text-white active:scale-95 transition-transform" style={{ background: 'rgba(255,255,255,0.14)', border: '1px solid rgba(255,255,255,0.35)' }}>Não sou {firstName}</button>
+                          <button onClick={answer} className="whitespace-nowrap rounded-full bg-white px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-bold text-[#3c0cb2] active:scale-95 transition-transform">Sim, sou eu</button>
+                          <button onClick={answer} className="whitespace-nowrap rounded-full px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-bold text-white active:scale-95 transition-transform" style={{ background: 'rgba(255,255,255,0.14)', border: '1px solid rgba(255,255,255,0.35)' }}>Não sou {firstName}</button>
                         </div>
                       </>
                     ) : (
