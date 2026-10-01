@@ -15,8 +15,8 @@ const GALLERY: Person[] = [
   { name: 'Tiago Moreira',                    role: 'Arquiteto Cloud',         team: 'Infraestrutura'    },
 ]
 
-// Mesmo gradiente da home
-const HOME_GRADIENT = 'linear-gradient(130deg, rgba(130,0,200,0.9) 0%, rgba(60,12,178,0.88) 45%, rgba(3,110,242,0.9) 100%)'
+// Gradiente da home, com opacidade a 70%
+const HOME_GRADIENT = 'linear-gradient(130deg, rgba(130,0,200,0.7) 0%, rgba(60,12,178,0.7) 45%, rgba(3,110,242,0.7) 100%)'
 
 function initials(name: string) {
   const parts = name.split(' ')
