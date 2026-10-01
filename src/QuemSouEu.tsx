@@ -6,17 +6,17 @@ type Person = { name: string; role: string; team: string }
 // Protótipo: a "câmara" mostra uma foto aleatória da galeria e o reconhecimento é simulado
 const PHOTOS = Array.from({ length: 48 }, (_, i) => `${import.meta.env.BASE_URL}fotos/${i + 1}_tis.jpg`)
 const GALLERY: Person[] = [
-  { name: 'Sara Cristina Sargento Guerreiro', role: 'Consultor UX / UI',       team: 'Innovation Lab'    },
-  { name: 'Ana Ribeiro',                      role: 'Gestora de Projeto',      team: 'PMO'               },
-  { name: 'João Matos',                       role: 'Engenheiro de Software',  team: 'Digital Factory'   },
-  { name: 'Inês Carvalho',                    role: 'Técnica de RH',           team: 'Cultura & Pessoas' },
-  { name: 'Pedro Almeida',                    role: 'Analista de Dados',       team: 'Data & AI'         },
-  { name: 'Rita Fonseca',                     role: 'Consultora Financeira',   team: 'Finance'           },
-  { name: 'Tiago Moreira',                    role: 'Arquiteto Cloud',         team: 'Infraestrutura'    },
+  { name: 'Sara Cristina Sargento Guerreiro', role: 'Consultor UX / UI',       team: 'Innovation Lab'          },
+  { name: 'Ana Paula Ribeiro Domingos',       role: 'Gestora de Projeto',      team: 'PMO'                     },
+  { name: 'João Manuel Calunga Matos',        role: 'Engenheiro de Software',  team: 'Laboratório de Inovação' },
+  { name: 'Inês Maria Carvalho Neto',         role: 'Técnica de RH',           team: 'Cultura & Pessoas'       },
+  { name: 'Pedro António Almeida Sebastião',  role: 'Analista de Dados',       team: 'Data & AI'               },
+  { name: 'Rita Isabel Fonseca Kiala',        role: 'Consultora Financeira',   team: 'Finance'                 },
+  { name: 'Tiago Miguel Moreira Cassoma',     role: 'Arquiteto Cloud',         team: 'Infraestrutura'          },
 ]
 
-// Filtro roxo sobre a foto no resultado, com opacidade a 80%
-const RESULT_OVERLAY = 'linear-gradient(130deg, rgba(130,0,200,0.8) 0%, rgba(96,6,190,0.8) 100%)'
+// Filtro sobre a foto no resultado, com opacidade a 65%
+const RESULT_OVERLAY = 'rgba(46,27,124,0.65)'
 // Gradiente do fundo da página
 const PAGE_GRADIENT = 'linear-gradient(130deg, rgb(130,0,200) 0%, rgb(60,12,178) 45%, rgb(3,110,242) 100%)'
 
@@ -25,8 +25,8 @@ function initials(name: string) {
   return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase()
 }
 
-function IconSparkle({ className }: { className?: string }) {
-  return <svg viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M12 2c.4 4.6 2.4 7.6 7.6 8.4l2.4.4-2.4.4C14.4 12 12.4 15 12 22c-.4-7-2.4-10-7.6-10.8L2 10.8l2.4-.4C9.6 9.6 11.6 6.6 12 2z" /></svg>
+function IconSparkle({ className, style }: { className?: string; style?: React.CSSProperties }) {
+  return <svg viewBox="0 0 24 24" fill="currentColor" className={className} style={style}><path d="M12 2c.4 4.6 2.4 7.6 7.6 8.4l2.4.4-2.4.4C14.4 12 12.4 15 12 22c-.4-7-2.4-10-7.6-10.8L2 10.8l2.4-.4C9.6 9.6 11.6 6.6 12 2z" /></svg>
 }
 function IconStudio({ className }: { className?: string }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="5" width="15" height="15" rx="2" /><circle cx="8" cy="10" r="1.5" /><path d="M18 15l-4-4-8 9" /><path d="M20 2v4M18 4h4" /></svg>
@@ -100,15 +100,15 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
       {/* Identity */}
       <div className="flex items-center gap-4">
         <div className="shrink-0 flex items-center justify-center rounded-full font-bold"
-          style={{ width: isMobile ? 60 : 76, height: isMobile ? 60 : 76, fontSize: isMobile ? 18 : 22, background: 'rgba(255,255,255,0.14)', border: '3px solid #22d3ee', boxShadow: '0 0 18px rgba(34,211,238,0.35)' }}
+          style={{ width: isMobile ? 60 : 76, height: isMobile ? 60 : 76, fontSize: isMobile ? 18 : 22, background: 'rgba(255,255,255,0.14)', border: '3px solid #036ef2', boxShadow: '0 0 18px rgba(3,110,242,0.55)' }}
         >
           {initials(guess.name)}
         </div>
         <div className="min-w-0">
-          <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] md:text-[11px] font-semibold text-[#67e8f9] mb-1.5"
-            style={{ background: 'rgba(34,211,238,0.12)', border: '1px solid rgba(34,211,238,0.35)' }}
+          <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] md:text-[11px] font-semibold text-[#036ef2] mb-1.5"
+            style={{ background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(3,110,242,0.45)', boxShadow: '0 0 12px rgba(3,110,242,0.45)' }}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[#22d3ee]" />Colaborador TIS Reconhecido
+            <span className="h-1.5 w-1.5 rounded-full bg-[#036ef2]" style={{ boxShadow: '0 0 6px rgba(3,110,242,0.9)' }} />Colaborador TIS Reconhecido
           </span>
           <p className="font-extrabold leading-tight" style={{ fontSize: isMobile ? 19 : 24, letterSpacing: '-0.01em' }}>{guess.name}</p>
           <p className="text-xs md:text-sm text-white/70 mt-0.5">{guess.role} · {guess.team}</p>
@@ -117,12 +117,12 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
 
       {/* Team badge */}
       <div className="mt-4 flex items-center gap-3 rounded-2xl px-4 py-3" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.18)' }}>
-        <IconSparkle className="h-5 w-5 shrink-0 text-[#22d3ee]" />
+        <IconSparkle className="h-5 w-5 shrink-0 text-[#036ef2]" style={{ filter: 'drop-shadow(0 0 6px rgba(3,110,242,0.8))' }} />
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] md:text-xs"><span className="font-bold uppercase text-[#67e8f9]" style={{ letterSpacing: '0.04em' }}>{guess.team}</span><span className="text-white/50"> · Membro Oficial</span></p>
+          <p className="text-[11px] md:text-xs"><span className="font-bold uppercase text-[#036ef2]" style={{ letterSpacing: '0.04em', textShadow: '0 0 6px rgba(3,110,242,0.45)' }}>{guess.team}</span><span className="text-white/50"> · Membro Oficial</span></p>
           <p className="text-[11px] md:text-xs font-medium text-white/85">Juntos Somos TIS — É um orgulho ter-te na nossa equipa!</p>
         </div>
-        {!isMobile && <span className="shrink-0 text-xs font-bold italic text-[#67e8f9]">#SomosTIS</span>}
+        {!isMobile && <span className="shrink-0 text-xs font-bold italic text-[#036ef2]" style={{ textShadow: '0 0 6px rgba(3,110,242,0.45)' }}>#SomosTIS</span>}
       </div>
 
       {/* Feedback */}
@@ -146,7 +146,7 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
       </div>
 
       {/* Actions */}
-      <div className="mt-4 pt-4 flex justify-end" style={{ borderTop: '1px solid rgba(255,255,255,0.14)' }}>
+      <div className="mt-4 pt-4 flex justify-start" style={{ borderTop: '1px solid rgba(255,255,255,0.14)' }}>
         <button onClick={() => setNotice('O estúdio «A minha foto» estará disponível em breve.')}
           className="flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold uppercase text-white transition-transform active:scale-95"
           style={{ letterSpacing: '0.04em', background: PAGE_GRADIENT, border: '1px solid rgba(255,255,255,0.25)', boxShadow: '0 4px 22px rgba(60,12,178,0.45)' }}
@@ -154,7 +154,7 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
           <IconStudio className="h-4 w-4" />Abrir estúdio em «A minha foto»
         </button>
       </div>
-      {notice && <p className="mt-3 text-xs text-white/65 text-right">{notice}</p>}
+      {notice && <p className="mt-3 text-xs text-white/65">{notice}</p>}
     </div>
   )
 
