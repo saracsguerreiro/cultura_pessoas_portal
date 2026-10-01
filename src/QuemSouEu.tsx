@@ -203,7 +203,7 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
                         ? <div className="h-7 w-7 rounded-full border-2 border-white/30 border-t-white animate-spin" />
                         : <IconCamera className="h-9 w-9 text-white" />}
                     </div>
-                    <span className="absolute rounded-full" style={{ top: -3, right: -5, width: 16, height: 16, background: '#38bdf8', boxShadow: '0 0 10px rgba(56,189,248,0.7)' }} />
+                    <span className="absolute rounded-full" style={{ top: -3, right: -5, width: 16, height: 16, background: '#036ef2', boxShadow: '0 0 10px rgba(3,110,242,0.75)' }} />
                   </div>
                   <p className="text-sm leading-relaxed text-white/75 mb-5" style={{ maxWidth: 300 }}>
                     Posiciona o teu rosto dentro da guia central para máxima nitidez.
@@ -224,7 +224,7 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
                     <span className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase text-white"
                       style={{ letterSpacing: '0.08em', background: 'rgba(20,16,70,0.55)', border: '1px solid rgba(255,255,255,0.25)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }}
                     >
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" style={{ boxShadow: '0 0 6px rgba(52,211,153,0.8)', animation: 'typing-cursor 1.4s ease-in-out infinite' }} />
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#036ef2]" style={{ boxShadow: '0 0 6px rgba(3,110,242,0.9)', animation: 'typing-cursor 1.4s ease-in-out infinite' }} />
                       Mira métrica activa
                     </span>
                   </div>
@@ -246,7 +246,7 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
               )}
 
               {(phase === 'live' || phase === 'analysing') && (
-                <div className="absolute bottom-3 right-3 md:bottom-4 md:right-4">
+                <div className="absolute bottom-3 md:bottom-4 left-0 right-0 flex justify-center">
                   <button onClick={analyse} disabled={phase !== 'live'}
                     className="flex items-center gap-2 rounded-full bg-white px-5 py-2.5 md:py-3 text-sm font-bold text-[#036ef2] transition-all hover:bg-white/95 active:scale-[0.98] disabled:opacity-80"
                     style={{ boxShadow: '0 4px 20px rgba(0,0,60,0.30)' }}
