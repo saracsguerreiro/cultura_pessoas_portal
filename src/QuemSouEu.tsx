@@ -49,12 +49,11 @@ export function IconFaceScan({ className }: { className?: string }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3" /><circle cx="9" cy="10" r=".6" fill="currentColor" /><circle cx="15" cy="10" r=".6" fill="currentColor" /><path d="M9 15.5c.8.7 1.8 1 3 1s2.2-.3 3-1" /></svg>
 }
 
-export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
+export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolean; onOpenStudio: () => void }) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [phase,   setPhase]   = useState<Phase>('idle')
   const [photo,   setPhoto]   = useState('')
   const [guess,   setGuess]   = useState<Person | null>(null)
-  const [notice,  setNotice]  = useState('')
 
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current) }, [])
 
@@ -78,7 +77,6 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
     setPhase('analysing')
     later(() => {
       setGuess(GALLERY[Math.floor(Math.random() * GALLERY.length)])
-      setNotice('')
       setPhase('result')
     }, 2200)
   }
@@ -147,14 +145,13 @@ export default function QuemSouEu({ isMobile }: { isMobile: boolean }) {
 
       {/* Actions */}
       <div className="mt-4 pt-4 flex justify-start" style={{ borderTop: '1px solid rgba(255,255,255,0.14)' }}>
-        <button onClick={() => setNotice('O estúdio «A minha foto» estará disponível em breve.')}
+        <button onClick={onOpenStudio}
           className="flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold uppercase text-white transition-transform active:scale-95"
           style={{ letterSpacing: '0.04em', background: PAGE_GRADIENT, border: '1px solid rgba(255,255,255,0.25)', boxShadow: '0 4px 22px rgba(60,12,178,0.45)' }}
         >
           <IconStudio className="h-4 w-4" />Abrir estúdio em «A minha foto»
         </button>
       </div>
-      {notice && <p className="mt-3 text-xs text-white/65">{notice}</p>}
     </div>
   )
 

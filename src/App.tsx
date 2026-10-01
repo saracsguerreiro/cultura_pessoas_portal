@@ -5,6 +5,7 @@ import tisLogoSvg from '@/imports/TIS_logo-01.svg'
 import agentPhoto from '@/imports/avatar_rh.jpg'
 import newsDetailBg from '@/imports/gradient-1.png'
 import QuemSouEu, { IconFaceScan } from '@/QuemSouEu'
+import AMinhaFoto from '@/AMinhaFoto'
 
 // ── Portrait photos ──
 const PHOTO_BASE = import.meta.env.BASE_URL
@@ -640,7 +641,7 @@ export default function App() {
 
       {/* ── Layer 2: Gradient overlay — more opaque on inner pages ── */}
       <div className="absolute inset-0 z-10" style={{
-        background: ['faqs','noticias','eventos','documentos','chat','quemsoueu'].includes(activeNav)
+        background: ['faqs','noticias','eventos','documentos','chat','quemsoueu','aminhafoto'].includes(activeNav)
           ? 'linear-gradient(130deg, rgba(130,0,200,0.98) 0%, rgba(60,12,178,0.98) 45%, rgba(3,110,242,0.98) 100%)'
           : 'linear-gradient(130deg, rgba(130,0,200,0.9) 0%, rgba(60,12,178,0.88) 45%, rgba(3,110,242,0.9) 100%)',
         transition: 'background 0.4s ease',
@@ -2353,7 +2354,10 @@ export default function App() {
             })()}
 
             {/* ══ Quem sou eu? ══ */}
-            {activeNav === 'quemsoueu' && <QuemSouEu isMobile={isMobile} />}
+            {activeNav === 'quemsoueu' && <QuemSouEu isMobile={isMobile} onOpenStudio={() => setActiveNav('aminhafoto')} />}
+
+            {/* ══ A Minha Foto ══ */}
+            {activeNav === 'aminhafoto' && <AMinhaFoto isMobile={isMobile} />}
 
           </div>
         </>
