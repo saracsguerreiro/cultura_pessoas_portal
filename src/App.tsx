@@ -5,7 +5,8 @@ import tisLogoSvg from '@/imports/TIS_logo-01.svg'
 import agentPhoto from '@/imports/avatar_rh.jpg'
 import newsDetailBg from '@/imports/gradient-1.png'
 import QuemSouEu, { IconFaceScan } from '@/QuemSouEu'
-import AMinhaFoto from '@/AMinhaFoto'
+import AMinhaFoto, { PROFILE } from '@/AMinhaFoto'
+import Estudio from '@/Estudio'
 
 // ── Portrait photos ──
 const PHOTO_BASE = import.meta.env.BASE_URL
@@ -391,6 +392,8 @@ export default function App() {
   const [authLoading,   setAuthLoading]   = useState(false)
   const [user,          setUser]          = useState<TISUser | null>(null)
   const [activeNav,     setActiveNav]     = useState('sobre')
+  const [profilePhoto,  setProfilePhoto]  = useState<string | null>(PROFILE.photo)
+  const [photoSource,   setPhotoSource]   = useState<string | null>(PROFILE.photo)  // foto sem edições, base do estúdio
   const [chatOpen,      setChatOpen]      = useState(false)
   const [messages,      setMessages]      = useState<Message[]>([])
   const [inputText,     setInputText]     = useState('')
@@ -641,7 +644,7 @@ export default function App() {
 
       {/* ── Layer 2: Gradient overlay — more opaque on inner pages ── */}
       <div className="absolute inset-0 z-10" style={{
-        background: ['faqs','noticias','eventos','documentos','chat','quemsoueu','aminhafoto'].includes(activeNav)
+        background: ['faqs','noticias','eventos','documentos','chat','quemsoueu','aminhafoto','estudio'].includes(activeNav)
           ? 'linear-gradient(130deg, rgba(130,0,200,0.98) 0%, rgba(60,12,178,0.98) 45%, rgba(3,110,242,0.98) 100%)'
           : 'linear-gradient(130deg, rgba(130,0,200,0.9) 0%, rgba(60,12,178,0.88) 45%, rgba(3,110,242,0.9) 100%)',
         transition: 'background 0.4s ease',
@@ -2357,7 +2360,10 @@ export default function App() {
             {activeNav === 'quemsoueu' && <QuemSouEu isMobile={isMobile} onOpenStudio={() => setActiveNav('aminhafoto')} />}
 
             {/* ══ A Minha Foto ══ */}
-            {activeNav === 'aminhafoto' && <AMinhaFoto isMobile={isMobile} />}
+            {activeNav === 'aminhafoto' && <AMinhaFoto isMobile={isMobile} photo={profilePhoto} onPhotoChange={url => { setProfilePhoto(url); setPhotoSource(url) }} onRetake={() => setActiveNav('quemsoueu')} onOpenStudio={() => setActiveNav('estudio')} />}
+
+            {/* ══ Estúdio de Retrato ══ */}
+            {activeNav === 'estudio' && <Estudio isMobile={isMobile} photo={photoSource} onSetPhoto={url => { setProfilePhoto(url); setActiveNav('aminhafoto') }} onBack={() => setActiveNav('aminhafoto')} />}
 
           </div>
         </>

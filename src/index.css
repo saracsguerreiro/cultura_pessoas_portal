@@ -70,3 +70,30 @@ body,
   0%, 100% { top: 8%; }
   50%       { top: 92%; }
 }
+
+.tis-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(to right, #036ef2 var(--pct), rgba(255,255,255,0.18) var(--pct));
+  outline: none;
+  cursor: pointer;
+}
+.tis-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #036ef2;
+  box-shadow: 0 0 10px rgba(3,110,242,0.6);
+}
+.tis-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #036ef2;
+  box-shadow: 0 0 10px rgba(3,110,242,0.6);
+}

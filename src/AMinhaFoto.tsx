@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { IconFaceScan } from '@/QuemSouEu'
 
 // Perfil de demonstração
-const PROFILE = {
+export const PROFILE = {
   name:  'Sara Cristina Sargento Guerreiro',
   role:  'Consultor UX / UI',
   team:  'Innovation Lab',
@@ -44,17 +44,14 @@ function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) =
 
 const glass = { background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.24)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)' } as const
 
-export default function AMinhaFoto({ isMobile }: { isMobile: boolean }) {
+export default function AMinhaFoto({ isMobile, photo, onPhotoChange, onRetake, onOpenStudio }: { isMobile: boolean; photo: string | null; onPhotoChange: (url: string | null) => void; onRetake: () => void; onOpenStudio: () => void }) {
   const uploadRef  = useRef<HTMLInputElement>(null)
-  const captureRef = useRef<HTMLInputElement>(null)
-  const [photo,      setPhoto]      = useState<string | null>(PROFILE.photo)
   const [showPortal, setShowPortal] = useState(true)
   const [recognise,  setRecognise]  = useState(true)
-  const [notice,     setNotice]     = useState('')
 
   function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
-    if (file) setPhoto(URL.createObjectURL(file))
+    if (file) onPhotoChange(URL.createObjectURL(file))
     e.target.value = ''
   }
 
@@ -113,7 +110,7 @@ export default function AMinhaFoto({ isMobile }: { isMobile: boolean }) {
             <p className="text-xs text-white/55 mt-0.5">{PROFILE.team}</p>
 
             <div className="flex gap-2.5 mt-6">
-              <button onClick={() => captureRef.current?.click()}
+              <button onClick={onRetake}
                 className="flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-[#036ef2] transition-all hover:bg-white/95 active:scale-[0.98]"
                 style={{ boxShadow: '0 4px 20px rgba(0,0,60,0.18)' }}
               >
@@ -126,16 +123,14 @@ export default function AMinhaFoto({ isMobile }: { isMobile: boolean }) {
                 <IconUpload className="h-4 w-4" />Carregar
               </button>
             </div>
-            <input ref={captureRef} type="file" accept="image/*" capture="user" className="hidden" onChange={onFile} />
             <input ref={uploadRef}  type="file" accept="image/*" className="hidden" onChange={onFile} />
 
-            <button onClick={() => setNotice('O Estúdio TIS & Nano Banana estará disponível em breve.')}
+            <button onClick={onOpenStudio}
               className="mt-4 flex items-center gap-2 rounded-full px-6 py-3 text-xs font-bold uppercase text-white transition-transform active:scale-95"
               style={{ letterSpacing: '0.04em', background: PAGE_GRADIENT, border: '1px solid rgba(255,255,255,0.25)', boxShadow: '0 4px 22px rgba(60,12,178,0.45)' }}
             >
               <IconStudio className="h-4 w-4" />Abrir estúdio TIS &amp; Nano Banana
             </button>
-            {notice && <p className="mt-3 text-xs text-white/65">{notice}</p>}
           </div>
 
           {/* ── Right: permissions ── */}
@@ -155,7 +150,7 @@ export default function AMinhaFoto({ isMobile }: { isMobile: boolean }) {
             ))}
 
             <div>
-              <button onClick={() => setPhoto(null)} disabled={!photo}
+              <button onClick={() => onPhotoChange(null)} disabled={!photo}
                 className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white/90 transition-all hover:bg-white/20 disabled:opacity-40"
                 style={glass}
               >
