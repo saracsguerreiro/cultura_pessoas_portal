@@ -15,8 +15,8 @@ const GALLERY: Person[] = [
   { name: 'Tiago Miguel Moreira Cassoma',     role: 'Arquiteto Cloud',         team: 'Infraestrutura'          },
 ]
 
-// Filtro sobre a foto no resultado, com opacidade a 80%
-const RESULT_OVERLAY = 'rgba(46,27,124,0.8)'
+// Filtro sobre a foto no resultado, com opacidade a 90%
+const RESULT_OVERLAY = 'rgba(46,27,124,0.9)'
 // Gradiente do fundo da página
 const PAGE_GRADIENT = 'linear-gradient(130deg, rgb(130,0,200) 0%, rgb(60,12,178) 45%, rgb(3,110,242) 100%)'
 
