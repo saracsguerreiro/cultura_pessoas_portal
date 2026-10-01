@@ -4,6 +4,7 @@ import juntosLogo from '@/imports/juntos_somos_tis.png'
 import tisLogoSvg from '@/imports/TIS_logo-01.svg'
 import agentPhoto from '@/imports/avatar_rh.jpg'
 import newsDetailBg from '@/imports/gradient-1.png'
+import QuemSouEu, { IconFaceScan } from '@/QuemSouEu'
 
 // ── Portrait photos ──
 const PHOTO_BASE = import.meta.env.BASE_URL
@@ -368,6 +369,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'noticias',    label: 'Notícias',    icon: IconNews       },
   { id: 'eventos',     label: 'Eventos',     icon: IconEvents     },
   { id: 'documentos',  label: 'Documentos',  icon: IconLibrary    },
+  { id: 'quemsoueu',   label: 'Quem sou eu?', icon: IconFaceScan  },
 ]
 
 const DEMO_USER: TISUser = {
@@ -638,7 +640,7 @@ export default function App() {
 
       {/* ── Layer 2: Gradient overlay — more opaque on inner pages ── */}
       <div className="absolute inset-0 z-10" style={{
-        background: ['faqs','noticias','eventos','documentos','chat'].includes(activeNav)
+        background: ['faqs','noticias','eventos','documentos','chat','quemsoueu'].includes(activeNav)
           ? 'linear-gradient(130deg, rgba(130,0,200,0.98) 0%, rgba(60,12,178,0.98) 45%, rgba(3,110,242,0.98) 100%)'
           : 'linear-gradient(130deg, rgba(130,0,200,0.9) 0%, rgba(60,12,178,0.88) 45%, rgba(3,110,242,0.9) 100%)',
         transition: 'background 0.4s ease',
@@ -795,6 +797,14 @@ export default function App() {
             >
               <IconLibrary className="h-5 w-5" />
               <span className="text-[10px] font-medium">Docs</span>
+            </button>
+            <button
+              onClick={() => { setActiveNav('quemsoueu'); if (chatOpen) closeChat() }}
+              className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all"
+              style={{ color: activeNav === 'quemsoueu' ? 'white' : 'rgba(255,255,255,0.38)' }}
+            >
+              <IconFaceScan className="h-5 w-5" />
+              <span className="text-[10px] font-medium">Quem sou?</span>
             </button>
           </nav>
 
@@ -2341,6 +2351,9 @@ export default function App() {
                 </div>
               )
             })()}
+
+            {/* ══ Quem sou eu? ══ */}
+            {activeNav === 'quemsoueu' && <QuemSouEu userName={user?.name ?? ''} isMobile={isMobile} />}
 
           </div>
         </>
