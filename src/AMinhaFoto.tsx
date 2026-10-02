@@ -122,7 +122,7 @@ export default function AMinhaFoto({ isMobile, photo, onPhotoChange, onRetake, o
 
           const details = (
             <div className="min-w-0 flex flex-col gap-4" style={cell(2, 1)}>
-              <div className="text-white mb-2">
+              <div className={`text-white mb-2 ${isMobile ? 'text-center' : ''}`}>
                 <p className="font-extrabold leading-tight" style={{ fontSize: isMobile ? 24 : 32, letterSpacing: '-0.01em' }}>{PROFILE.name}</p>
                 <p className="text-base md:text-lg font-medium text-white/85 mt-1">
                   {PROFILE.role}<span className="mx-2 text-white/40">|</span><span className="text-white/65">{PROFILE.team}</span>
@@ -145,7 +145,7 @@ export default function AMinhaFoto({ isMobile, photo, onPhotoChange, onRetake, o
           )
 
           const detailButtons = (
-            <div className="flex flex-wrap items-center gap-3" style={cell(2, 2)}>
+            <div className={`flex flex-wrap items-center gap-3 ${isMobile ? 'justify-center' : ''}`} style={cell(2, 2)}>
               <button onClick={() => onPhotoChange(null)} disabled={!photo} className={`${btn} text-white hover:bg-white/20 disabled:opacity-40`} style={glass}>
                 <IconTrash className="h-4 w-4" />Remover a minha foto
               </button>

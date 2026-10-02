@@ -198,14 +198,17 @@ export default function Estudio({ isMobile, photo, onSetPhoto, onBack }: { isMob
               </button>
               <div>
                 <h2 className="flex items-center gap-2 font-extrabold leading-tight" style={{ fontSize: isMobile ? 20 : 24, letterSpacing: '-0.01em' }}>
-                  <IconStudio className="h-6 w-6 shrink-0" />Estúdio de Retrato TIS<span className="mx-0.5 text-white/60">•</span>Edição &amp; Nano Banana
+                  <IconStudio className={`h-6 w-6 shrink-0 ${isMobile ? 'self-start mt-0.5' : ''}`} />
+                  {isMobile
+                    ? <span>Estúdio de Retrato TIS<br />Edição &amp; Nano Banana</span>
+                    : <>Estúdio de Retrato TIS<span className="mx-0.5 text-white/60">•</span>Edição &amp; Nano Banana</>}
                 </h2>
                 <p className="text-xs leading-relaxed text-white/70 mt-1" style={{ maxWidth: 520 }}>
                   Ajusta a iluminação, recorta com proteção de enquadramento da cabeça, escolhe a tua moldura TIS ou transforma o teu retrato com o modelo Nano Banana.
                 </p>
               </div>
             </div>
-            <div className="shrink-0 flex items-center gap-1 rounded-full p-1 self-start md:self-auto" style={glass}>
+            <div className={`shrink-0 flex items-center gap-1 rounded-full p-1 ${isMobile ? 'self-center' : ''}`} style={glass}>
               <button onClick={() => setMode('original')}
                 className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-bold transition-all ${mode === 'original' ? 'bg-white text-[#036ef2]' : 'text-white/75 hover:text-white'}`}
               ><IconImage className="h-4 w-4" />Foto original</button>
@@ -280,7 +283,7 @@ export default function Estudio({ isMobile, photo, onSetPhoto, onBack }: { isMob
             {/* ── Right: preview + actions ── */}
             <div className="flex-1 min-w-0 flex flex-col gap-4" style={{ position: isMobile ? 'static' : 'sticky', top: 0 }}>
               <div className="rounded-2xl flex items-center justify-center" style={{ ...glass, padding: isMobile ? 10 : 14 }}>
-                <div style={{ width: '85%', ...frameWrap }}>
+                <div style={{ width: isMobile ? '97%' : '85%', ...frameWrap }}>
                   <div className="relative w-full overflow-hidden" style={{ aspectRatio: '1 / 1', borderRadius: frame === 'minimal' ? 20 : 14, background: '#140f3a' }}>
                     {(
                       <img src={src} alt="" crossOrigin="anonymous" className="absolute inset-0 h-full w-full object-cover"
