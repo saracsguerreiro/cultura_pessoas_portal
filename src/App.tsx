@@ -2359,11 +2359,19 @@ export default function App() {
             {/* ══ Quem sou eu? ══ */}
             {activeNav === 'quemsoueu' && <QuemSouEu isMobile={isMobile} onOpenStudio={() => setActiveNav('aminhafoto')} />}
 
-            {/* ══ A Minha Foto ══ */}
-            {activeNav === 'aminhafoto' && <AMinhaFoto isMobile={isMobile} photo={profilePhoto} onPhotoChange={url => { setProfilePhoto(url); setPhotoSource(url) }} onRetake={() => setActiveNav('quemsoueu')} onOpenStudio={() => setActiveNav('estudio')} />}
-
-            {/* ══ Estúdio de Retrato ══ */}
-            {activeNav === 'estudio' && <Estudio isMobile={isMobile} photo={photoSource} onSetPhoto={url => { setProfilePhoto(url); setActiveNav('aminhafoto') }} onBack={() => setActiveNav('aminhafoto')} />}
+            {/* ══ A Minha Foto + Estúdio: o estúdio entra pela direita e empurra a página para a esquerda ══ */}
+            {(activeNav === 'aminhafoto' || activeNav === 'estudio') && (
+              <div className="relative h-full overflow-hidden">
+                <div className="flex h-full" style={{ width: '200%', transform: activeNav === 'estudio' ? 'translateX(-50%)' : 'translateX(0)', transition: 'transform 0.65s cubic-bezier(0.65,0,0.35,1)' }}>
+                  <div className="h-full w-1/2 shrink-0" inert={activeNav !== 'aminhafoto'} style={{ opacity: activeNav === 'aminhafoto' ? 1 : 0.35, transition: 'opacity 0.65s ease' }}>
+                    <AMinhaFoto isMobile={isMobile} photo={profilePhoto} onPhotoChange={url => { setProfilePhoto(url); setPhotoSource(url) }} onRetake={() => setActiveNav('quemsoueu')} onOpenStudio={() => setActiveNav('estudio')} />
+                  </div>
+                  <div className="h-full w-1/2 shrink-0" inert={activeNav !== 'estudio'} style={{ opacity: activeNav === 'estudio' ? 1 : 0.35, transition: 'opacity 0.65s ease' }}>
+                    <Estudio isMobile={isMobile} photo={photoSource} onSetPhoto={url => { setProfilePhoto(url); setActiveNav('aminhafoto') }} onBack={() => setActiveNav('aminhafoto')} />
+                  </div>
+                </div>
+              </div>
+            )}
 
           </div>
         </>
