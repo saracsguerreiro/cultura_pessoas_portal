@@ -92,7 +92,7 @@ export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolea
   const cameraOn = phase !== 'idle' && phase !== 'starting'
 
   const resultCard = guess && (
-    <div className="w-full rounded-3xl text-[#036ef2]" style={{ maxWidth: 620, padding: isMobile ? 16 : 22, background: 'rgba(255,255,255,0.3)', border: '1px solid rgba(255,255,255,0.26)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', boxShadow: '0 10px 40px rgba(0,0,70,0.25)' }}>
+    <div className="w-full rounded-3xl text-white" style={{ maxWidth: 620, padding: isMobile ? 16 : 22, background: 'rgba(46,27,124,0.8)', border: '1px solid rgba(255,255,255,0.26)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', boxShadow: '0 10px 40px rgba(0,0,70,0.25)' }}>
       {/* Identity */}
       <div className="flex items-center gap-4">
         <div className="shrink-0 flex items-center justify-center rounded-full font-bold"
@@ -101,13 +101,13 @@ export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolea
           {initials(guess.name)}
         </div>
         <div className="min-w-0">
-          <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] md:text-[11px] font-semibold text-[#036ef2] mb-1.5"
-            style={{ background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(3,110,242,0.45)', boxShadow: '0 0 12px rgba(3,110,242,0.45)' }}
+          <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] md:text-[11px] font-semibold text-white mb-1.5"
+            style={{ background: 'rgba(3,110,242,0.22)', border: '1px solid rgba(3,110,242,0.45)', boxShadow: '0 0 12px rgba(3,110,242,0.45)' }}
           >
             <span className="h-1.5 w-1.5 rounded-full bg-[#036ef2]" style={{ boxShadow: '0 0 6px rgba(3,110,242,0.9)' }} />Colaborador TIS Reconhecido
           </span>
           <p className="font-extrabold leading-tight" style={{ fontSize: isMobile ? 19 : 24, letterSpacing: '-0.01em' }}>{guess.name}</p>
-          <p className="text-xs md:text-sm text-[#036ef2]/80 mt-0.5">{guess.role} · {guess.team}</p>
+          <p className="text-xs md:text-sm text-white/80 mt-0.5">{guess.role} · {guess.team}</p>
         </div>
       </div>
 
@@ -115,28 +115,28 @@ export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolea
       <div className="mt-4 flex items-center gap-3 rounded-2xl px-4 py-3" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.18)' }}>
         <IconSparkle className="h-5 w-5 shrink-0 text-[#036ef2]" style={{ filter: 'drop-shadow(0 0 6px rgba(3,110,242,0.8))' }} />
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] md:text-xs"><span className="font-bold uppercase text-[#036ef2]" style={{ letterSpacing: '0.04em', textShadow: '0 0 6px rgba(3,110,242,0.45)' }}>{guess.team}</span><span className="text-[#036ef2]/70"> · Membro Oficial</span></p>
-          <p className="text-[11px] md:text-xs font-medium text-[#036ef2]">Juntos Somos TIS — É um orgulho ter-te na nossa equipa!</p>
+          <p className="text-[11px] md:text-xs"><span className="font-bold uppercase text-white" style={{ letterSpacing: '0.04em' }}>{guess.team}</span><span className="text-white/65"> · Membro Oficial</span></p>
+          <p className="text-[11px] md:text-xs font-medium text-white/90">Juntos Somos TIS — É um orgulho ter-te na nossa equipa!</p>
         </div>
-        {!isMobile && <span className="shrink-0 text-xs font-bold italic text-[#036ef2]" style={{ textShadow: '0 0 6px rgba(3,110,242,0.45)' }}>#SomosTIS</span>}
+        {!isMobile && <span className="shrink-0 text-xs font-bold italic text-white">#SomosTIS</span>}
       </div>
 
       {/* Feedback */}
       <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.14)' }}>
-        <p className="text-sm font-semibold text-[#036ef2] mb-2.5">Acertei?</p>
+        <p className="text-sm font-semibold text-white mb-2.5">Acertei?</p>
         {phase === 'result' ? (
           <div className="flex flex-wrap gap-2">
             <button onClick={answer} className="flex items-center gap-1.5 rounded-full bg-white px-5 py-2 text-sm font-bold text-[#036ef2] active:scale-95 transition-transform">
               <IconCheck className="h-4 w-4" />Acertaste
             </button>
-            <button onClick={answer} className="rounded-full px-5 py-2 text-sm font-bold text-[#036ef2] active:scale-95 transition-all hover:bg-white/30" style={{ background: 'rgba(255,255,255,0.18)', border: '1px solid rgba(3,110,242,0.45)' }}>
+            <button onClick={answer} className="rounded-full px-5 py-2 text-sm font-bold text-white active:scale-95 transition-all hover:bg-white/20" style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.30)' }}>
               Não era eu
             </button>
           </div>
         ) : (
           <div className="flex flex-wrap items-center gap-3">
-            <p className="text-sm text-[#036ef2]">Obrigada! A tua resposta ajuda-nos a afinar o limiar.</p>
-            <button onClick={retry} className="rounded-full px-4 py-1.5 text-xs font-bold text-[#036ef2] transition-all hover:bg-white/30" style={{ border: '1px solid rgba(3,110,242,0.45)' }}>Tentar novamente</button>
+            <p className="text-sm text-white/85">Obrigada! A tua resposta ajuda-nos a afinar o limiar.</p>
+            <button onClick={retry} className="rounded-full px-4 py-1.5 text-xs font-bold text-white transition-all hover:bg-white/20" style={{ border: '1px solid rgba(255,255,255,0.30)' }}>Tentar novamente</button>
           </div>
         )}
       </div>
