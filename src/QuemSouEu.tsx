@@ -16,8 +16,6 @@ const GALLERY: Person[] = [
   { name: 'Tiago Miguel Moreira Cassoma',     role: 'Arquiteto Cloud',         team: 'Infraestrutura'          },
 ]
 
-// Gradiente do fundo da página
-const PAGE_GRADIENT = 'linear-gradient(130deg, rgb(130,0,200) 0%, rgb(60,12,178) 45%, rgb(3,110,242) 100%)'
 
 function initials(name: string) {
   const parts = name.split(' ')
@@ -149,8 +147,8 @@ export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolea
       {/* Actions */}
       <div className="mt-4 pt-4 flex justify-start" style={{ borderTop: '1px solid rgba(255,255,255,0.14)' }}>
         <button onClick={onOpenStudio}
-          className="flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold uppercase text-white transition-transform active:scale-95"
-          style={{ letterSpacing: '0.04em', background: PAGE_GRADIENT, border: '1px solid rgba(255,255,255,0.25)', boxShadow: '0 4px 22px rgba(60,12,178,0.45)' }}
+          className="flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-bold text-[#036ef2] transition-all hover:bg-white/95 active:scale-95"
+          style={{ boxShadow: '0 4px 20px rgba(0,0,60,0.18)' }}
         >
           <IconStudio className="h-4 w-4" />Abrir estúdio em «A minha foto»
         </button>
