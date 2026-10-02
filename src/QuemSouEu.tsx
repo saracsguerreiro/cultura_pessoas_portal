@@ -93,6 +93,8 @@ export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolea
   }
 
   const cameraOn = phase !== 'idle' && phase !== 'starting'
+  // Telemóvel: com a câmara ligada a caixa ocupa todo o espaço entre o cabeçalho e o menu inferior
+  const fullscreen = isMobile && phase !== 'idle'
 
   const resultCard = guess && (
     <div className="w-full rounded-3xl text-white" style={{ maxWidth: 620, padding: isMobile ? 16 : 22, background: 'rgba(46,27,124,0.8)', border: '1px solid rgba(255,255,255,0.26)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', boxShadow: '0 10px 40px rgba(0,0,70,0.25)' }}>
@@ -175,11 +177,13 @@ export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolea
 
         {/* ── Right: camera box ── */}
         <div className={`flex-1 min-w-0 flex justify-center ${isMobile ? 'pb-4' : ''}`}>
-          <div className="rounded-3xl"
-            style={{ width: isMobile ? '100%' : 'min(80.5%, calc(((100vh - 170px) * 4 / 3 + 40px) * 0.805))', padding: isMobile ? 12 : 20, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.24)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', boxShadow: '0 10px 40px rgba(0,0,70,0.18)' }}
+          <div className={fullscreen ? 'fixed left-0 right-0 z-[25]' : 'rounded-3xl'}
+            style={fullscreen
+              ? { top: 66, bottom: 66 }
+              : { width: isMobile ? '100%' : 'min(80.5%, calc(((100vh - 170px) * 4 / 3 + 40px) * 0.805))', padding: isMobile ? 12 : 20, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.24)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', boxShadow: '0 10px 40px rgba(0,0,70,0.18)' }}
           >
-            <div className="relative w-full overflow-hidden rounded-2xl"
-              style={{ aspectRatio: '4 / 3', background: 'linear-gradient(135deg, #2b1460 0%, #1d1a5c 50%, #142454 100%)', boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.06)' }}
+            <div className={`relative w-full overflow-hidden ${fullscreen ? 'h-full' : 'rounded-2xl'}`}
+              style={{ aspectRatio: fullscreen ? undefined : '4 / 3', background: 'linear-gradient(135deg, #2b1460 0%, #1d1a5c 50%, #142454 100%)', boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.06)' }}
             >
               {/* subtle diagonal sheen */}
               <div className="absolute inset-0 pointer-events-none" style={{ background: 'repeating-linear-gradient(135deg, rgba(255,255,255,0.018) 0 2px, transparent 2px 22px)' }} />
@@ -227,15 +231,15 @@ export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolea
                     </span>
                   </div>
                   <button onClick={turnOff} title="Desligar câmara"
-                    className="absolute top-3 right-3 h-8 w-8 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-all text-sm"
+                    className={`absolute top-3 right-3 h-8 w-8 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-all text-sm ${fullscreen ? 'z-10' : ''}`}
                     style={{ background: 'rgba(20,16,70,0.55)', border: '1px solid rgba(255,255,255,0.25)' }}
                   >✕</button>
                 </>
               )}
 
               {(phase === 'live' || phase === 'analysing') && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ paddingBottom: '6%' }}>
-                  <div className="relative overflow-hidden" style={{ width: '34%', aspectRatio: '3 / 4', borderRadius: '50%', border: '2px dashed rgba(255,255,255,0.75)', boxShadow: '0 0 0 9999px rgba(20,16,70,0.32)' }}>
+                <div className={`absolute inset-0 flex justify-center pointer-events-none ${fullscreen ? 'items-start' : 'items-center'}`} style={fullscreen ? { paddingTop: '22%' } : { paddingBottom: '6%' }}>
+                  <div className="relative overflow-hidden" style={{ width: fullscreen ? '58%' : '34%', aspectRatio: '3 / 4', borderRadius: '50%', border: '2px dashed rgba(255,255,255,0.75)', boxShadow: '0 0 0 9999px rgba(20,16,70,0.32)' }}>
                     {phase === 'analysing' && (
                       <div className="absolute left-0 right-0 h-0.5" style={{ background: 'linear-gradient(90deg, transparent, #38bdf8, transparent)', boxShadow: '0 0 14px #38bdf8', animation: 'face-scan 1.4s ease-in-out infinite' }} />
                     )}
@@ -256,15 +260,14 @@ export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolea
                 </div>
               )}
 
-              {/* Result: glass card over the photo (desktop) */}
+              {/* Result: glass card over the photo */}
               {(phase === 'result' || phase === 'feedback') && guess && (
                 <div className="absolute inset-0 overflow-y-auto flex justify-center p-3 md:p-5" style={{ alignItems: 'safe center' }}>
-                  {!isMobile && resultCard}
+                  {(!isMobile || fullscreen) && resultCard}
                 </div>
               )}
               {party && <Fireworks onDone={endParty} />}
             </div>
-            {isMobile && (phase === 'result' || phase === 'feedback') && <div className="mt-3">{resultCard}</div>}
           </div>
         </div>
 
