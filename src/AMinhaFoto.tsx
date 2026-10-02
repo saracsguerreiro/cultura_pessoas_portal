@@ -35,9 +35,9 @@ function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) =
   return (
     <button role="switch" aria-checked={on} aria-label={label} onClick={() => onChange(!on)}
       className="relative shrink-0 rounded-full transition-colors duration-200"
-      style={{ width: 50, height: 28, background: on ? '#036ef2' : 'rgba(255,255,255,0.22)', boxShadow: on ? '0 0 12px rgba(3,110,242,0.55)' : 'none' }}
+      style={{ width: 50, height: 28, background: on ? '#ffffff' : 'rgba(255,255,255,0.22)', boxShadow: on ? '0 0 12px rgba(255,255,255,0.35)' : 'none' }}
     >
-      <span className="absolute top-1 h-5 w-5 rounded-full bg-white transition-all duration-200" style={{ left: on ? 26 : 4, boxShadow: '0 1px 4px rgba(0,0,0,0.25)' }} />
+      <span className="absolute top-1 h-5 w-5 rounded-full transition-all duration-200" style={{ left: on ? 26 : 4, background: on ? '#036ef2' : '#ffffff', boxShadow: on ? '0 0 8px rgba(3,110,242,0.6)' : '0 1px 4px rgba(0,0,0,0.25)' }} />
     </button>
   )
 }
@@ -56,7 +56,7 @@ export default function AMinhaFoto({ isMobile, photo, onPhotoChange, onRetake, o
   }
 
   const initials = PROFILE.name.split(' ')[0][0] + PROFILE.name.split(' ').slice(-1)[0][0]
-  const avatar = isMobile ? 253 : 340
+  const avatar = isMobile ? 291 : 391
 
   const permissions = [
     {
@@ -87,7 +87,7 @@ export default function AMinhaFoto({ isMobile, photo, onPhotoChange, onRetake, o
         <div className={`flex ${isMobile ? 'flex-col gap-8' : 'items-start gap-14'}`}>
 
           {/* ── Left: photo + identity + actions ── */}
-          <div className="shrink-0 flex flex-col items-center text-center text-white" style={{ width: isMobile ? '100%' : 356 }}>
+          <div className="shrink-0 flex flex-col items-center text-center text-white" style={{ width: isMobile ? '100%' : 410 }}>
             <div className="relative mb-6" style={{ width: avatar, height: avatar }}>
               <div className="h-full w-full rounded-full overflow-hidden flex items-center justify-center"
                 style={{ border: '4px solid rgba(255,255,255,0.35)', boxShadow: '0 12px 40px rgba(0,0,70,0.35)', background: 'rgba(255,255,255,0.12)' }}
@@ -105,11 +105,7 @@ export default function AMinhaFoto({ isMobile, photo, onPhotoChange, onRetake, o
               )}
             </div>
 
-            <p className="text-lg font-extrabold leading-tight">{PROFILE.name}</p>
-            <p className="text-sm text-white/80 mt-1">{PROFILE.role}</p>
-            <p className="text-xs text-white/55 mt-0.5">{PROFILE.team}</p>
-
-            <div className="flex gap-2.5 mt-6">
+            <div className="flex gap-2.5">
               <button onClick={onRetake}
                 className="flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-[#036ef2] transition-all hover:bg-white/95 active:scale-[0.98]"
                 style={{ boxShadow: '0 4px 20px rgba(0,0,60,0.18)' }}
@@ -129,6 +125,12 @@ export default function AMinhaFoto({ isMobile, photo, onPhotoChange, onRetake, o
 
           {/* ── Right: permissions ── */}
           <div className="flex-1 min-w-0 flex flex-col gap-4">
+            {/* Identity */}
+            <div className="text-white mb-2">
+              <p className="font-extrabold leading-tight" style={{ fontSize: isMobile ? 24 : 32, letterSpacing: '-0.01em' }}>{PROFILE.name}</p>
+              <p className="text-base md:text-lg font-medium text-white/85 mt-1">{PROFILE.role}</p>
+              <p className="text-sm md:text-[15px] text-white/60 mt-0.5">{PROFILE.team}</p>
+            </div>
             {permissions.map(p => (
               <div key={p.title} className="flex items-start gap-4 rounded-2xl text-white" style={{ ...glass, padding: isMobile ? 16 : 24 }}>
                 <div className="shrink-0 flex items-center justify-center rounded-xl" style={{ width: 40, height: 40, background: 'rgba(255,255,255,0.14)', border: '1px solid rgba(255,255,255,0.25)' }}>
