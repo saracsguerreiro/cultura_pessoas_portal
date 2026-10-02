@@ -35,7 +35,7 @@ function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) =
   return (
     <button role="switch" aria-checked={on} aria-label={label} onClick={() => onChange(!on)}
       className="relative shrink-0 rounded-full transition-colors duration-200"
-      style={{ width: 50, height: 28, background: on ? '#34d399' : 'rgba(255,255,255,0.22)', boxShadow: on ? '0 0 12px rgba(52,211,153,0.45)' : 'none' }}
+      style={{ width: 50, height: 28, background: on ? '#036ef2' : 'rgba(255,255,255,0.22)', boxShadow: on ? '0 0 12px rgba(3,110,242,0.55)' : 'none' }}
     >
       <span className="absolute top-1 h-5 w-5 rounded-full bg-white transition-all duration-200" style={{ left: on ? 26 : 4, boxShadow: '0 1px 4px rgba(0,0,0,0.25)' }} />
     </button>
@@ -56,7 +56,7 @@ export default function AMinhaFoto({ isMobile, photo, onPhotoChange, onRetake, o
   }
 
   const initials = PROFILE.name.split(' ')[0][0] + PROFILE.name.split(' ').slice(-1)[0][0]
-  const avatar = isMobile ? 220 : 296
+  const avatar = isMobile ? 253 : 340
 
   const permissions = [
     {
@@ -87,7 +87,7 @@ export default function AMinhaFoto({ isMobile, photo, onPhotoChange, onRetake, o
         <div className={`flex ${isMobile ? 'flex-col gap-8' : 'items-start gap-14'}`}>
 
           {/* ── Left: photo + identity + actions ── */}
-          <div className="shrink-0 flex flex-col items-center text-center text-white" style={{ width: isMobile ? '100%' : 312 }}>
+          <div className="shrink-0 flex flex-col items-center text-center text-white" style={{ width: isMobile ? '100%' : 356 }}>
             <div className="relative mb-6" style={{ width: avatar, height: avatar }}>
               <div className="h-full w-full rounded-full overflow-hidden flex items-center justify-center"
                 style={{ border: '4px solid rgba(255,255,255,0.35)', boxShadow: '0 12px 40px rgba(0,0,70,0.35)', background: 'rgba(255,255,255,0.12)' }}
@@ -97,7 +97,7 @@ export default function AMinhaFoto({ isMobile, photo, onPhotoChange, onRetake, o
                   : <span className="font-bold text-white/80" style={{ fontSize: avatar / 3.6 }}>{initials}</span>}
               </div>
               {photo && (
-                <span className="absolute flex items-center justify-center rounded-full bg-emerald-400"
+                <span className="absolute flex items-center justify-center rounded-full bg-[#036ef2]"
                   style={{ width: 40, height: 40, right: avatar * 0.04, bottom: avatar * 0.06, border: '3px solid rgba(255,255,255,0.9)', boxShadow: '0 4px 14px rgba(0,0,60,0.3)' }}
                 >
                   <IconCheck className="h-5 w-5 text-white" />
@@ -125,12 +125,6 @@ export default function AMinhaFoto({ isMobile, photo, onPhotoChange, onRetake, o
             </div>
             <input ref={uploadRef}  type="file" accept="image/*" className="hidden" onChange={onFile} />
 
-            <button onClick={onOpenStudio}
-              className="mt-4 flex items-center gap-2 rounded-full px-6 py-3 text-xs font-bold uppercase text-white transition-transform active:scale-95"
-              style={{ letterSpacing: '0.04em', background: PAGE_GRADIENT, border: '1px solid rgba(255,255,255,0.25)', boxShadow: '0 4px 22px rgba(60,12,178,0.45)' }}
-            >
-              <IconStudio className="h-4 w-4" />Abrir estúdio TIS &amp; Nano Banana
-            </button>
           </div>
 
           {/* ── Right: permissions ── */}
@@ -149,12 +143,18 @@ export default function AMinhaFoto({ isMobile, photo, onPhotoChange, onRetake, o
               </div>
             ))}
 
-            <div>
+            <div className="flex flex-wrap items-center gap-3">
               <button onClick={() => onPhotoChange(null)} disabled={!photo}
-                className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white/90 transition-all hover:bg-white/20 disabled:opacity-40"
+                className="flex items-center gap-2 rounded-full px-5 py-3 text-sm font-bold text-white/90 transition-all hover:bg-white/20 disabled:opacity-40"
                 style={glass}
               >
                 <IconTrash className="h-4 w-4" />Remover a minha foto
+              </button>
+              <button onClick={onOpenStudio}
+                className="flex items-center gap-2 rounded-full px-6 py-3 text-xs font-bold uppercase text-white transition-transform active:scale-95"
+                style={{ letterSpacing: '0.04em', background: PAGE_GRADIENT, border: '1px solid rgba(255,255,255,0.25)', boxShadow: '0 4px 22px rgba(60,12,178,0.45)' }}
+              >
+                <IconStudio className="h-4 w-4" />Abrir estúdio TIS &amp; Nano Banana
               </button>
             </div>
           </div>
