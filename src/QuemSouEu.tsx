@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import Fireworks from '@/Fireworks'
 
 type Phase = 'idle' | 'starting' | 'live' | 'analysing' | 'result' | 'feedback'
 type Person = { name: string; role: string; team: string }
@@ -50,6 +51,7 @@ export function IconFaceScan({ className }: { className?: string }) {
 export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolean; onOpenStudio: () => void }) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [phase,   setPhase]   = useState<Phase>('idle')
+  const [party,   setParty]   = useState(false)
   const [photo,   setPhoto]   = useState('')
   const [guess,   setGuess]   = useState<Person | null>(null)
 
@@ -68,7 +70,7 @@ export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolea
 
   function turnOff() {
     if (timer.current) clearTimeout(timer.current)
-    setGuess(null); setPhase('idle')
+    setGuess(null); setParty(false); setPhase('idle')
   }
 
   function analyse() {
@@ -79,9 +81,12 @@ export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolea
     }, 2200)
   }
 
-  function answer() {
-    setPhase('feedback')
+  function answer(correct: boolean) {
+    if (correct) setParty(true)  // o fogo de artifício passa para "Obrigada!" no fim
+    else setPhase('feedback')
   }
+
+  const endParty = useCallback(() => { setParty(false); setPhase('feedback') }, [])
 
   function retry() {
     setGuess(null)
@@ -126,10 +131,10 @@ export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolea
         <p className="text-sm font-semibold text-white mb-2.5">Acertei?</p>
         {phase === 'result' ? (
           <div className="flex flex-wrap gap-2">
-            <button onClick={answer} className="flex items-center gap-1.5 rounded-full bg-white px-5 py-2 text-sm font-bold text-[#036ef2] active:scale-95 transition-transform">
+            <button onClick={() => answer(true)} disabled={party} className="flex items-center gap-1.5 rounded-full bg-white px-5 py-2 text-sm font-bold text-[#036ef2] active:scale-95 transition-transform">
               <IconCheck className="h-4 w-4" />Acertaste
             </button>
-            <button onClick={answer} className="rounded-full px-5 py-2 text-sm font-bold text-white active:scale-95 transition-all hover:bg-white/20" style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.30)' }}>
+            <button onClick={() => answer(false)} disabled={party} className="rounded-full px-5 py-2 text-sm font-bold text-white active:scale-95 transition-all hover:bg-white/20" style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.30)' }}>
               Não era eu
             </button>
           </div>
@@ -259,6 +264,7 @@ export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolea
                   {!isMobile && resultCard}
                 </div>
               )}
+              {party && <Fireworks onDone={endParty} />}
             </div>
             {isMobile && (phase === 'result' || phase === 'feedback') && <div className="mt-3">{resultCard}</div>}
           </div>
