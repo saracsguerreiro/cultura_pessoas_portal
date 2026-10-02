@@ -92,7 +92,7 @@ export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolea
   const cameraOn = phase !== 'idle' && phase !== 'starting'
 
   const resultCard = guess && (
-    <div className="w-full rounded-3xl text-white" style={{ maxWidth: 620, padding: isMobile ? 16 : 22, background: 'rgba(46,27,124,0.6)', border: '1px solid rgba(255,255,255,0.26)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', boxShadow: '0 10px 40px rgba(0,0,70,0.25)' }}>
+    <div className="w-full rounded-3xl text-white" style={{ maxWidth: 620, padding: isMobile ? 16 : 22, background: 'rgba(255,255,255,0.3)', border: '1px solid rgba(255,255,255,0.26)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', boxShadow: '0 10px 40px rgba(0,0,70,0.25)' }}>
       {/* Identity */}
       <div className="flex items-center gap-4">
         <div className="shrink-0 flex items-center justify-center rounded-full font-bold"
