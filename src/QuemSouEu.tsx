@@ -15,8 +15,6 @@ const GALLERY: Person[] = [
   { name: 'Tiago Miguel Moreira Cassoma',     role: 'Arquiteto Cloud',         team: 'Infraestrutura'          },
 ]
 
-// Filtro sobre a foto no resultado, com opacidade a 90%
-const RESULT_OVERLAY = 'rgba(46,27,124,0.9)'
 // Gradiente do fundo da página
 const PAGE_GRADIENT = 'linear-gradient(130deg, rgb(130,0,200) 0%, rgb(60,12,178) 45%, rgb(3,110,242) 100%)'
 
@@ -94,7 +92,7 @@ export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolea
   const cameraOn = phase !== 'idle' && phase !== 'starting'
 
   const resultCard = guess && (
-    <div className="w-full rounded-3xl text-white" style={{ maxWidth: 620, padding: isMobile ? 16 : 22, background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.26)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', boxShadow: '0 10px 40px rgba(0,0,70,0.25)' }}>
+    <div className="w-full rounded-3xl text-white" style={{ maxWidth: 620, padding: isMobile ? 16 : 22, background: 'rgba(255,255,255,0.3)', border: '1px solid rgba(255,255,255,0.26)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', boxShadow: '0 10px 40px rgba(0,0,70,0.25)' }}>
       {/* Identity */}
       <div className="flex items-center gap-4">
         <div className="shrink-0 flex items-center justify-center rounded-full font-bold"
@@ -255,9 +253,9 @@ export default function QuemSouEu({ isMobile, onOpenStudio }: { isMobile: boolea
                 </div>
               )}
 
-              {/* Result: home gradient over the photo (+ card on desktop) */}
+              {/* Result: glass card over the photo (desktop) */}
               {(phase === 'result' || phase === 'feedback') && guess && (
-                <div className="absolute inset-0 overflow-y-auto flex justify-center p-3 md:p-5" style={{ background: RESULT_OVERLAY, alignItems: 'safe center' }}>
+                <div className="absolute inset-0 overflow-y-auto flex justify-center p-3 md:p-5" style={{ alignItems: 'safe center' }}>
                   {!isMobile && resultCard}
                 </div>
               )}
