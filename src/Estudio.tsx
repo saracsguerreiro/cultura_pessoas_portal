@@ -197,10 +197,10 @@ export default function Estudio({ isMobile, photo, onSetPhoto, onBack }: { isMob
                 <IconArrowLeft className="h-4 w-4" />
               </button>
               <div>
-                <h2 className="flex items-center gap-2 font-extrabold uppercase leading-tight" style={{ fontSize: isMobile ? 18 : 22, letterSpacing: '0.01em' }}>
-                  <IconStudio className="h-6 w-6 shrink-0" />Estúdio de Retrato TIS · Edição &amp; Nano Banana
+                <h2 className="flex items-center gap-2 font-extrabold leading-tight" style={{ fontSize: isMobile ? 20 : 24, letterSpacing: '-0.01em' }}>
+                  <IconStudio className="h-6 w-6 shrink-0" />Estúdio de Retrato TIS<span className="mx-0.5 text-white/60">•</span>Edição &amp; Nano Banana
                 </h2>
-                <p className="text-[13px] leading-relaxed text-white/70 mt-1" style={{ maxWidth: 560 }}>
+                <p className="text-xs leading-relaxed text-white/70 mt-1" style={{ maxWidth: 520 }}>
                   Ajusta a iluminação, recorta com proteção de enquadramento da cabeça, escolhe a tua moldura TIS ou transforma o teu retrato com o modelo Nano Banana.
                 </p>
               </div>
@@ -218,12 +218,12 @@ export default function Estudio({ isMobile, photo, onSetPhoto, onBack }: { isMob
           <div className={`flex ${isMobile ? 'flex-col-reverse gap-5' : 'items-start gap-8'}`}>
 
             {/* ── Left: controls ── */}
-            <div className="flex-[1.45] min-w-0 flex flex-col gap-4 md:gap-5">
+            <div className="flex-[1.45] min-w-0 flex flex-col gap-5 md:gap-6">
 
               {/* Nano Banana */}
-              <section className="rounded-2xl" style={{ ...glass, padding: isMobile ? 16 : 20 }}>
+              <section>
                 <div className="flex items-center justify-between mb-4">
-                  <p className="flex items-center gap-2 text-[13px] font-extrabold uppercase" style={{ letterSpacing: '0.04em' }}><IconSparkles className="h-5 w-5" />Transformação com Nano Banana</p>
+                  <p className="flex items-center gap-2 text-[15px] font-extrabold"><IconSparkles className="h-5 w-5" />Transformação com Nano Banana</p>
                   {!isMobile && <span className="text-xs font-semibold text-white/50">Google Gemini AI</span>}
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mb-4">
@@ -246,8 +246,8 @@ export default function Estudio({ isMobile, photo, onSetPhoto, onBack }: { isMob
               </section>
 
               {/* Frames */}
-              <section className="rounded-2xl" style={{ ...glass, padding: isMobile ? 16 : 20 }}>
-                <p className="text-[13px] font-extrabold uppercase mb-4" style={{ letterSpacing: '0.04em' }}>Estilo da moldura</p>
+              <section className="pt-5 md:pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.14)' }}>
+                <p className="text-[15px] font-extrabold mb-4">Estilo da moldura</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
                   {FRAMES.map(f => (
                     <button key={f.id} onClick={() => setFrame(f.id)} className="text-left rounded-full px-4 py-2.5 transition-all hover:bg-white/12" style={frame === f.id ? tileOn : tileOff}>
@@ -259,9 +259,9 @@ export default function Estudio({ isMobile, photo, onSetPhoto, onBack }: { isMob
               </section>
 
               {/* Adjustments */}
-              <section className="rounded-2xl" style={{ ...glass, padding: isMobile ? 16 : 20 }}>
+              <section className="pt-5 md:pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.14)' }}>
                 <div className="flex items-center justify-between mb-5">
-                  <p className="text-[13px] font-extrabold uppercase" style={{ letterSpacing: '0.04em' }}>Ajustes de luz &amp; enquadramento da cabeça</p>
+                  <p className="text-[15px] font-extrabold">Ajustes de luz &amp; enquadramento da cabeça</p>
                   <button onClick={() => setAdj(DEFAULT_ADJ)} className="shrink-0 rounded-full px-3 py-1 text-xs font-bold text-white/85 hover:bg-white/15 transition-all" style={{ border: '1px solid rgba(255,255,255,0.28)' }}>Repor valores</button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-5">
@@ -279,8 +279,8 @@ export default function Estudio({ isMobile, photo, onSetPhoto, onBack }: { isMob
 
             {/* ── Right: preview + actions ── */}
             <div className="flex-1 min-w-0 flex flex-col gap-4" style={{ position: isMobile ? 'static' : 'sticky', top: 0 }}>
-              <div className="rounded-2xl flex items-center justify-center" style={{ ...glass, padding: isMobile ? 14 : 24 }}>
-                <div className="w-full" style={{ maxWidth: 400, ...frameWrap }}>
+              <div className="rounded-2xl flex items-center justify-center" style={{ ...glass, padding: isMobile ? 10 : 14 }}>
+                <div className="w-full" style={frameWrap}>
                   <div className="relative w-full overflow-hidden" style={{ aspectRatio: '1 / 1', borderRadius: frame === 'minimal' ? 20 : 14, background: '#140f3a' }}>
                     {(
                       <img src={src} alt="" crossOrigin="anonymous" className="absolute inset-0 h-full w-full object-cover"
