@@ -236,11 +236,11 @@ export default function Estudio({ isMobile, photo, onSetPhoto, onBack }: { isMob
                   ))}
                 </div>
                 <button onClick={generate} disabled={generating}
-                  className="flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-white transition-transform active:scale-95 disabled:opacity-80"
-                  style={{ background: PAGE_GRADIENT, border: '1px solid rgba(255,255,255,0.25)', boxShadow: '0 4px 22px rgba(60,12,178,0.45)' }}
+                  className="flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-[#036ef2] transition-all hover:bg-white/95 active:scale-95 disabled:opacity-80"
+                  style={{ boxShadow: '0 4px 20px rgba(0,0,60,0.18)' }}
                 >
                   {generating
-                    ? <><div className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />A gerar…</>
+                    ? <><div className="h-4 w-4 rounded-full border-2 border-[#036ef2]/25 border-t-[#036ef2] animate-spin" />A gerar…</>
                     : <><IconSparkles className="h-4 w-4" />Gerar com Nano Banana</>}
                 </button>
               </section>
@@ -280,7 +280,7 @@ export default function Estudio({ isMobile, photo, onSetPhoto, onBack }: { isMob
             {/* ── Right: preview + actions ── */}
             <div className="flex-1 min-w-0 flex flex-col gap-4" style={{ position: isMobile ? 'static' : 'sticky', top: 0 }}>
               <div className="rounded-2xl flex items-center justify-center" style={{ ...glass, padding: isMobile ? 10 : 14 }}>
-                <div className="w-full" style={frameWrap}>
+                <div style={{ width: '85%', ...frameWrap }}>
                   <div className="relative w-full overflow-hidden" style={{ aspectRatio: '1 / 1', borderRadius: frame === 'minimal' ? 20 : 14, background: '#140f3a' }}>
                     {(
                       <img src={src} alt="" crossOrigin="anonymous" className="absolute inset-0 h-full w-full object-cover"

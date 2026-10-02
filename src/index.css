@@ -76,7 +76,7 @@ body,
   appearance: none;
   height: 6px;
   border-radius: 9999px;
-  background: linear-gradient(to right, #036ef2 var(--pct), rgba(255,255,255,0.18) var(--pct));
+  background: linear-gradient(to right, #ffffff var(--pct), rgba(255,255,255,0.18) var(--pct));
   outline: none;
   cursor: pointer;
 }
